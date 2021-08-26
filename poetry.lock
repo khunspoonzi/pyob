@@ -1,0 +1,22 @@
+[[package]]
+name = "typeguard"
+version = "2.12.1"
+description = "Run-time type checker for Python"
+category = "main"
+optional = false
+python-versions = ">=3.5.3"
+
+[package.extras]
+doc = ["sphinx-rtd-theme", "sphinx-autodoc-typehints (>=1.2.0)"]
+test = ["pytest", "typing-extensions", "mypy"]
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.8"
+content-hash = "f221581125b949ce94837468f54562ec403d39b7506c93da0893215e5ea5ac7a"
+
+[metadata.files]
+typeguard = [
+    {file = "typeguard-2.12.1-py3-none-any.whl", hash = "sha256:cc15ef2704c9909ef9c80e19c62fb8468c01f75aad12f651922acf4dbe822e02"},
+    {file = "typeguard-2.12.1.tar.gz", hash = "sha256:c2af8b9bdd7657f4bd27b45336e7930171aead796711bc4cfc99b4731bb9d051"},
+]

@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "pyob"
+version = "0.1.0"
+description = "A Python library for supercharged object-interface management"
+authors = ["khunspoonzi <khunspoonzi@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+typeguard = "^2.12.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

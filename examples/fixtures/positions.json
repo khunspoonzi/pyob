@@ -1,0 +1,402 @@
+[
+    {
+        "name": "Computer Programmer",
+        "salary": 43730
+    },
+    {
+        "name": "Maid & Housekeeper",
+        "salary": 111620
+    },
+    {
+        "name": "Mental Health Counselor",
+        "salary": 43700
+    },
+    {
+        "name": "Compliance Officer",
+        "salary": 32440
+    },
+    {
+        "name": "Public Relations Specialist",
+        "salary": 58230
+    },
+    {
+        "name": "Elementary School Teacher",
+        "salary": 248810
+    },
+    {
+        "name": "Financial Analyst",
+        "salary": 54300
+    },
+    {
+        "name": "School Counselor",
+        "salary": 53430
+    },
+    {
+        "name": "High School Teacher",
+        "salary": 71930
+    },
+    {
+        "name": "Occupational Therapist",
+        "salary": 36420
+    },
+    {
+        "name": "Marketing Manager",
+        "salary": 24250
+    },
+    {
+        "name": "Paramedic",
+        "salary": 75440
+    },
+    {
+        "name": "Construction Manager",
+        "salary": 86640
+    },
+    {
+        "name": "Cement Mason & Concrete Finisher",
+        "salary": 50500
+    },
+    {
+        "name": "Logistician",
+        "salary": 27830
+    },
+    {
+        "name": "Civil Engineer",
+        "salary": 51400
+    },
+    {
+        "name": "Sports Coach",
+        "salary": 71500
+    },
+    {
+        "name": "Glazier",
+        "salary": 41940
+    },
+    {
+        "name": "Insurance Agent",
+        "salary": 90200
+    },
+    {
+        "name": "Physician",
+        "salary": 168330
+    },
+    {
+        "name": "Painter",
+        "salary": 72600
+    },
+    {
+        "name": "Physical Therapist",
+        "salary": 65740
+    },
+    {
+        "name": "Speech-Language Pathologist",
+        "salary": 28850
+    },
+    {
+        "name": "Financial Manager",
+        "salary": 46360
+    },
+    {
+        "name": "Market Research Analyst",
+        "salary": 116400
+    },
+    {
+        "name": "Cashier",
+        "salary": 250230
+    },
+    {
+        "name": "Dental Assistant",
+        "salary": 91600
+    },
+    {
+        "name": "Dentist",
+        "salary": 27600
+    },
+    {
+        "name": "Administrative Assistant",
+        "salary": 118500
+    },
+    {
+        "name": "HR Specialist",
+        "salary": 61640
+    },
+    {
+        "name": "Construction Worker",
+        "salary": 212500
+    },
+    {
+        "name": "Architect",
+        "salary": 27940
+    },
+    {
+        "name": "Nursing Aide",
+        "salary": 302700
+    },
+    {
+        "name": "Radiologic Technologist ",
+        "salary": 61500
+    },
+    {
+        "name": "Child & Family Social Worker",
+        "salary": 58200
+    },
+    {
+        "name": "Brickmason & Blockmason",
+        "salary": 36400
+    },
+    {
+        "name": "Epidemiologist",
+        "salary": 37630
+    },
+    {
+        "name": "Bookkeeping, Accounting, & Audit Clerk",
+        "salary": 259000
+    },
+    {
+        "name": "School Psychologist",
+        "salary": 31700
+    },
+    {
+        "name": "Art Director",
+        "salary": 6730
+    },
+    {
+        "name": "Dental Hygienist",
+        "salary": 68300
+    },
+    {
+        "name": "Clinical Laboratory Technician",
+        "salary": 23840
+    },
+    {
+        "name": "Mechanical Engineer",
+        "salary": 21200
+    },
+    {
+        "name": "Software Developer",
+        "salary": 143400
+    },
+    {
+        "name": "Interpreter & Translator",
+        "salary": 24620
+    },
+    {
+        "name": "Paralegal",
+        "salary": 46930
+    },
+    {
+        "name": "Financial Advisor",
+        "salary": 66440
+    },
+    {
+        "name": "Plumber",
+        "salary": 107640
+    },
+    {
+        "name": "Fabricator",
+        "salary": 12500
+    },
+    {
+        "name": "Management Analyst",
+        "salary": 157400
+    },
+    {
+        "name": "Physical Therapist Assistant",
+        "salary": 30300
+    },
+    {
+        "name": "Massage Therapist",
+        "salary": 30940
+    },
+    {
+        "name": "Respiratory Therapist",
+        "salary": 31300
+    },
+    {
+        "name": "Executive Assistant",
+        "salary": 156600
+    },
+    {
+        "name": "Security Guard",
+        "salary": 195300
+    },
+    {
+        "name": "Lawyer",
+        "salary": 73630
+    },
+    {
+        "name": "Medical Secretary",
+        "salary": 210240
+    },
+    {
+        "name": "Home Health Aide",
+        "salary": 706300
+    },
+    {
+        "name": "Computer Systems Analyst",
+        "salary": 120440
+    },
+    {
+        "name": "Carpenter",
+        "salary": 196200
+    },
+    {
+        "name": "Personal Care Aide",
+        "salary": 607500
+    },
+    {
+        "name": "Customer Service Representative",
+        "salary": 338300
+    },
+    {
+        "name": "Pharmacist",
+        "salary": 69740
+    },
+    {
+        "name": "Hairdresser",
+        "salary": 98430
+    },
+    {
+        "name": "Restaurant Cook",
+        "salary": 117800
+    },
+    {
+        "name": "Business Operations Manager",
+        "salary": 81620
+    },
+    {
+        "name": "Receptionist",
+        "salary": 248540
+    },
+    {
+        "name": "Loan Officer",
+        "salary": 41500
+    },
+    {
+        "name": "Recreation & Fitness Worker",
+        "salary": 124730
+    },
+    {
+        "name": "Electrician",
+        "salary": 133730
+    },
+    {
+        "name": "Cost Estimator",
+        "salary": 67400
+    },
+    {
+        "name": "Landscaper & Groundskeeper",
+        "salary": 240850
+    },
+    {
+        "name": "Pharmacy Technician",
+        "salary": 108200
+    },
+    {
+        "name": "Clinical Social Worker",
+        "salary": 51200
+    },
+    {
+        "name": "Diagnostic Medical Sonographer",
+        "salary": 23300
+    },
+    {
+        "name": "Accountant",
+        "salary": 190740
+    },
+    {
+        "name": "Telemarketer",
+        "salary": 21500
+    },
+    {
+        "name": "Substance Abuse Counselor",
+        "salary": 23450
+    },
+    {
+        "name": "Sales Representative",
+        "salary": 223700
+    },
+    {
+        "name": "Sales Manager",
+        "salary": 40500
+    },
+    {
+        "name": "IT Manager",
+        "salary": 55830
+    },
+    {
+        "name": "Middle School Teacher",
+        "salary": 108340
+    },
+    {
+        "name": "Janitor",
+        "salary": 246440
+    },
+    {
+        "name": "Preschool Teacher",
+        "salary": 113630
+    },
+    {
+        "name": "Database Administrator",
+        "salary": 33600
+    },
+    {
+        "name": "Marriage & Family Therapist",
+        "salary": 14840
+    },
+    {
+        "name": "Veterinary Technologist & Technician",
+        "salary": 41700
+    },
+    {
+        "name": "Auto Mechanic",
+        "salary": 124800
+    },
+    {
+        "name": "Medical Assistant",
+        "salary": 162930
+    },
+    {
+        "name": "Bus Driver",
+        "salary": 83000
+    },
+    {
+        "name": "Computer Systems Administrator",
+        "salary": 96600
+    },
+    {
+        "name": "Web Developer",
+        "salary": 65740
+    },
+    {
+        "name": "Teacher Assistant",
+        "salary": 191500
+    },
+    {
+        "name": "Patrol Officer",
+        "salary": 54600
+    },
+    {
+        "name": "Veterinarian",
+        "salary": 23000
+    },
+    {
+        "name": "Delivery Truck Driver",
+        "salary": 125620
+    },
+    {
+        "name": "Meeting, Convention & Event Planner",
+        "salary": 31500
+    },
+    {
+        "name": "Real Estate Agent",
+        "salary": 45400
+    },
+    {
+        "name": "Maintenance & Repair Worker",
+        "salary": 142300
+    },
+    {
+        "name": "Registered Nurse",
+        "salary": 712900
+    }
+]
