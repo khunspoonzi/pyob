@@ -66,7 +66,7 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get clean methods
-        _clean = cls._clean
+        _clean = cls._clean or {}
 
         # Check if name in clean methods
         if name in _clean:
@@ -79,7 +79,7 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get keys
-        _keys = cls._keys
+        _keys = cls._keys or ()
 
         # Determin if key
         is_key = _keys and name in _keys
@@ -188,10 +188,10 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get unique fields
-        _unique = cls._unique
+        _unique = cls._unique or ()
 
         # Iterate over unique fields
-        for _field in _unique or ():
+        for _field in _unique:
 
             # Determine if unique together (a tuple of fields)
             is_unique_together = type(_field) is tuple

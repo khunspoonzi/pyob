@@ -9,7 +9,14 @@ import unittest
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob import Ob
-from pyob.exceptions import InvalidObjectError, MixedObjectsError
+from pyob.exceptions import (
+    DuplicateKeyError,
+    InvalidKeyError,
+    InvalidObjectError,
+    InvalidTypeError,
+    MixedObjectsError,
+    UnicityError,
+)
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
@@ -27,6 +34,10 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
     def test_add(self):
         """ Ensures that the add dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
 
         # Get Thailand instance
         tha = self.countries.THA
@@ -114,12 +125,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
         b1_a1 = b1 + a1
 
         # Assert that you can add a1 to b1 because a1 is synonymous with b2
-        self.assertIsObSet(b1_a1, count=2)
+        self.assertEqual(b1_a1, b1 + b2)
 
-        # Ensure that the resulting object set contains b1 and b2
-        self.assertTrue(all(b in b1_a1._obs for b in (b1, b2)))
-
-        # TODO: Add a test to ensure that _keys is an iterable
         # TODO: Make keys backward compatible as synonyms (MAYBE...)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -156,6 +163,10 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
     def test_repr(self):
         """ Ensures that the repr dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
 
         # Get Thailand instance
         tha = self.countries.THA
@@ -281,50 +292,104 @@ class ObDunderTestCase(PyObFixtureTestCase):
     def test_setattr(self):
         """ Ensures that the setattr dunder method behaves as expected """
 
+        # Get Country class
+        Country = self.Country
+
+        # Get Thailand
+        tha = Country.obs.THA
+
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ A
+        # │ CLEAN
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A test class with a key field """
+        # Get Thailand is UN member at
+        is_un_member_at = tha.is_un_member_at
 
-            # Define keys
-            _keys = ("key",)
+        # Break is UN member at into year, month, and day
+        year = is_un_member_at.year
+        month = is_un_member_at.month
+        day = is_un_member_at.day
 
-            # Define init method
-            def __init__(self, key):
+        # Set is UN member at as a string, expecting that it will be cleaned
+        tha.is_un_member_at = f"{year}-{month}-{day}"
 
-                # Set key
-                self.key = key
+        # Assert that is UN member at was cleaned into its original datetime
+        self.assertEqual(tha.is_un_member_at, is_un_member_at)
 
-        # Initialize key constants
-        K1 = "k1"
-        K2 = "k2"
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ KEYS
+        # └─────────────────────────────────────────────────────────────────────────────
 
-        # Initialize A instance
-        a = A(key=K1)
+        # Get United States
+        usa = Country.obs.USA
 
-        # Assert that k1 is indexed in object store
-        self.assertTrue(K1 in A._store._obs_by_key)
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidKeyError):
 
-        # Assert that k2 is not indexed in object store
-        self.assertTrue(K2 not in A._store._obs_by_key)
+            # Try to set a key to None
+            tha.iso2 = None
 
-        # Reassign A instance's key to k2
-        a.key = K2
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidTypeError):
 
-        # Assert that k2 is now indexed in object store
-        self.assertTrue(K2 in A._store._obs_by_key)
+            # Try to set invalid type
+            tha.iso2 = 35
 
-        # Assert that k2 is no longer indexed in object store
-        self.assertTrue(K1 not in A._store._obs_by_key)
+        # Initialize assertRaises block
+        with self.assertRaises(DuplicateKeyError):
+
+            # Try to set a duplicate key
+            tha.iso2 = usa.iso2
+
+        # Initialize assertRaises block
+        with self.assertRaises(DuplicateKeyError):
+
+            # Try to set a duplicate key of another key field
+            tha.iso2 = usa.iso3
+
+        # Get Thailand ISO2
+        iso2 = tha.iso2
+
+        # Get Country store
+        _store = Country._store
+
+        # Get objects by key
+        _obs_by_key = _store._obs_by_key
+
+        # Assert that Thailand ISO2 key is currently indexed
+        self.assertTrue(iso2 in _obs_by_key)
+
+        # Set Thailand ISO2 to new value
+        tha.iso2 = "XX"
+
+        # Check that key has been re-indexed
+        self.assertFalse(iso2 in _obs_by_key)
+        self.assertEqual(_obs_by_key["XX"], tha)
+
+        # Reset Thailand ISO2
+        tha.iso2 = iso2
+
+        # Check that key has been re-indexed
+        self.assertTrue("TH" in _obs_by_key)
+        self.assertEqual(_obs_by_key[iso2], tha)
 
         # Assert that you can set the same key without an exception
         # i.e. key check passes if a key exists but already points to current instance
         # Previously the key check was not being smart about this!
-        a.key = a.key
+        tha.iso2 = tha.iso2
 
-        # TODO: Test that keys can be None (not iterable)
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ UNICITY
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Initialize assertRaises block
+        with self.assertRaises(UnicityError):
+
+            # Try to set duplicate a unique field
+            tha.name = usa.name
+
+        # TODO: Handle key dot accessor on Class
+
         # TODO: Add test to ensure that key indices are not wiped if not is_creating
         # TODO: Test popping of old values (KEY AND UNIQUE)
         # TODO: Test mismatches on exceptions for non-created objects
