@@ -9,6 +9,7 @@ from pyob.tools import (
     filter_by_keys,
     is_iterable,
     is_ob,
+    is_ob_set,
 )
 
 
@@ -207,6 +208,20 @@ class ObSetDunderMixin:
         ) > 0
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __EQ__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __eq__(self, other):
+        """ Eq Method """
+
+        # Return False if other is not an object set
+        if not is_ob_set(other):
+            return False
+
+        # Return True if the objects of both object sets match
+        return self._obs == other._obs
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __GETATTR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -275,6 +290,18 @@ class ObSetDunderMixin:
 
         # Return the new object set
         return self.New() + (set(self._obs) | set(other_obs))
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __POW__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __pow__(self, other):
+        """ Pow Method """
+
+        # Apply rshift method
+        return self.__rshift__(other)
+
+        # NOTE: Pow takes higher precedence than rshift in order of operations
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __REPR__

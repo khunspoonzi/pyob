@@ -43,6 +43,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
             _keys = (KEY_1, KEY_2)
@@ -61,6 +62,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class B(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
             _keys = [KEY_1, KEY_2]
@@ -79,6 +81,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class C(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
             _keys = {KEY_1, KEY_2}
@@ -105,6 +108,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class D(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
             _keys = KEY_1
@@ -117,6 +121,93 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
         # Assert that unique fields are converted to tuples
         self.assertEqual(D._unique, (UNIQUE_1,))
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ E
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class E(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
+
+            # Set keys to None
+            _keys = None
+
+            # Set unique to None
+            _unique = None
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ F
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class F(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
+
+            # Set keys to None
+            _keys = ["a", "b"]
+
+            # Set unique to None
+            _unique = [["c", "d"], "e"]
+
+            # Define a clean method for a field
+            def _clean_a(self, value):
+                """ Clean a Method """
+                return value
+
+        # Iterate over test classes
+        for Class in (E, F):
+
+            # Iterate over iterable PyOb attributes in class
+            for value in (Class._keys, Class._unique):
+
+                # Assert that the value is initialized to a tuple
+                self.assertIs(type(value), tuple)
+
+            # Ensure that all items in unique are a tuple or string
+            self.assertTrue(all([type(i) in (str, tuple) for i in Class._unique]))
+
+        # Assert that the clean method in F class is cached
+        self.assertTrue("a" in F._clean)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ G
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class G(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
+
+            # Set class-level type hint
+            str_int: int
+
+            # Define init method
+            def __init__(
+                self,
+                string: str,
+                integer: int,
+                boolean: bool,
+                floating: float,
+                str_int: str,
+            ):
+
+                # Set instance attributes
+                self.string = string
+                self.integer = integer
+                self.boolean = boolean
+                self.floating = floating
+                self.str_int = str_int
+
+        # Iterate over type-hinted fields
+        for field, field_type in (
+            ("string", str),
+            ("integer", int),
+            ("boolean", bool),
+            ("floating", float),
+            ("str_int", int),
+        ):
+            # Assert that cached type hint is correct
+            self.assertEqual(G._type_hints[field], field_type)
+
+        # Assert that the obs property points to the store
+        self.assertEqual(id(G.obs), id(G._store))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST STORE INHERITANCE

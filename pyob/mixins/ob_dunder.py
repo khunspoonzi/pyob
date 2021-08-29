@@ -3,7 +3,6 @@
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from typeguard import check_type
-from typing import get_type_hints
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
@@ -60,14 +59,14 @@ class ObDunderMixin:
         """ Set Attr Method """
 
         # Get object class
-        Class = self.__class__
+        cls = self.__class__
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CLEAN VALUE
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get clean methods
-        _clean = Class._clean
+        _clean = cls._clean
 
         # Check if name in clean methods
         if name in _clean:
@@ -80,7 +79,7 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get keys
-        _keys = Class._keys
+        _keys = cls._keys
 
         # Determin if key
         is_key = _keys and name in _keys
@@ -95,8 +94,8 @@ class ObDunderMixin:
         # │ ENFORCE TYPES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Determine if type enforcement is enabled
-        enforce_types = not self._disable_type_enforcement
+        # Determine if type checking is enabled
+        enforce_types = not self._disable_type_checking
 
         # Check if should enforce types
         if enforce_types:
@@ -105,33 +104,18 @@ class ObDunderMixin:
             # │ GET CACHED TYPE HINTS
             # └─────────────────────────────────────────────────────────────────────────
 
-            # Get or initialize cached type hints
-            type_hints = Class._type_hints
-
-            # Check if cached type hints is None
-            if type_hints is None:
-
-                # Initialize type hints
-                type_hints = {}
-
-                # Update type hints by init type hints
-                type_hints.update(get_type_hints(self.__init__) or {})
-
-                # Update type hints by class-level type hints
-                type_hints.update(get_type_hints(Class) or {})
-
-                # Set class-level cached type hints
-                Class._type_hints = type_hints
+            # Get cached type hints
+            _type_hints = cls._type_hints
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ ENFORCE TYPE HINTS
             # └─────────────────────────────────────────────────────────────────────────
 
             # Check if name in type hints
-            if name in type_hints:
+            if name in _type_hints:
 
                 # Get expected type
-                expected_type = type_hints[name]
+                expected_type = _type_hints[name]
 
                 # Initialize try-except block
                 try:
@@ -143,12 +127,12 @@ class ObDunderMixin:
                 except TypeError:
 
                     # Get singular label
-                    label_singular = Class.label_singular
+                    label_singular = cls.label_singular
 
                     # Raise InvalidTypeError
                     raise InvalidTypeError(
-                        f"{label_singular}.{name} expects a value :: {expected_type} "
-                        f"but got: {value} :: {type(value)}"
+                        f"{label_singular}.{name} expects a value of type "
+                        f"{expected_type} but got: {value} ({type(value)})"
                     )
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -163,7 +147,7 @@ class ObDunderMixin:
             # └─────────────────────────────────────────────────────────────────────────
 
             # Get objects by key map
-            _obs_by_key = Class._store._obs_by_key
+            _obs_by_key = cls._store._obs_by_key
 
             # Check if value in objects by key map
             if value in _obs_by_key and (other := _obs_by_key[value]) != self:
@@ -173,7 +157,7 @@ class ObDunderMixin:
                 # └─────────────────────────────────────────────────────────────────────
 
                 # Get singular label
-                label_singular = Class.label_singular
+                label_singular = cls.label_singular
 
                 # Raise DuplicateKeyError
                 raise DuplicateKeyError(
@@ -204,7 +188,7 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get unique fields
-        _unique = Class._unique
+        _unique = cls._unique
 
         # Iterate over unique fields
         for _field in _unique or ():
@@ -235,7 +219,7 @@ class ObDunderMixin:
                 _value = value
 
             # Get objects by unique value given field
-            _obs_by_unique_value = Class._store._obs_by_unique_field.setdefault(
+            _obs_by_unique_value = cls._store._obs_by_unique_field.setdefault(
                 _field, {}
             )
 
@@ -246,7 +230,7 @@ class ObDunderMixin:
             ):
 
                 # Get singular label
-                label_singular = Class.label_singular
+                label_singular = cls.label_singular
 
                 # Raise UnicityError
                 raise UnicityError(

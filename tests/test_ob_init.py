@@ -80,6 +80,10 @@ class ObInitTestCase(PyObTestCase):
     def test_class_attributes(self):
         """ Ensures that the test classes have the expected class attributes """
 
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
+
         # Assert that attributes are correct
         self.assertAttributesCorrect(
             Country,
@@ -337,8 +341,8 @@ class ObInitTestCase(PyObTestCase):
         class CountryUntyped(Country):
             """ An untyped test class that inherits from Country """
 
-            # Set disable type enforcement to True
-            _disable_type_enforcement = True
+            # Set disable type checking to True
+            _disable_type_checking = True
 
         # Initialize assertRaises block
         with self.assertRaises(InvalidKeyError):
