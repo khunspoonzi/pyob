@@ -157,42 +157,31 @@ class ObMeta(type, ObMetaLabelMixin):
     # │ __GETATTR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __getattr__(self, name):
+    def __getattr__(cls, name):
         """ Get Attr Method """
 
-        # Initialize try-except block
-        try:
-
-            # Attempt to return PyOb object by key
-            return self._store.key(name)
-
-        # Handle KeyError
-        except KeyError:
-
-            # Raise an AttributeError
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+        # Attempt to return PyOb object by key
+        return cls._store.__getattr__(name)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __POW__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __pow__(self, other):
+    def __pow__(cls, other):
         """ Pow Method """
 
         # Return rshift of object store
-        return self._store >> other
+        return cls._store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __RSHIFT__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __rshift__(self, other):
+    def __rshift__(cls, other):
         """ Rshift Method """
 
         # Return rshift of object store
-        return self._store >> other
+        return cls._store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OBS
