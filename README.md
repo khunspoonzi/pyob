@@ -95,7 +95,7 @@ Country.obs >> "USA"  # ISO3
 # <Country: United States>
 ```
 
-Key accessors can also be applied as attributes given that they conform to valid dot accessor syntax:
+Key accessors can also be applied as attributes given that they conform to valid dot syntax:
 
 ```python
 Country.obs.USA
@@ -291,7 +291,7 @@ CountryIsolated.obs
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -300,7 +300,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -309,7 +309,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -318,7 +318,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -327,7 +327,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -336,7 +336,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
@@ -345,7 +345,7 @@ Documentation Pending...
 
 <br/>
 
-Documentation Pending...
+Documentation Pending Tests...
 
 </details>
 
