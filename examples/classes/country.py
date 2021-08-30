@@ -98,11 +98,11 @@ class Country(CountryBase, Ob):
     _str = "iso3"
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _CLEAN IS UN MEMBER AT
+    # │ _PRE IS UN MEMBER AT
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def _clean_is_un_member_at(self, value):
-        """ Cleans the value for is_un_member_at before setting as an attribute """
+    def _pre_is_un_member_at(self, value):
+        """ Pre-setter for is_un_member_at before setting as an attribute """
 
         # Check if value is a string
         if type(value) is str:
@@ -115,6 +115,22 @@ class Country(CountryBase, Ob):
 
         # Return value
         return value
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ _POST IS UN MEMBER AT
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def _post_is_un_member_at(self, value):
+        """ Post-setter for is_un_member_at after setting as an attribute """
+
+        # Determine if is UN member based on value
+        is_un_member = value is not None
+
+        # Check if is UN member should be updated
+        if self.is_un_member != is_un_member:
+
+            # Assign new value to is UN member
+            self.is_un_member = is_un_member
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ _POPULATE

@@ -148,9 +148,14 @@ class ObMetaTestCase(PyObFixtureTestCase):
             # Set unique to None
             _unique = [["c", "d"], "e"]
 
-            # Define a clean method for a field
-            def _clean_a(self, value):
-                """ Clean a Method """
+            # Define a pre-setter method for a field
+            def _pre_a(self, value):
+                """ Pre-setter for the a field """
+                return value
+
+            # Define a post-setter method for b field
+            def _post_b(self, value):
+                """ Post-setter for the a field """
                 return value
 
         # Iterate over test classes
@@ -165,8 +170,11 @@ class ObMetaTestCase(PyObFixtureTestCase):
             # Ensure that all items in unique are a tuple or string
             self.assertTrue(all([type(i) in (str, tuple) for i in Class._unique]))
 
-        # Assert that the clean method in F class is cached
-        self.assertTrue("a" in F._clean)
+        # Assert that the pre-setter method in F class is cached
+        self.assertTrue("a" in F._pre)
+
+        # Assert that the post-setter method in F class is cached
+        self.assertTrue("b" in F._post)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ G
@@ -208,6 +216,166 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
         # Assert that the obs property points to the store
         self.assertEqual(id(G.obs), id(G._store))
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST GETATTR
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_getattr(self):
+        """ Ensures that the getattr dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get Country
+        Country = self.Country
+
+        # Get countries
+        countries = Country.obs
+
+        # Get Thailand
+        tha = countries.THA
+
+        # Assert that getattr works on the Class
+        self.assertEqual(Country.THA, tha)
+
+        # Initialize assertRaises block
+        with self.assertRaises(AttributeError):
+
+            # Try to access an invalid ISO3 on Country
+            Country.XXX
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define constants
+        _JPN = "JPN"
+        THA = "THA"
+        USA = "USA"
+
+        class A(Ob):
+            """ A test class to ensure that PyOb attributes are initialized """
+
+            # Set JPN as a class attribute
+            JPN = _JPN
+
+            # Define keys
+            _keys = ("iso3",)
+
+            # Define init method
+            def __init__(self, THA, iso3):
+                """ Init Method """
+
+                # Set instance attributes
+                self.THA = THA
+                self.iso3 = iso3
+
+        # Initialize an A instance without a getattr conflict
+        usa = A(THA=THA, iso3=USA)
+
+        # Assert that JPN attribute is accessible
+        self.assertEqual(A.JPN, _JPN)
+
+        # Initialize assertRaises block
+        with self.assertRaises(AttributeError):
+
+            # Try to access non-existant THA class attribute
+            A.THA
+
+        # Assert that USA key accessor works
+        self.assertEqual(A.USA, usa)
+
+        # Initialize an A instance with an instance getattr conflict
+        tha = A(THA=THA, iso3=THA)
+
+        # Assert that the dot accessor returns instance as THA is not a class attribute
+        self.assertEqual(A.THA, tha)
+
+        # Initialize an A instance with a class  getattr conflict
+        jpn = A(THA=THA, iso3=_JPN)
+
+        # Assert that the class attribute takes precedence in the dot accessor
+        self.assertEqual(A.JPN, _JPN)
+
+        # Assert that the rshift and pow key accessors still point to instance
+        self.assertEqual(A >> _JPN, jpn)
+        self.assertEqual(A ** _JPN, jpn)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST POW
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_pow(self):
+        """ Ensures that the pow dunder method behaves as expected """
+
+        # Get Country
+        Country = self.Country
+
+        # Get countries
+        countries = Country.obs
+
+        # Get Thailand
+        tha = countries.THA
+
+        # Assert that pow works on CountryStore
+        self.assertEqual(Country.obs ** "THA", tha)
+
+        # Assert that pow works on the class as well
+        self.assertEqual(Country ** "THA", tha)
+
+        # Get United States
+        usa = countries.USA
+
+        # Assert that pow operator takes precedence in order of operations
+        self.assertEqual(Country.obs ** "THA" + usa, tha + usa)
+
+        # Assert that this is the case on the class as well
+        self.assertEqual(Country ** "THA" + usa, tha + usa)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST RSHIFT
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_rshift(self):
+        """ Ensures that the rshift dunder method behaves as expected """
+
+        # Get Country
+        Country = self.Country
+
+        # Get countries
+        countries = Country.obs
+
+        # Get Thailand
+        tha = countries.THA
+
+        # Assert that rshift works on CountryStore
+        self.assertEqual(Country.obs >> "THA", tha)
+
+        # Assert that rshift works on the class as well
+        self.assertEqual(Country >> "THA", tha)
+
+        # Get United States
+        usa = countries.USA
+
+        # Initialize AssertRaises block
+        with self.assertRaises(TypeError):
+
+            # Ensure that the rshift operator takes a lower precedence
+            Country.obs >> "THA" + usa
+
+        # Initialize AssertRaises block
+        with self.assertRaises(TypeError):
+
+            # Ensure that precedence is the same on the class
+            Country >> "THA" + usa
+
+        # Assert that low precedence can be fixed with parenthesis
+        self.assertEqual((Country.obs >> "THA") + usa, tha + usa)
+
+        # Assert that this is the case on the class as well
+        self.assertEqual((Country >> "THA") + usa, tha + usa)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST STORE INHERITANCE

@@ -39,8 +39,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ COUNTRY
         # └─────────────────────────────────────────────────────────────────────────────
 
+        # Get countries
+        countries = self.Country.obs
+
         # Get Thailand instance
-        tha = self.countries.THA
+        tha = countries.THA
 
         # Add None to Thailand
         tha_ = tha + None
@@ -54,7 +57,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertRaises(InvalidObjectError, tha.__add__, True)
 
         # Get Japan instance
-        jpn = self.countries.JPN
+        jpn = countries.JPN
 
         # Add Japan to Thailand
         tha_jpn = tha + jpn
@@ -73,7 +76,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertIsObSet(tha + "JPN" + "JPN", count=3)
 
         # Get USA instance
-        usa = self.countries.USA
+        usa = countries.USA
 
         # Add USA to Japan
         jpn_usa = jpn + usa
@@ -130,34 +133,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # TODO: Make keys backward compatible as synonyms (MAYBE...)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST POW
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def test_pow(self):
-        """ Ensures that the pow dunder method behaves as expected """
-
-        # Get Country
-        Country = self.Country
-
-        # Get Thailand
-        tha = self.countries.THA
-
-        # Assert that pow works on CountryStore
-        self.assertEqual(Country.obs ** "THA", tha)
-
-        # Assert that pow works on the class as well
-        self.assertEqual(Country ** "THA", tha)
-
-        # Get United States
-        usa = self.countries.USA
-
-        # Assert that pow operator takes precedence in order of operations
-        self.assertEqual(Country.obs ** "THA" + usa, tha + usa)
-
-        # Assert that this is the case on the class as well
-        self.assertEqual(Country ** "THA" + usa, tha + usa)
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST REPR
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -168,8 +143,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ COUNTRY
         # └─────────────────────────────────────────────────────────────────────────────
 
+        # Get countries
+        countries = self.Country.obs
+
         # Get Thailand instance
-        tha = self.countries.THA
+        tha = countries.THA
 
         # Assert that Thailand representation is correct
         self.assertEqual(repr(tha), "<Country: THA>")
@@ -246,46 +224,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(repr(b), f"<B: {hex(id(b))}>")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST RSHIFT
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def test_rshift(self):
-        """ Ensures that the rshift dunder method behaves as expected """
-
-        # Get Country
-        Country = self.Country
-
-        # Get Thailand
-        tha = self.countries.THA
-
-        # Assert that rshift works on CountryStore
-        self.assertEqual(Country.obs >> "THA", tha)
-
-        # Assert that rshift works on the class as well
-        self.assertEqual(Country >> "THA", tha)
-
-        # Get United States
-        usa = self.countries.USA
-
-        # Initialize AssertRaises block
-        with self.assertRaises(TypeError):
-
-            # Ensure that the rshift operator takes a lower precedence
-            Country.obs >> "THA" + usa
-
-        # Initialize AssertRaises block
-        with self.assertRaises(TypeError):
-
-            # Ensure that precedence is the same on the class
-            Country >> "THA" + usa
-
-        # Assert that low precedence can be fixed with parenthesis
-        self.assertEqual((Country.obs >> "THA") + usa, tha + usa)
-
-        # Assert that this is the case on the class as well
-        self.assertEqual((Country >> "THA") + usa, tha + usa)
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -299,11 +237,20 @@ class ObDunderTestCase(PyObFixtureTestCase):
         tha = Country.obs.THA
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CLEAN
+        # │ PRE- AND POST-SETTER ATTRIBUTES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get Thailand is UN member at
+        # Assert that Thailand is UN member
+        self.assertTrue(tha.is_un_member)
+
+        # Get Thailand is UN member status
         is_un_member_at = tha.is_un_member_at
+
+        # Set Thailand is UN member at to None
+        tha.is_un_member_at = None
+
+        # Assert that is UN member is now False
+        self.assertFalse(tha.is_un_member)
 
         # Break is UN member at into year, month, and day
         year = is_un_member_at.year
@@ -315,6 +262,9 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Assert that is UN member at was cleaned into its original datetime
         self.assertEqual(tha.is_un_member_at, is_un_member_at)
+
+        # Assert that Thailand is UN member once again
+        self.assertTrue(tha.is_un_member)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS
@@ -403,8 +353,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
     def test_str(self):
         """ Ensures that the str dunder method behaves as expected """
 
+        # Get countries
+        countries = self.Country.obs
+
         # Get Thailand instance
-        tha = self.countries.THA
+        tha = countries.THA
 
         # Assert that Thailand string is correct
         self.assertEqual(str(tha), "THA")

@@ -62,17 +62,17 @@ class ObDunderMixin:
         cls = self.__class__
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CLEAN VALUE
+        # │ PRE-SETTER
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get clean methods
-        _clean = cls._clean or {}
+        # Get pre-setter methods
+        _pre = cls._pre or {}
 
-        # Check if name in clean methods
-        if name in _clean:
+        # Check if name in pre-setter methods
+        if name in _pre:
 
-            # Clean value
-            value = _clean[name](self, value)
+            # Apply pre-setter to value
+            value = _pre[name](self, value)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ ENFORCE KEY
@@ -255,8 +255,21 @@ class ObDunderMixin:
         # │ RETURN PARENT SET ATTR
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Return parent set attr method
-        return super().__setattr__(name, value)
+        # Call parent set attr method
+        super().__setattr__(name, value)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POST-SETTER
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get post-setter methods
+        _post = cls._post or {}
+
+        # Check if name in post-setter methods
+        if name in _post:
+
+            # Apply post-setter to value
+            value = _post[name](self, value)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __STR__

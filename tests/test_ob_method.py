@@ -35,6 +35,9 @@ class ObMethodTestCase(PyObFixtureTestCase):
         # Assert that new object set was initialized
         self.assertIsObSet(countries, count=0)
 
+        # Assert that the object class of the object set is Country
+        self.assertIs(countries._Ob, Country)
+
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ SCRIPT

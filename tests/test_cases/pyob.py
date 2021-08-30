@@ -159,14 +159,11 @@ class PyObFixtureTestCase(PyObTestCase):
         # Clear Country object store
         Country.obs.clear()
 
-        # Initialize countries
-        cls.countries = Country.Set()
-
         # Open countries fixture
         with open("examples/fixtures/countries.json") as f:
 
-            # Read, initialize, and add countries to object set
-            cls.countries += [Country(**country) for country in json.load(f)]
+            # Read and initialize Country instances
+            [Country(**country) for country in json.load(f)]
 
         # Set Country class
         cls.Country = Country

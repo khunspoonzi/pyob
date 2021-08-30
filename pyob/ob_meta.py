@@ -62,21 +62,25 @@ class ObMeta(type, ObMetaLabelMixin):
         cls._unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CACHE: CLEAN METHODS
+        # │ CACHE: PRE- AND POST-SETTERS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get all methods
         methods = inspect.getmembers(cls, predicate=inspect.isfunction)
 
-        # Define clean constant
-        _CLEAN_ = "_clean_"
+        # Define pre- and post- constants
+        _PRE_ = "_pre_"
+        _POST_ = "_post_"
 
-        # Initialize clean cache
-        cls._clean = {
-            k.replace(_CLEAN_, "", 1): v for k, v in methods if k.startswith(_CLEAN_)
-        }
+        # Define get hook cache helper
+        def get_hook_cache(hook):
+            return {k.replace(hook, "", 1): v for k, v in methods if k.startswith(hook)}
 
-        # TODO: Add a post hook?
+        # Initialize pre-setter cache
+        cls._pre = get_hook_cache(_PRE_)
+
+        # Initialize post-setter cache
+        cls._post = get_hook_cache(_POST_)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CACHE: TYPE HINTS
@@ -148,6 +152,27 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Return instance
         return instance
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __GETATTR__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __getattr__(self, name):
+        """ Get Attr Method """
+
+        # Initialize try-except block
+        try:
+
+            # Attempt to return PyOb object by key
+            return self._store.key(name)
+
+        # Handle KeyError
+        except KeyError:
+
+            # Raise an AttributeError
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __POW__

@@ -135,7 +135,7 @@ class ObInitTestCase(PyObTestCase):
             self.assertEqual(attr, country_kwargs[key])
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CLEANED ATTRIBUTES
+        # │ PRE- AND POST-SETTER ATTRIBUTES
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get dummy kwargs
@@ -145,11 +145,16 @@ class ObInitTestCase(PyObTestCase):
         dt = dummy_kwargs["is_un_member_at"]
         string = f"{dt.year}-{dt.month}-{dt.day}"
 
-        # Assert that the string gets converted to a datetime as per _clean method
-        self.assertEqual(
-            CountryTest(**{**dummy_kwargs, "is_un_member_at": string}).is_un_member_at,
-            dt,
+        # Initialize dummy country
+        country_dummy = CountryTest(
+            **{**dummy_kwargs, "is_un_member": False, "is_un_member_at": string}
         )
+
+        # Assert that the string gets converted to a datetime as per _pre method
+        self.assertEqual(country_dummy.is_un_member_at, dt)
+
+        # Assert that is UN member is set to True as per _post method
+        self.assertEqual(country_dummy.is_un_member, True)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST STORE CONSTRAINTS
@@ -360,7 +365,7 @@ class ObInitTestCase(PyObTestCase):
         # │ TYPE HINT PRECEDENCE
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # NOTE: Do not use Country here as its _clean method will interfere with test
+        # NOTE: Do not use Country here as its _pre method will interfere with test
 
         # Define A class
         class A(Ob):
