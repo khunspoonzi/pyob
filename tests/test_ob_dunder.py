@@ -230,15 +230,125 @@ class ObDunderTestCase(PyObFixtureTestCase):
     def test_setattr(self):
         """ Ensures that the setattr dunder method behaves as expected """
 
+        # Get Thailand
+        tha = self.Country.obs.THA
+
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidTypeError):
+
+            # Try to set invalid type
+            tha.iso2 = 35
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR KEYS
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_setattr_keys(self):
+        """ Ensures that the setattr dunder method behaves as expected """
+
         # Get Country class
         Country = self.Country
 
         # Get Thailand
         tha = Country.obs.THA
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ PRE- AND POST-SETTER ATTRIBUTES
-        # └─────────────────────────────────────────────────────────────────────────────
+        # Get United States
+        usa = Country.obs.USA
+
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidKeyError):
+
+            # Try to set a key to None
+            tha.iso2 = None
+
+        # Initialize assertRaises block
+        with self.assertRaises(DuplicateKeyError):
+
+            # Try to set a duplicate key
+            tha.iso2 = usa.iso2
+
+        # Initialize assertRaises block
+        with self.assertRaises(DuplicateKeyError):
+
+            # Try to set a duplicate key of another key field
+            tha.iso2 = usa.iso3
+
+        # Get ISO2s
+        tha_iso2 = tha.iso2
+        usa_iso2 = usa.iso2
+
+        # Get Country store
+        _store = Country._store
+
+        # Get objects by key
+        _obs_by_key = _store._obs_by_key
+
+        # Define assert baseline helper
+        def assertBaseline():
+
+            # Iterate over keys and instances
+            for key, instance in ((usa_iso2, usa), (usa_iso2, usa)):
+
+                # Check that keys have been re-indexed
+                self.assertTrue(key in _obs_by_key)
+                self.assertEqual(_obs_by_key[key], instance)
+
+        # Define assert re-indexed helper
+        def assertReIndexed(instance, key_previous, key_current, other, key_other):
+
+            # Check that previous key was removed from index
+            self.assertFalse(key_previous in _obs_by_key)
+
+            # Check that current key has been indexed
+            self.assertTrue(key_current in _obs_by_key)
+            self.assertEqual(_obs_by_key[key_current], instance)
+
+            # Check that other instance remains indexed
+            self.assertTrue(key_other in _obs_by_key)
+            self.assertEqual(_obs_by_key[key_other], other)
+
+        # Assert that keys are at baseline
+        assertBaseline()
+
+        # Define placeholder
+        PLACEHOLDER = "placeholder"
+
+        # Set United States ISO2 to new value
+        usa.iso2 = PLACEHOLDER
+
+        # Assert that keys have been re-indexed
+        assertReIndexed(usa, usa_iso2, PLACEHOLDER, tha, tha_iso2)
+
+        # Ensure that United States ISO2 is now available
+        tha.iso2 = usa_iso2
+
+        # Assert that keys have been re-indexed
+        assertReIndexed(tha, tha_iso2, usa_iso2, usa, PLACEHOLDER)
+
+        # Reset ISO2 keys
+        tha.iso2 = tha_iso2
+        usa.iso2 = usa_iso2
+
+        # Assert that keys have returned to baseline
+        assertBaseline()
+
+        # Assert that you can set the same key without an exception
+        # i.e. key check passes if a key exists but already points to current instance
+        # Previously the key check was not being smart about this!
+        usa.iso2 = usa.iso2
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR PRE AND POST HOOKS
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_setattr_pre_and_post_hooks(self):
+        """ Ensures that the setattr dunder method behaves as expected """
+
+        # Get Country class
+        Country = self.Country
+
+        # Get Thailand
+        tha = Country.obs.THA
 
         # Assert that Thailand is UN member
         self.assertTrue(tha.is_un_member)
@@ -266,110 +376,79 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that Thailand is UN member once again
         self.assertTrue(tha.is_un_member)
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ KEYS
-        # └─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR UNICITY
+    # └─────────────────────────────────────────────────────────────────────────────────
 
-        # Get United States
-        usa = Country.obs.USA
+    def test_setattr_unicity(self):
+        """ Ensures that the setattr dunder method behaves as expected """
 
-        # Initialize assertRaises block
-        with self.assertRaises(InvalidKeyError):
-
-            # Try to set a key to None
-            tha.iso2 = None
-
-        # Initialize assertRaises block
-        with self.assertRaises(InvalidTypeError):
-
-            # Try to set invalid type
-            tha.iso2 = 35
-
-        # Initialize assertRaises block
-        with self.assertRaises(DuplicateKeyError):
-
-            # Try to set a duplicate key
-            tha.iso2 = usa.iso2
-
-        # Initialize assertRaises block
-        with self.assertRaises(DuplicateKeyError):
-
-            # Try to set a duplicate key of another key field
-            tha.iso2 = usa.iso3
-
-        # Get ISO2s
-        tha_iso2 = tha.iso2
-        usa_iso2 = usa.iso2
+        # Get Country class
+        Country = self.Country
 
         # Get Country store
         _store = Country._store
 
-        # Get objects by key
-        _obs_by_key = _store._obs_by_key
+        # Get Thailand
+        tha = Country.obs.THA
 
-        # Define assert indexed helper
-        def assertIndexed():
-
-            # Iterate over keys and instances
-            for key, instance in ((usa_iso2, usa), (usa_iso2, usa)):
-
-                # Check that keys have been re-indexed
-                self.assertTrue(key in _obs_by_key)
-                self.assertEqual(_obs_by_key[key], instance)
-
-        # Define assert re-indexed helper
-        def assertReIndexed(instance, key_previous, key_current, other, key_other):
-
-            # Check that previous key was removed from index
-            self.assertFalse(key_previous in _obs_by_key)
-
-            # Check that current key has been indexed
-            self.assertTrue(key_current in _obs_by_key)
-            self.assertEqual(_obs_by_key[key_current], instance)
-
-            # Check that other instance remains indexed
-            self.assertTrue(key_other in _obs_by_key)
-            self.assertEqual(_obs_by_key[key_other], other)
-
-        # Assert that ISO2 keys are currently indexed
-        assertIndexed()
-
-        # Set United States ISO2 to new value
-        usa.iso2 = "XX"
-
-        # Assert that keys have been re-indexed
-        assertReIndexed(usa, usa_iso2, "XX", tha, tha_iso2)
-
-        # Ensure that United States ISO2 is now available
-        tha.iso2 = usa_iso2
-
-        # Assert that keys have been re-indexed
-        assertReIndexed(tha, tha_iso2, usa_iso2, usa, "XX")
-
-        # Reset ISO2 keys
-        tha.iso2 = tha_iso2
-        usa.iso2 = usa_iso2
-
-        # Assert that ISO2 keys have been returned to their initial indices
-        assertIndexed()
-
-        # Assert that you can set the same key without an exception
-        # i.e. key check passes if a key exists but already points to current instance
-        # Previously the key check was not being smart about this!
-        usa.iso2 = usa.iso2
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ UNICITY
-        # └─────────────────────────────────────────────────────────────────────────────
+        # Get United States
+        usa = Country.obs.USA
 
         # Get Thailand and United States name
+        tha_name = tha.name
         usa_name = usa.name
+
+        # Get Thailand and United States coordinates
+        tha_latitude = tha.latitude
+        tha_longitude = tha.longitude
+        usa_latitude = usa.latitude
+        usa_longitude = usa.longitude
 
         # Get objects by unique field
         _obs_by_unique_field = _store._obs_by_unique_field
 
-        # Assert that United States name is indexed as a unique field
-        self.assertTrue(usa_name in _obs_by_unique_field["name"])
+        # Define assert unicity baseline helper
+        def assertUnicityBaseline():
+
+            # Iterate over names
+            for name in (tha_name, usa_name):
+
+                # Assert that name is indexed as a unique field
+                self.assertTrue(name in _obs_by_unique_field["name"])
+
+            # Iterate over coordinates
+            for coordinates in (
+                (tha_latitude, tha_longitude),
+                (usa_latitude, usa_longitude),
+            ):
+
+                # Assert that coordinate pairs are indexed together
+                self.assertTrue(
+                    coordinates in _obs_by_unique_field[("latitude", "longitude")]
+                )
+
+        # Define assert unique reindexed
+        def assertUniqueReIndexed(
+            field, instance, value_previous, value_current, other, value_other
+        ):
+
+            # Get field objects
+            _field_obs = _obs_by_unique_field[field]
+
+            # Check that previous field value was removed from index
+            self.assertFalse(value_previous in _field_obs)
+
+            # Check that current field value has been indexed
+            self.assertTrue(value_current in _field_obs)
+            self.assertEqual(_field_obs[value_current], instance)
+
+            # Check that other instance remains indexed by field value
+            self.assertTrue(value_other in _field_obs)
+            self.assertEqual(_field_obs[value_other], other)
+
+        # Assert that unique fields are at baseline
+        assertUnicityBaseline()
 
         # Initialize assertRaises block
         with self.assertRaises(UnicityError):
@@ -377,8 +456,32 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Try to set duplicate a unique field
             tha.name = usa.name
 
+        # Define placeholder
+        PLACEHOLDER = "placeholder"
+
+        # Change United States name
+        usa.name = PLACEHOLDER
+
+        # Assert that name value has been re-indexed
+        assertUniqueReIndexed("name", usa, usa_name, PLACEHOLDER, tha, tha_name)
+
+        # Ensure that United States name is now available
+        tha.name = usa_name
+
+        # Assert that name value has been re-indexed
+        assertUniqueReIndexed("name", tha, tha_name, usa_name, usa, PLACEHOLDER)
+
+        # Reset name values
+        tha.name = tha_name
+        usa.name = usa_name
+
+        # Change Thailand latitude to United States latitude
+        # tha.latitude = usa.latitude
+
+        # Assert that unique fields have returned to baseline
+        assertUnicityBaseline()
+
         # TODO: Add test to ensure that key indices are not wiped if not is_creating
-        # TODO: Test popping of old values (KEY AND UNIQUE)
         # TODO: Test mismatches on exceptions for non-created objects
 
         # TODO: Test that clean method does not fail on init when pre-referencing

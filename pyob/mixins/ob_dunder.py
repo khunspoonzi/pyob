@@ -229,16 +229,34 @@ class ObDunderMixin:
                 and (other := _obs_by_unique_value[_value]) != self
             ):
 
-                # Get singular label
-                label_singular = cls.label_singular
-
                 # Raise UnicityError
                 raise UnicityError(
-                    f"A {label_singular} with a(n) {_field} of {_value} "
+                    f"A {cls.label_singular} with a(n) {_field} of {_value} "
                     f"already exists: {other}"
                 )
 
-            #
+            # ┌─────────────────────────────────────────────────────────────────────────
+            # │ RE-INDEX FIELD VALUE
+            # └─────────────────────────────────────────────────────────────────────────
+
+            if (
+                is_unique_together and all([f in self.__dict__ for f in _field])
+            ) or _field in self.__dict__:
+
+                # Get previous value
+                _value_previous = (
+                    tuple(self.__dict__[f] for f in _field)
+                    if is_unique_together
+                    else self.__dict__[_field]
+                )
+
+                # Check previous value is indexed
+                if _value_previous in _obs_by_unique_value:
+
+                    # Pop previous value from index
+                    _obs_by_unique_value.pop(_value_previous)
+
+            # Index new field value
             _obs_by_unique_value[_value] = self
 
             """
