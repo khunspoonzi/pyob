@@ -297,8 +297,9 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Try to set a duplicate key of another key field
             tha.iso2 = usa.iso3
 
-        # Get Thailand ISO2
-        iso2 = tha.iso2
+        # Get ISO2s
+        tha_iso2 = tha.iso2
+        usa_iso2 = usa.iso2
 
         # Get Country store
         _store = Country._store
@@ -306,39 +307,75 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Get objects by key
         _obs_by_key = _store._obs_by_key
 
-        # Assert that Thailand ISO2 key is currently indexed
-        self.assertTrue(iso2 in _obs_by_key)
+        # Define assert indexed helper
+        def assertIndexed():
 
-        # Set Thailand ISO2 to new value
-        tha.iso2 = "XX"
+            # Iterate over keys and instances
+            for key, instance in ((usa_iso2, usa), (usa_iso2, usa)):
 
-        # Check that key has been re-indexed
-        self.assertFalse(iso2 in _obs_by_key)
-        self.assertEqual(_obs_by_key["XX"], tha)
+                # Check that keys have been re-indexed
+                self.assertTrue(key in _obs_by_key)
+                self.assertEqual(_obs_by_key[key], instance)
 
-        # Reset Thailand ISO2
-        tha.iso2 = iso2
+        # Define assert re-indexed helper
+        def assertReIndexed(instance, key_previous, key_current, other, key_other):
 
-        # Check that key has been re-indexed
-        self.assertTrue("TH" in _obs_by_key)
-        self.assertEqual(_obs_by_key[iso2], tha)
+            # Check that previous key was removed from index
+            self.assertFalse(key_previous in _obs_by_key)
+
+            # Check that current key has been indexed
+            self.assertTrue(key_current in _obs_by_key)
+            self.assertEqual(_obs_by_key[key_current], instance)
+
+            # Check that other instance remains indexed
+            self.assertTrue(key_other in _obs_by_key)
+            self.assertEqual(_obs_by_key[key_other], other)
+
+        # Assert that ISO2 keys are currently indexed
+        assertIndexed()
+
+        # Set United States ISO2 to new value
+        usa.iso2 = "XX"
+
+        # Assert that keys have been re-indexed
+        assertReIndexed(usa, usa_iso2, "XX", tha, tha_iso2)
+
+        # Ensure that United States ISO2 is now available
+        tha.iso2 = usa_iso2
+
+        # Assert that keys have been re-indexed
+        assertReIndexed(tha, tha_iso2, usa_iso2, usa, "XX")
+
+        # Reset ISO2 keys
+        tha.iso2 = tha_iso2
+        usa.iso2 = usa_iso2
+
+        # Assert that ISO2 keys have been returned to their initial indices
+        assertIndexed()
 
         # Assert that you can set the same key without an exception
         # i.e. key check passes if a key exists but already points to current instance
         # Previously the key check was not being smart about this!
-        tha.iso2 = tha.iso2
+        usa.iso2 = usa.iso2
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ UNICITY
         # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get Thailand and United States name
+        usa_name = usa.name
+
+        # Get objects by unique field
+        _obs_by_unique_field = _store._obs_by_unique_field
+
+        # Assert that United States name is indexed as a unique field
+        self.assertTrue(usa_name in _obs_by_unique_field["name"])
 
         # Initialize assertRaises block
         with self.assertRaises(UnicityError):
 
             # Try to set duplicate a unique field
             tha.name = usa.name
-
-        # TODO: Handle key dot accessor on Class
 
         # TODO: Add test to ensure that key indices are not wiped if not is_creating
         # TODO: Test popping of old values (KEY AND UNIQUE)
