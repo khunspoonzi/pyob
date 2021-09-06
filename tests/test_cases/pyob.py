@@ -11,7 +11,7 @@ from unittest import TestCase
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from examples.classes.country import Country
+from examples.classes.country import Country as CountryGlobal
 from pyob import Ob, ObSet, ObStore
 
 
@@ -156,14 +156,11 @@ class PyObFixtureTestCase(PyObTestCase):
         # │ COUNTRIES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Clear Country object store
-        Country.obs.clear()
+        # Localize Country class
+        Country = CountryGlobal.Localized()
 
-        # Open countries fixture
-        with open("examples/fixtures/countries.json") as f:
-
-            # Read and initialize Country instances
-            [Country(**country) for country in json.load(f)]
+        # Populate localized Country object store
+        Country.obs.populate()
 
         # Set Country class
         cls.Country = Country

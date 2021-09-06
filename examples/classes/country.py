@@ -98,6 +98,20 @@ class Country(CountryBase, Ob):
     _str = "iso3"
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ _POPULATE STORE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @classmethod
+    def _populate_store(cls):
+        """ Populates the object store """
+
+        # Open countries fixture
+        with open("examples/fixtures/countries.json") as f:
+
+            # Read, initialize, and create Country instances
+            [cls(**country) for country in json.load(f)]
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ _PRE IS UN MEMBER AT
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -131,16 +145,3 @@ class Country(CountryBase, Ob):
 
             # Assign new value to is UN member
             self.is_un_member = is_un_member
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _POPULATE
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def _populate(self):
-        """ Populates the object store """
-
-        # Open countries fixture
-        with open("examples/fixtures/countries.json") as f:
-
-            # Read, initialize, and create Country instances
-            [Country(**country) for country in json.load(f)]

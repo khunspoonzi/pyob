@@ -52,9 +52,10 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertIsObSet(tha_, count=1)
 
         # Assert that adding other non-PyOb objects to a PyOb object raises an error
-        self.assertRaises(InvalidObjectError, tha.__add__, 50)
-        self.assertRaises(InvalidObjectError, tha.__add__, "Japan")
-        self.assertRaises(InvalidObjectError, tha.__add__, True)
+        [
+            self.assertRaises(InvalidObjectError, tha.__add__, val)
+            for val in (50, "Japan", True)
+        ]
 
         # Get Japan instance
         jpn = countries.JPN
@@ -152,21 +153,24 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that Thailand representation is correct
         self.assertEqual(repr(tha), "<Country: THA>")
 
-        # Define CountryTest
-        class CountryTest(self.Country):
-            """ A test class that inherits from Country """
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY LOCALIZED
+        # └─────────────────────────────────────────────────────────────────────────────
 
-            # Remove string field
-            _str = None
+        # Define localized Country
+        _Country = self.Country.Localized()
+
+        # Remove string field
+        _Country._str = None
 
         # Replicate Thailand
-        tha = CountryTest(**tha.__dict__)
+        tha = _Country(**tha.__dict__)
 
         # Assert that string defaults to the first key, i.e. ISO2
         self.assertEqual(repr(tha), "<Country: TH>")
 
         # Nullify all keys
-        CountryTest._keys = None
+        _Country._keys = None
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(repr(tha), f"<Country: {hex(id(tha))}>")
@@ -493,6 +497,10 @@ class ObDunderTestCase(PyObFixtureTestCase):
     def test_str(self):
         """ Ensures that the str dunder method behaves as expected """
 
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
+
         # Get countries
         countries = self.Country.obs
 
@@ -503,24 +511,23 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(str(tha), "THA")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COUNTRY TEST
+        # │ COUNTRY LOCALIZED
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Define CountryTest
-        class CountryTest(self.Country):
-            """ A test class that inherits from Country """
+        # Define localized Country
+        _Country = self.Country.Localized()
 
-            # Remove string field
-            _str = None
+        # Remove string field
+        _Country._str = None
 
         # Replicate Thailand
-        tha = CountryTest(**tha.__dict__)
+        tha = _Country(**tha.__dict__)
 
         # Assert that string defaults to the first key, i.e. ISO2
         self.assertEqual(str(tha), "TH")
 
         # Nullify all keys
-        CountryTest._keys = None
+        _Country._keys = None
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(str(tha), hex(id(tha)))

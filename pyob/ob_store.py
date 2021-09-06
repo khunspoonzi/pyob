@@ -20,7 +20,7 @@ class ObStore(ObSet):
     _obs_by_unique_field = None
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ INIT METHOD
+    # │ __INIT__
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __init__(self, *args, **kwargs):
@@ -34,3 +34,13 @@ class ObStore(ObSet):
 
         # Initialize objects by unique field dict
         self._obs_by_unique_field = {}
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ POPULATE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def populate(self):
+        """ Populates the object store based on a user-defined populate method """
+
+        # Call user-defined populate store method
+        return self._Ob and self._Ob._populate_store()

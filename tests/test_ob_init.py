@@ -102,18 +102,21 @@ class ObInitTestCase(PyObTestCase):
         """ Ensures that an object instance attributes are correctly initialized """
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ RAW ATTRIBUTES
+        # │ COUNTRY LOCALIZED
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Define CountryTest
-        class CountryTest(Country):
-            """ A test class that inherits from Country """
+        # Define localized Country
+        _Country = Country.Localized()
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ RAW ATTRIBUTES
+        # └─────────────────────────────────────────────────────────────────────────────
 
         # Get country kwargs
         country_kwargs = get_country_kwargs()
 
         # Initialize country instance
-        country = CountryTest(**country_kwargs)
+        country = _Country(**country_kwargs)
 
         # Assert that country is an Ob
         self.assertIsOb(country)
@@ -146,7 +149,7 @@ class ObInitTestCase(PyObTestCase):
         string = f"{dt.year}-{dt.month}-{dt.day}"
 
         # Initialize dummy country
-        country_dummy = CountryTest(
+        country_dummy = _Country(
             **{**dummy_kwargs, "is_un_member": False, "is_un_member_at": string}
         )
 
@@ -166,15 +169,18 @@ class ObInitTestCase(PyObTestCase):
         related constraints behave as expected (key, unicity)
         """
 
-        # Define CountryTest
-        class CountryTest(Country):
-            """ A test class that inherits from Country """
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY LOCALIZED
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define localized Country
+        _Country = Country.Localized()
 
         # Get country kwargs
         country_kwargs = get_country_kwargs()
 
         # Initialize country instance
-        country = CountryTest(**country_kwargs)
+        country = _Country(**country_kwargs)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ ASSERT BASE STATE
@@ -184,7 +190,7 @@ class ObInitTestCase(PyObTestCase):
             """ A helper to assert a base state after encountering exceptions """
 
             # Get store
-            _store = CountryTest._store
+            _store = _Country._store
 
             # Assert that CountryTest store has one object
             # i.e. Initialized objects are added to the store
@@ -245,7 +251,7 @@ class ObInitTestCase(PyObTestCase):
             with self.assertRaises(DuplicateKeyError):
 
                 # Try to initialize object with duplicate key
-                CountryTest(**{**country_kwargs, iso_key: iso_val})
+                _Country(**{**country_kwargs, iso_key: iso_val})
 
             # Assert base state
             assertBaseState()
@@ -261,7 +267,7 @@ class ObInitTestCase(PyObTestCase):
         with self.assertRaises(UnicityError):
 
             # Try to initialize country with same name
-            CountryTest(**{**country_kwargs, "name": country.name})
+            _Country(**{**country_kwargs, "name": country.name})
 
         # Assert base state
         assertBaseState()
@@ -270,7 +276,7 @@ class ObInitTestCase(PyObTestCase):
         with self.assertRaises(UnicityError):
 
             # Try to initialize country with same latitude and longitude
-            CountryTest(
+            _Country(
                 **{
                     **country_kwargs,
                     "latitude": country.latitude,
@@ -282,7 +288,7 @@ class ObInitTestCase(PyObTestCase):
         assertBaseState()
 
         # Assert that you can still create a country with the same latitude
-        CountryTest(
+        _Country(
             **{
                 **country_kwargs,
                 "name": "Dummy 1",
@@ -293,7 +299,7 @@ class ObInitTestCase(PyObTestCase):
         )
 
         # Assert that you can still create a country with the same longitude
-        CountryTest(
+        _Country(
             **{
                 **country_kwargs,
                 "name": "Dummy 2",
@@ -315,8 +321,7 @@ class ObInitTestCase(PyObTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Define CountryTyped
-        class CountryTyped(Country):
-            """ A typed test class that inherits from Country """
+        CountryTyped = Country.Localized()
 
         # Define invalid key kwargs
         invalid_key_kwargs = get_country_kwargs()
@@ -343,11 +348,10 @@ class ObInitTestCase(PyObTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Define CountryUntyped class
-        class CountryUntyped(Country):
-            """ An untyped test class that inherits from Country """
+        CountryUntyped = Country.Localized()
 
-            # Set disable type checking to True
-            _disable_type_checking = True
+        # Set disable type checking to True
+        CountryUntyped._disable_type_checking = True
 
         # Initialize assertRaises block
         with self.assertRaises(InvalidKeyError):
@@ -404,9 +408,8 @@ class ObInitTestCase(PyObTestCase):
         def initialize_country_base():
             """ Initializes a DummyPyOb instance """
 
-            # Define CountryTest
-            class CountryTest(Country):
-                """ A Test class that inherits from Country """
+            # Define localized Country
+            Country.Localized()
 
             # Initialize Pyob Dummy
             CountryBase(**country_kwargs)
@@ -415,12 +418,11 @@ class ObInitTestCase(PyObTestCase):
         def initialize_country():
             """ Initializes a DummyBase instance """
 
-            # Define CountryTest
-            class CountryTest(Country):
-                """ A Test class that inherits from Country """
+            # Define localized Country
+            _Country = Country.Localized()
 
             # Initialize dummy base
-            CountryTest(**country_kwargs)
+            _Country(**country_kwargs)
 
         # NOTE: A new class is defined each time to avoid store conflicts
 

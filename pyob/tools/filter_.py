@@ -47,7 +47,7 @@ def filter_by_key(_obs, _keys, value, ob_label_plural=None):
         # Raise MultipleObjectsError
         raise MultipleObjectsError(
             f"{_ob_count} {ob_label_plural} share a unique key: "
-            + ", ".join([str(_ob for _ob in _obs)])
+            + ", ".join([str(_ob) for _ob in _obs])
         )
 
         # NOTE: This should be guarded from happening to begin with but we

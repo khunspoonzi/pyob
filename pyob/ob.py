@@ -6,6 +6,7 @@ from pyob.ob_meta import ObMeta
 from pyob.ob_set import ObSet
 
 from pyob.mixins import ObDunderMixin, ObLabelMixin
+from pyob.tools import localize
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -39,6 +40,28 @@ class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
 
     # Initialize disable type checking to False
     _disable_type_checking = False
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ LOCALIZED
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @classmethod
+    def _populate_store(cls):
+        """ Populates the object store of a PyOb class """
+
+        # Return
+        return
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ LOCALIZED
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @classmethod
+    def Localized(cls, include=None):
+        """ Returns a localized version of the PyOb class with an empty object store """
+
+        # Return localized classes
+        return localize(cls, *(include or []))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ SET

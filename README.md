@@ -43,8 +43,8 @@ class Country(Ob):
 Create object instances as you would any other Python class:
 
 ```python
-tha = Country(name="Thailand",      iso2="TH", iso3="THA")
-usa = Country(name="United States", iso2="US", iso3="USA")
+khm = Country(name="Cambodia", iso2="KH", iso3="KHM")
+jam = Country(name="Jamaica" , iso2="JM", iso3="JAM")
 ```
 
 Notice that object instances are automatically tracked by an object store during runtime:
@@ -52,7 +52,7 @@ Notice that object instances are automatically tracked by an object store during
 ```python
 Country.obs
 
-# <CountryStore: 2 [<Country: Thailand>, <Country: United States>]>
+# <CountryStore: 2 [<Country: Cambodia>, <Country: Jamaica>]>
 
 Country.obs.count()
 
@@ -64,55 +64,91 @@ Sort object instances by one or multiple fields:
 ```python
 Country.obs.sort("name")
 
-# <CountrySet: 2 [<Country: Thailand>, <Country: United States>]>
+# <CountryStore: 2 [<Country: Cambodia>, <Country: Jamaica>]>
 
 Country.obs.sort("-name")
 
-# <CountrySet: 2 [<Country: United States>, <Country: Thailand>]>
+# <CountryStore: 2 [<Country: Jamaica>, <Country: Cambodia>]>
 
 Country.obs.sort("name", "iso3")
 
-# <CountrySet: 2 [<Country: Thailand>, <Country: United States>]>
+# <CountryStore: 2 [<Country: Cambodia>, <Country: Jamaica>]>
+
+Country.obs.sort("iso3", "name")
+
+# <CountryStore: 2 [<Country: Jamaica>, <Country: Cambodia>]>
 ```
 
 Filter object instances by one or multiple fields:
 
 ```python
-Country.obs.filter(name="Thailand", iso3="THA")
+Country.obs.filter(name="Cambodia", iso3="KHM")
 
-# <CountrySet: 1 [<Country: Thailand>]>
+# <CountrySet: 1 [<Country: Cambodia>]>
+
+Country.obs.filter(name="Cambodia", iso3="JAM")
+
+# <CountrySet: 0 []>
 ```
 
 Retrieve objects by unique key accessors:
 
 ```python
-Country.obs >> "TH"   # ISO2
+Country.obs >> "KH"   # ISO2
 
-# <Country: Thailand>
+# <Country: Cambodia>
 
-Country.obs >> "USA"  # ISO3
+Country.obs >> "JAM"  # ISO3
 
-# <Country: United States>
+# <Country: Jamaica>
 ```
 
 Key accessors can also be applied as attributes given that they conform to valid dot syntax:
 
 ```python
-Country.obs.USA
+Country.obs.JAM
 
-# <Country: United States>
+# <Country: Jamaica>
+```
+
+Note that key accessors are synonymous with a given instance and are therefore unique across key fields:
+
+```python
+jam.iso3 = "KHM"
+
+# pyob.exceptions.DuplicateKeyError: A Country with a key of KHM already exists: Cambodia
+
+jam.iso3 = "KH"
+
+# pyob.exceptions.DuplicateKeyError: A Country with a key of KH already exists: Cambodia
+```
+
+And because key accessors are unique, they can be used as drop-in references to an object instance:
+
+```python
+khm in Country.obs
+
+# True
+
+"KH" in Country.obs
+
+# True
+
+"KHM" in Country.obs
+
+# True
 ```
 
 Type hints on instance attributes will be enforced at runtime by default:
 
 ```python
-chn = Country(name="China", iso2=35, iso3="CHN")
-
-# pyob.exceptions.InvalidTypeError: Country.iso2 expects a value of type <class 'str'> but got: 35 (<class 'int'>)
-
-usa.iso2 = True
+khm.iso2 = True
 
 # pyob.exceptions.InvalidTypeError: Country.iso2 expects a value of type <class 'str'> but got: True (<class 'bool'>)
+
+usa = Country(name="United States", iso2=35, iso3="USA")
+
+# pyob.exceptions.InvalidTypeError: Country.iso2 expects a value of type <class 'str'> but got: 35 (<class 'int'>)
 ```
 
 See PyOb's [feature guide](#feature-guide) for further explanation of these features plus many more.
@@ -220,7 +256,7 @@ Country.Set() + [prk, kor]
 # <CountrySet: 2 [<Country: North Korea>, <Country: South Korea>]>
 ```
 
-As can be inferred in the above example, `Country.Set()` creates an empty `Country` object set to which `Country` instances or other `Country` object sets can be added.
+As can be inferred in the above example, `Country.Set()` creates an empty `Country` object set to which `Country` instances, iterables, or other `Country` object sets can be added.
 
 The behavior of object sets is list-like in that they can contain more than one reference to the same object:
 
@@ -269,19 +305,17 @@ Country.obs
 
 **Note:** Object stores are initialized at and persist throughout each runtime meaning that any file or script using the `Country` class will share a single object store regardless of where in your project the class is used.
 
-Under most circumstances, this is not an issue (and may even be desired). However, to ensure that a given file or script uses an isolated object store, consider cloning the PyOb class first, which will initialize a clean object store.
+Under most circumstances, this is not an issue (and may even be desired). However, to ensure that a given file or script uses an isolated object store, consider localizing your PyOb class:
 
 ```python
 Country.obs
 
 # <CountryStore: 2 [<Country: Thailand>, <Country: United States>]>
 
-class CountryIsolated(Country):
-    """ A clone of the Country PyOb class with a clean object store """
+_Country = Country.Localized()
+_Country.obs
 
-CountryIsolated.obs
-
-# <CountryIsolatedStore: 0 []>
+# <CountryStore: 0 []>
 ```
 
 </details>

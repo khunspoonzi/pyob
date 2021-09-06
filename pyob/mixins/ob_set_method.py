@@ -43,22 +43,6 @@ class ObSetMethodMixin:
         self.__dict__ = (self + ob).__dict__
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ CLEAR
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def clear(self):
-        """ Clears a PyOb object set so that it is empty """
-
-        # Set objects to empty dict
-        self._obs = {}
-
-        # Set objects by key to empty dict
-        self._obs_by_key = {}
-
-        # Set objects by unique field to empty dict
-        self._obs_by_unique_field = {}
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ COPY
     # └─────────────────────────────────────────────────────────────────────────────────
 
