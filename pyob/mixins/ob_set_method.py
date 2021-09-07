@@ -9,7 +9,7 @@ from operator import itemgetter
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import MultipleObjectsError, ZeroObjectsError
+from pyob.exceptions import MultipleObjectsError, NonExistentKeyError, ZeroObjectsError
 from pyob.tools import (
     convert_obs_dict_to_list,
     filter_and,
@@ -194,8 +194,13 @@ class ObSetMethodMixin:
         # Check if default is Nothing
         if default is Nothing:
 
-            # Raise KeyError
-            raise KeyError(key)
+            # Get object label singular
+            ob_label_singular = self.ob_label_singular
+
+            # Raise NonExistentKeyError
+            raise NonExistentKeyError(
+                f"A {ob_label_singular} instance with a key of {key} does not exist"
+            )
 
         # Return default
         return default

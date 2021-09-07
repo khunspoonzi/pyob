@@ -2,7 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import InvalidObjectError, MixedObjectsError
+from pyob.exceptions import InvalidObjectError, MixedObjectsError, NonExistentKeyError
 from pyob.tools import (
     convert_obs_dict_to_list,
     filter_by_key,
@@ -234,8 +234,8 @@ class ObSetDunderMixin:
             # Attempt to return PyOb object by key
             return self.key(name)
 
-        # Handle KeyError
-        except KeyError:
+        # Handle NonExistentKeyError
+        except NonExistentKeyError:
 
             # Raise an AttributeError
             raise AttributeError(

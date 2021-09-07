@@ -111,6 +111,22 @@ Country.obs.JAM
 # <Country: Jamaica>
 ```
 
+Both of the above examples utilize the underlying `Ob.key` method which can also be used directly, particularly if you are unsure that the key and corresponding object instance exist:
+
+```python
+Country.obs.key("JAM")
+
+# <Country: Jamaica>
+
+Country.obs.key("XYZ")
+
+# pyob.exceptions.NonExistentKeyError: A Country instance with a key of XYZ does not exist
+
+Country.obs.key("XYZ", default=None)
+
+# None
+```
+
 Note that key accessors are synonymous with a given instance and are therefore unique across key fields:
 
 ```python
