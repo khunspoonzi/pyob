@@ -153,6 +153,10 @@ khm in Country.obs
 "KHM" in Country.obs
 
 # True
+
+"XYZ" in Country.obs
+
+# False
 ```
 
 Type hints on instance attributes will be enforced at runtime by default:
