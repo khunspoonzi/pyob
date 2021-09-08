@@ -111,7 +111,7 @@ Country.obs.JAM
 # <Country: Jamaica>
 ```
 
-Both of the above examples utilize the underlying `Ob.key` method which can also be used directly, particularly if you are unsure that the key and corresponding object instance exist:
+Both of the above examples utilize the underlying `key` method which can also be used directly, particularly if you are unsure that the key and corresponding object instance exist:
 
 ```python
 Country.obs.key("JAM")
@@ -153,10 +153,6 @@ khm in Country.obs
 "KHM" in Country.obs
 
 # True
-
-"XYZ" in Country.obs
-
-# False
 ```
 
 Type hints on instance attributes will be enforced at runtime by default:

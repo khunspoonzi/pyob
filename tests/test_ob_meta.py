@@ -38,49 +38,49 @@ class ObMetaTestCase(PyObFixtureTestCase):
         UNIQUE_2 = "unique_2"
         UNIQUE_3 = "unique_3"
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ A
-        # └─────────────────────────────────────────────────────────────────────────────
+        # Iterate over iterable types
+        for itertype in (tuple, list):
 
-        class A(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+            # ┌─────────────────────────────────────────────────────────────────────────
+            # │ A
+            # └─────────────────────────────────────────────────────────────────────────
 
-            # Define keys
-            _keys = (KEY_1, KEY_2)
+            class A1(Ob):
+                """ A test class to ensure that PyOb attributes are initialized """
 
-            # Define unique fields
-            _unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
+                # Define keys
+                _keys = itertype((KEY_1, KEY_2))
 
-        # Assert that keys are converted to tuple
-        self.assertEqual(A._keys, (KEY_1, KEY_2))
+                # Define unique fields
+                _unique = itertype((UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3))))
 
-        # Assert that unique fields are converted to tuples
-        self.assertEqual(A._unique, (UNIQUE_1, (UNIQUE_2, UNIQUE_3)))
+            class A2(Ob):
+                """ A test class to ensure that PyOb attributes are initialized """
+
+                # Define keys
+                _keys = itertype((KEY_1, KEY_2, KEY_2))
+
+                # Define unique fields
+                _unique = itertype(
+                    (UNIQUE_1, UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3, UNIQUE_3)))
+                )
+
+                # NOTE: Duplicate values should be removed
+
+            # Iterate over A classes
+            for A in (A1, A2):
+
+                # Assert that keys are converted to tuple
+                self.assertEqual(A._keys, (KEY_1, KEY_2))
+
+                # Assert that unique fields are converted to tuples
+                self.assertEqual(A._unique, (UNIQUE_1, (UNIQUE_2, UNIQUE_3)))
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
         # └─────────────────────────────────────────────────────────────────────────────
 
         class B(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
-
-            # Define keys
-            _keys = [KEY_1, KEY_2]
-
-            # Define unique fields
-            _unique = [UNIQUE_1, [UNIQUE_2, UNIQUE_3]]
-
-        # Assert that keys are converted to tuple
-        self.assertEqual(B._keys, (KEY_1, KEY_2))
-
-        # Assert that unique fields are converted to tuples
-        self.assertEqual(B._unique, (UNIQUE_1, (UNIQUE_2, UNIQUE_3)))
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ C
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        class C(Ob):
             """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
@@ -91,23 +91,23 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
         # Assert that keys are converted to tuple
         self.assertTrue(
-            type(C._keys) is tuple
-            and len(C._keys) == 2
-            and all([k in C._keys for k in (KEY_1, KEY_2)])
+            type(B._keys) is tuple
+            and len(B._keys) == 2
+            and all([k in B._keys for k in (KEY_1, KEY_2)])
         )
 
         # Assert that unique fields are converted to tuples
         self.assertTrue(
-            len(C._unique) == 2
-            and C._unique[0] == UNIQUE_1
-            and all([u in C._unique[1] for u in (UNIQUE_2, UNIQUE_3)])
+            len(B._unique) == 2
+            and B._unique[0] == UNIQUE_1
+            and all([u in B._unique[1] for u in (UNIQUE_2, UNIQUE_3)])
         )
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ D
+        # │ C
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class D(Ob):
+        class C(Ob):
             """ A test class to ensure that PyOb attributes are initialized """
 
             # Define keys
@@ -117,16 +117,16 @@ class ObMetaTestCase(PyObFixtureTestCase):
             _unique = UNIQUE_1
 
         # Assert that keys are converted to tuple
-        self.assertEqual(D._keys, (KEY_1,))
+        self.assertEqual(C._keys, (KEY_1,))
 
         # Assert that unique fields are converted to tuples
-        self.assertEqual(D._unique, (UNIQUE_1,))
+        self.assertEqual(C._unique, (UNIQUE_1,))
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ E
+        # │ D
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class E(Ob):
+        class D(Ob):
             """ A test class to ensure that PyOb attributes are initialized """
 
             # Set keys to None
@@ -136,10 +136,10 @@ class ObMetaTestCase(PyObFixtureTestCase):
             _unique = None
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ F
+        # │ E
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class F(Ob):
+        class E(Ob):
             """ A test class to ensure that PyOb attributes are initialized """
 
             # Set keys to None
@@ -159,7 +159,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 return value
 
         # Iterate over test classes
-        for Class in (E, F):
+        for Class in (D, E):
 
             # Iterate over iterable PyOb attributes in class
             for value in (Class._keys, Class._unique):
@@ -170,17 +170,17 @@ class ObMetaTestCase(PyObFixtureTestCase):
             # Ensure that all items in unique are a tuple or string
             self.assertTrue(all([type(i) in (str, tuple) for i in Class._unique]))
 
-        # Assert that the pre-setter method in F class is cached
-        self.assertTrue("a" in F._pre)
+        # Assert that the pre-setter method in E class is cached
+        self.assertTrue("a" in E._pre)
 
-        # Assert that the post-setter method in F class is cached
-        self.assertTrue("b" in F._post)
+        # Assert that the post-setter method in E class is cached
+        self.assertTrue("b" in E._post)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ G
+        # │ F
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class G(Ob):
+        class F(Ob):
             """ A test class to ensure that PyOb attributes are initialized """
 
             # Set class-level type hint
@@ -212,10 +212,10 @@ class ObMetaTestCase(PyObFixtureTestCase):
             ("str_int", int),
         ):
             # Assert that cached type hint is correct
-            self.assertEqual(G._type_hints[field], field_type)
+            self.assertEqual(F._type_hints[field], field_type)
 
         # Assert that the obs property points to the store
-        self.assertEqual(id(G.obs), id(G._store))
+        self.assertEqual(id(F.obs), id(F._store))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST GETATTR

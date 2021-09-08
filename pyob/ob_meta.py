@@ -13,7 +13,7 @@ from typing import get_type_hints
 from pyob.ob_store import ObStore
 
 from pyob.mixins import ObMetaLabelMixin
-from pyob.tools import is_iterable
+from pyob.tools import is_iterable, remove_duplicates
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -45,8 +45,11 @@ class ObMeta(type, ObMetaLabelMixin):
         # Get keys
         _keys = cls._keys or ()
 
-        # Ensure that keys defintion is a tuple
-        cls._keys = _keys and ((_keys,) if type(_keys) is str else tuple(_keys))
+        # Handle case of string value as keys
+        _keys = _keys and ((_keys,) if type(_keys) is str else tuple(_keys))
+
+        # Ensure that keys definition is a unique tuple
+        cls._keys = remove_duplicates(_keys)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ UNIQUE FIELDS
@@ -58,8 +61,11 @@ class ObMeta(type, ObMetaLabelMixin):
         # Handle if unique fields is a single string
         _unique = (_unique,) if type(_unique) is str else _unique
 
-        # Ensure that unique is a tuple and unique together fields are tuples
-        cls._unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
+        # Ensure that unique together fields are tuples
+        _unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
+
+        # Ensure that unique definition is a unique tuple
+        cls._unique = remove_duplicates(_unique, recursive=True)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CACHE: PRE- AND POST-SETTERS
@@ -147,7 +153,12 @@ class ObMeta(type, ObMetaLabelMixin):
             # NOTE: Exceptions can happen when setting individual attributes
             # The above except block ensures that object initialization is atomic
 
-        # Add instance to store
+        # def increment(Class):
+        #    Class._store._obs[instance] = 1
+
+        # Add instance store and ancestor stores
+        # traverse_pyob_bases(cls, increment)
+
         _store_obs[instance] = 1
 
         # Return instance
