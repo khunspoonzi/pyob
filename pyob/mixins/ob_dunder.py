@@ -14,7 +14,7 @@ from pyob.exceptions import (
     InvalidTypeError,
     UnicityError,
 )
-from pyob.tools import is_ob
+from pyob.tools import convert_string_to_pascal_case, is_ob
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -39,14 +39,17 @@ class ObDunderMixin:
     # │ __REPR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __repr__(self):
+    def __repr__(self, _str=None):
         """ Representation Method """
 
         # Initialize representation
         representation = self.label_singular
 
+        # Convert representation to Pascal case
+        representation = convert_string_to_pascal_case(representation)
+
         # Add angle brackets to representation
-        representation = f"<{representation}: {str(self)}>"
+        representation = f"<{representation}: {self.__str__(_str=_str)}>"
 
         # Return representation
         return representation
@@ -126,12 +129,9 @@ class ObDunderMixin:
                 # Handle TypeError
                 except TypeError:
 
-                    # Get singular label
-                    label_singular = cls.label_singular
-
                     # Raise InvalidTypeError
                     raise InvalidTypeError(
-                        f"{label_singular}.{name} expects a value of type "
+                        f"{cls.__name__}.{name} expects a value of type "
                         f"{expected_type} but got: {value} ({type(value)})"
                     )
 
@@ -293,14 +293,14 @@ class ObDunderMixin:
     # │ __STR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __str__(self, root=None):
+    def __str__(self, root=None, _str=None):
         """ String Method """
 
         # Initialize root
         root = root if root is not None else self
 
         # Get string field if defined otherwise the first key if any
-        string_field = self._str or (self._keys[0] if self._keys else None)
+        string_field = _str or self._str or (self._keys[0] if self._keys else None)
 
         # Set string to value of string field
         string = string_field and getattr(self, string_field, None)

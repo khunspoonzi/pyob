@@ -1,18 +1,44 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ GENERAL IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+import json
+
+from datetime import datetime
+from typing import Optional, Union
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from examples.classes.city import City
 from examples.classes.country import Country
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CITY BASE
+# │ CITY STATE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class CityBase:
-    """ A utility class to represent vanilla city objects """
+class CityState(City, Country):
+    """ A utility class to represent PyOb city state objects """
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ PYOB ATTRIBUTES
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    # Define keys
+    _keys = City._keys + Country._keys
+
+    # Define unique fields
+    _unique = City._unique + Country._unique
+
+    # Define labels
+    _label_singular = "City State"
+    _label_plural = "City States"
+
+    # Define string field
+    _str = City._str
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT METHOD
@@ -20,53 +46,56 @@ class CityBase:
 
     def __init__(
         self,
-        country: Country,
         name: str,
-        population: int,
+        name_native: str,
+        iso2: str,
+        iso3: str,
+        population: Optional[int],
         latitude: float,
         longitude: float,
+        is_un_member: bool,
+        is_un_member_at: Union[datetime, str, None],
     ):
         """ Init Method """
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ INSTANCE ATTRIBUTES
+        # │ PARENT INITIALIZATION
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Set country
-        self.country = country
+        # Call Country init method
+        Country.__init__(
+            self,
+            name=name,
+            name_native=name_native,
+            iso2=iso2,
+            iso3=iso3,
+            population=population,
+            latitude=latitude,
+            longitude=longitude,
+            is_un_member=is_un_member,
+            is_un_member_at=is_un_member_at,
+        )
 
-        # Set country name
-        self.name = name
-
-        # Set population
-        self.population = population
-
-        # Set latitude and longitude
-        self.latitude = latitude
-        self.longitude = longitude
-
-
-# ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CITY
-# └─────────────────────────────────────────────────────────────────────────────────────
-
-
-class City(CityBase, Ob):
-    """ A utility class to represent PyOb city objects """
+        # Call City init method
+        City.__init__(
+            self,
+            country=self,
+            name=name,
+            population=population,
+            latitude=latitude,
+            longitude=longitude,
+        )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
+    # │ _POPULATE STORE
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Define keys
-    _keys = None
+    @classmethod
+    def _populate_store(cls):
+        """ Populates the object store """
 
-    # Define unique fields
-    _unique = (("name", "country"),)
+        # Open countries fixture
+        with open("examples/fixtures/city-states.json") as f:
 
-    # Define labels
-    _label_singular = "City"
-    _label_plural = "Cities"
-
-    # Define string field
-    _str = "name"
+            # Read, initialize, and create Country instances
+            [cls(**cs) for cs in json.load(f)]

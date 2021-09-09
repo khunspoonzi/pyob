@@ -3,6 +3,7 @@
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob.mixins import ObSetDunderMixin, ObSetLabelMixin, ObSetMethodMixin
+from pyob.tools import convert_string_to_pascal_case
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -68,11 +69,8 @@ class ObSet(ObSetLabelMixin, ObSetDunderMixin, ObSetMethodMixin):
         # Get the name based on the computed singular label
         name = self.label_singular
 
-        # Remove spaces from the name
-        name = name.replace(" ", "")
-
-        # Ensure that the first letter is capitalized so it looks like a class name
-        name = name and name[0].upper() + name[1:]
+        # Convert name to Pascal case
+        name = convert_string_to_pascal_case(name)
 
         # Return the name
         return name

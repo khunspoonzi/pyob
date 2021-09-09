@@ -1,31 +1,22 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CONVERT OBS DICT TO LIST
+# │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-
-def convert_obs_dict_to_list(_obs):
-    """ Converts an object dict to list based on respective counts """
-
-    # Return the sum of object lists by count
-    return sum([[k] * v for i, (k, v) in enumerate(_obs.items())], [])
-
+from pyob.tools.traverse_ import traverse_pyob_bases
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CONVERT STRING TO PASCAL CASE
+# │ INCREMENT STORE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def convert_string_to_pascal_case(string):
-    """ Converts a strong to Pascal case """
+def increment_store(cls, instance):
+    """ Increments the object store of a PyOb class and its bases """
 
-    # Split string
-    string = [s.strip() for s in string.split(" ")]
+    # Define callback
+    def callback(cls):
 
-    # Capitalize each word
-    string = [s[0].upper() + s[1:] for s in string if s]
+        # Increment the store
+        cls._store._obs[instance] = 1
 
-    # Join string
-    string = "".join(string)
-
-    # Return string
-    return string
+    # Increment current and base stores
+    traverse_pyob_bases(cls, callback)

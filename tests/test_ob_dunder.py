@@ -14,8 +14,8 @@ from pyob.exceptions import (
     InvalidKeyError,
     InvalidObjectError,
     InvalidTypeError,
-    MixedObjectsError,
     UnicityError,
+    UnrelatedObjectsError,
 )
 from tests.test_cases.pyob import PyObFixtureTestCase
 
@@ -120,7 +120,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         b2 = B(key=a1)
 
         # Initialize assertRaises
-        with self.assertRaises(MixedObjectsError):
+        with self.assertRaises(UnrelatedObjectsError):
 
             # Try to add a B instance to an A instance
             a1 + b1
@@ -174,6 +174,22 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(repr(tha), f"<Country: {hex(id(tha))}>")
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY STATE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get city-states
+        city_states = self.CityState.obs
+
+        # Get Singapore instance
+        sgp = city_states.SGP
+
+        # Assert that Singapore representation is correct
+        self.assertEqual(repr(sgp), "<CityState: Singapore>")
+
+        # Assert that you can pass a custom _str argument
+        self.assertEqual(sgp.__repr__(_str="iso3"), "<CityState: SGP>")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A
@@ -531,6 +547,22 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(str(tha), hex(id(tha)))
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY-STATE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get city-states
+        city_states = self.CityState.obs
+
+        # Get Singapore instance
+        sgp = city_states.SGP
+
+        # Assert that Singapore string is correct
+        self.assertEqual(str(sgp), "Singapore")
+
+        # Assert that you can pass a custom _str argument
+        self.assertEqual(sgp.__str__(_str="iso3"), "SGP")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILD

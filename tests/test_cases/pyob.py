@@ -2,7 +2,6 @@
 # │ GENERAL IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-import json
 import timeit
 
 from unittest import TestCase
@@ -11,8 +10,11 @@ from unittest import TestCase
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from examples.classes.country import Country as CountryGlobal
 from pyob import Ob, ObSet, ObStore
+from pyob.tools import localize
+
+from examples.classes.city_state import CityState as CityStateGlobal
+from examples.classes.country import Country as CountryGlobal
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -153,14 +155,27 @@ class PyObFixtureTestCase(PyObTestCase):
         super().setUpClass()
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COUNTRIES
+        # │ LOCALIZED CLASSES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Localize Country class
-        Country = CountryGlobal.Localized()
+        Country, CityState = localize(CountryGlobal, CityStateGlobal)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRIES
+        # └─────────────────────────────────────────────────────────────────────────────
 
         # Populate localized Country object store
         Country.obs.populate()
 
         # Set Country class
         cls.Country = Country
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY-STATES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Populate localized CityState object store
+        CityState.obs.populate()
+
+        # Set CityState class
+        cls.CityState = CityState

@@ -443,8 +443,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # Assert that child store is an ObStore of 20 items
         self.assertIsObStore(Child._store, 20)
 
-        # Assert that parent store still has 10 items
-        self.assertIsObStore(Parent._store, 10)
+        # Assert that parent store has 30 items, i.e. includes child store
+        self.assertIsObStore(Parent._store, 30)
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

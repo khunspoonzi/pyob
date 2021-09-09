@@ -2,7 +2,11 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import InvalidObjectError, MixedObjectsError, NonExistentKeyError
+from pyob.exceptions import (
+    InvalidObjectError,
+    NonExistentKeyError,
+    UnrelatedObjectsError,
+)
 from pyob.tools import (
     convert_obs_dict_to_list,
     filter_by_key,
@@ -25,7 +29,7 @@ class ObSetDunderMixin:
     # │ __ADD__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __add__(self, other):
+    def __add__(self, others):
         """ Add Method """
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -52,13 +56,13 @@ class ObSetDunderMixin:
         new._obs = {k: v for k, v in self._obs.items()}
 
         # Ensure other object group is iterable
-        other = other if is_iterable(other) else [other]
+        others = others if is_iterable(others) else [others]
 
         # Iterate over objects in other
-        for ob in other:
+        for other in others:
 
             # Continue if object is None
-            if ob is None:
+            if other is None:
                 continue
 
             # ┌─────────────────────────────────────────────────────────────────────────
@@ -66,20 +70,20 @@ class ObSetDunderMixin:
             # └─────────────────────────────────────────────────────────────────────────
 
             # Get object class
-            ob_Ob = ob.__class__
+            other_Ob = other.__class__
 
             # Check if object class does not match object set
-            if ob_Ob is not _Ob:
+            if other_Ob is not _Ob:
 
                 # ┌─────────────────────────────────────────────────────────────────────
                 # │ CACHE
                 # └─────────────────────────────────────────────────────────────────────
 
                 # Check if object is in key cache
-                if ob in key_cache:
+                if other in key_cache:
 
                     # Get object from key cache
-                    ob = key_cache[ob]
+                    other = key_cache[other]
 
                 # ┌─────────────────────────────────────────────────────────────────────
                 # │ STORE
@@ -90,29 +94,29 @@ class ObSetDunderMixin:
 
                     # Try to use object as a key
                     filtered = filter_by_key(
-                        _store._obs, _Ob._keys, ob, ob_label_plural=_Ob.label_plural
+                        _store._obs, _Ob._keys, other, ob_label_plural=_Ob.label_plural
                     )
 
                     # Check if there are any filtered objects
                     if filtered:
 
                         # Update object and key cache
-                        ob = key_cache[ob] = filtered[0]
+                        other = key_cache[other] = filtered[0]
 
                 # Set object class
-                ob_Ob = ob.__class__
+                other_Ob = other.__class__
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ ENFORCE PYOB OBJECT
             # └─────────────────────────────────────────────────────────────────────────
 
             # Check if not PyOb object
-            if not is_ob(ob):
+            if not is_ob(other):
 
                 # Raise InvalidObjectError
                 raise InvalidObjectError(
                     "Only pyob.Ob objects can be added to a pyob.ObSet, "
-                    f"got {ob} ({type(ob)})"
+                    f"got {other} ({type(other)})"
                 )
 
             # ┌─────────────────────────────────────────────────────────────────────────
@@ -123,13 +127,16 @@ class ObSetDunderMixin:
             if _Ob is None:
 
                 # Set object set object class
-                _Ob = new._Ob = ob_Ob
+                _Ob = new._Ob = other_Ob
 
-            # Otherwise, check if object classes conflict
-            elif ob_Ob is not _Ob:
+            # Otherwise, check if other is not a subclass of current PyOb class
+            elif not issubclass(other_Ob, _Ob):
 
-                # Raise MixedObjectsError
-                raise MixedObjectsError(f"Cannot add {type(ob_Ob)} to {type(_Ob)}")
+                # Raise UnrelatedObjectsError
+                raise UnrelatedObjectsError(
+                    f"Cannot add {other_Ob.__name__} instance to {self.name} unless "
+                    f"{other_Ob.__name__} inherits from {_Ob.__name__}"
+                )
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ ENFORCE KEY UNICITY
@@ -139,15 +146,15 @@ class ObSetDunderMixin:
             # │ UPDATE STORE
             # └─────────────────────────────────────────────────────────────────────────
 
-            if ob not in _store._obs:
-                _store._obs[ob] = 1
+            if other not in _store._obs:
+                _store._obs[other] = 1
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ APPEND OBJECT
             # └─────────────────────────────────────────────────────────────────────────
 
             # Append object to objects
-            new._obs[ob] = new._obs[ob] + 1 if ob in new._obs else 1
+            new._obs[other] = new._obs[other] + 1 if other in new._obs else 1
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ RETURN NEW OBJECT SET
@@ -319,14 +326,17 @@ class ObSetDunderMixin:
         # Get the first 20 objects
         _obs = convert_obs_dict_to_list(self._obs)[:20]
 
+        # Stringify objects according to object set class string field
+        _obs = [_ob.__repr__(_str=self._Ob._str) for _ob in _obs]
+
         # Check if there are more than n objects total
         if len(self) > len(_obs):
 
             # Add truncation message to objects list
-            _obs.append("...(remaining elements truncated)...")
+            _obs.append("...(remaining elements truncated)... ")
 
         # Add objects to representation
-        representation = f"{representation} {str(_obs)}"
+        representation = f"{representation} {'[' + ', '.join(_obs) + ']'}"
 
         # Add angle brackets to the representation
         representation = f"<{representation}>"

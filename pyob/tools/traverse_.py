@@ -1,31 +1,28 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CONVERT OBS DICT TO LIST
+# │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-
-def convert_obs_dict_to_list(_obs):
-    """ Converts an object dict to list based on respective counts """
-
-    # Return the sum of object lists by count
-    return sum([[k] * v for i, (k, v) in enumerate(_obs.items())], [])
+import pyob.ob as ob
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ CONVERT STRING TO PASCAL CASE
+# │ TRAVERSE PYOB BASES
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def convert_string_to_pascal_case(string):
-    """ Converts a strong to Pascal case """
+def traverse_pyob_bases(cls, callback):
+    """ Traverses the PyOb base classes of a given class and applies a callback """
 
-    # Split string
-    string = [s.strip() for s in string.split(" ")]
+    # Define traverse helper
+    def traverse(cls):
+        """ Traverses the PyOb bases of given PyOb class """
 
-    # Capitalize each word
-    string = [s[0].upper() + s[1:] for s in string if s]
+        # Return if class is not a PyOb class
+        if not issubclass(cls, ob.Ob):
+            return
 
-    # Join string
-    string = "".join(string)
+        # Apply callback to current PyOb class
+        callback(cls)
 
-    # Return string
-    return string
+    # Traverse PyOb base classes
+    [traverse(c) for c in (cls,) + cls.__bases__]

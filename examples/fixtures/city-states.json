@@ -1,0 +1,35 @@
+[
+    {
+        "name": "Monaco",
+        "name_native": "Monaco",
+        "iso2": "MC",
+        "iso3": "MCO",
+        "population": 39244,
+        "latitude": 43.73333333,
+        "longitude": 7.4,
+        "is_un_member": true,
+        "is_un_member_at": "1993-05-28"
+    },
+    {
+        "name": "Singapore",
+        "name_native": "Singapore",
+        "iso2": "SG",
+        "iso3": "SGP",
+        "population": 5685807,
+        "latitude": 1.36666666,
+        "longitude": 103.8,
+        "is_un_member": true,
+        "is_un_member_at": "1965-09-21"
+    },
+    {
+        "name": "Vatican City",
+        "name_native": "Vaticano",
+        "iso2": "VA",
+        "iso3": "VAT",
+        "population": null,
+        "latitude": 41.9,
+        "longitude": 12.45,
+        "is_un_member": false,
+        "is_un_member_at": null
+    }
+]
