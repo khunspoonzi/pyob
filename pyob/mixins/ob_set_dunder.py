@@ -256,14 +256,17 @@ class ObSetDunderMixin:
     def __getitem__(self, key):
         """ Get Item Method """
 
+        # Get objects as list
+        _obs = convert_obs_dict_to_list(self._obs)
+
         # Check if key is a slice
         if isinstance(key, slice):
 
             # Return a new sliced object set
-            return self.New() + self._obs[key]
+            return self.New() + _obs[key]
 
         # Return indexed object
-        return self._obs[key]
+        return _obs[key]
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ITER__

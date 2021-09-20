@@ -1,7 +1,7 @@
 <h1 align="center">_PyOb</h1>
 
 <p align="center">
-    <img width="241" height="221" src="./media/pyob-hierarchy.png" alt="Yank Logo">
+    <img width="241" height="221" src="./media/pyob-hierarchy.png" alt="PyOb Logo">
 </p>
 
 PyOb is a high-level runtime object manager for Python 3 and above.
@@ -47,7 +47,7 @@ khm = Country(name="Cambodia", iso2="KH", iso3="KHM")
 jam = Country(name="Jamaica" , iso2="JM", iso3="JAM")
 ```
 
-Notice that object instances are automatically tracked by an object store during runtime:
+Notice that object instances are automatically tracked by an "object store" during runtime:
 
 ```python
 Country.obs
@@ -59,39 +59,19 @@ Country.obs.count()
 # 2
 ```
 
-Sort object instances by one or multiple fields:
+Retrieve objects from the object store by index as you would a list:
 
 ```python
-Country.obs.sort("name")
+Country.obs[0]
 
-# <CountryStore: 2 [<Country: Cambodia>, <Country: Jamaica>]>
+# <Country: Cambodia>
 
-Country.obs.sort("-name")
+Country.obs[-1]
 
-# <CountryStore: 2 [<Country: Jamaica>, <Country: Cambodia>]>
-
-Country.obs.sort("name", "iso3")
-
-# <CountryStore: 2 [<Country: Cambodia>, <Country: Jamaica>]>
-
-Country.obs.sort("iso3", "name")
-
-# <CountryStore: 2 [<Country: Jamaica>, <Country: Cambodia>]>
+# <Country: Jamaica>
 ```
 
-Filter object instances by one or multiple fields:
-
-```python
-Country.obs.filter(name="Cambodia", iso3="KHM")
-
-# <CountrySet: 1 [<Country: Cambodia>]>
-
-Country.obs.filter(name="Cambodia", iso3="JAM")
-
-# <CountrySet: 0 []>
-```
-
-Retrieve objects by unique key accessors:
+Retrieve objects from the object store by a unique key accessor like a dictionary:
 
 ```python
 Country.obs >> "KH"   # ISO2
@@ -153,6 +133,78 @@ khm in Country.obs
 "KHM" in Country.obs
 
 # True
+```
+
+Sort object instances by one or multiple fields:
+
+```python
+Country.obs.sort("name")
+
+# <CountrySet: 2 [<Country: Cambodia>, <Country: Jamaica>]>
+
+Country.obs.sort("-name")
+
+# <CountrySet: 2 [<Country: Jamaica>, <Country: Cambodia>]>
+
+Country.obs.sort("name", "iso3")
+
+# <CountrySet: 2 [<Country: Cambodia>, <Country: Jamaica>]>
+
+Country.obs.sort("iso3", "name")
+
+# <CountrySet: 2 [<Country: Jamaica>, <Country: Cambodia>]>
+```
+
+Filter object instances by one or multiple fields:
+
+```python
+Country.obs.filter(name="Cambodia", iso3="KHM")
+
+# <CountrySet: 1 [<Country: Cambodia>]>
+
+Country.obs.filter(name="Cambodia", iso3="JAM")
+
+# <CountrySet: 0 []>
+```
+
+Note that the sort and filter operations both return "object sets," i.e. isolated subsets of the object store.
+
+All operations intended to return more than one object instance produce object sets. Create your own like this:
+
+```python
+countries = Country.Set()
+
+# <CountrySet: 0 []>
+
+countries += khm
+
+# <CountrySet: 1 [<Country: KHM>]>
+
+countries += jam
+
+# <CountrySet: 2 [<Country: KHM>, <Country: JAM>]>
+```
+
+You may notice that simply adding individual object instances will also result in an object set:
+
+```python
+khm + jam
+
+# <CountrySet: 2 [<Country: KHM>, <Country: JAM>]>
+```
+
+The same is true of other object sets or iterables of object instances:
+
+```python
+countries = Country.Set() + khm
+
+jam + countries
+
+# <CountrySet: 2 [<Country: JAM>, <Country: KHM>]>
+
+jam + [khm]
+
+# <CountrySet: 2 [<Country: JAM>, <Country: KHM>]>
 ```
 
 Type hints on instance attributes will be enforced at runtime by default:

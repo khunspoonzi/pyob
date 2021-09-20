@@ -10,6 +10,8 @@ from datetime import datetime
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
+from examples.classes.city import City
+from examples.classes.city_state import CityState
 from examples.classes.country import Country, CountryBase
 from pyob import Ob
 from pyob.exceptions import (
@@ -92,6 +94,34 @@ class ObInitTestCase(PyObTestCase):
             "Country",
             "Countries",
             "iso3",
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that attributes are correct
+        self.assertAttributesCorrect(
+            City,
+            (),
+            (("name", "country"),),
+            "City",
+            "Cities",
+            "name",
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY-STATE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that attributes are correct
+        self.assertAttributesCorrect(
+            CityState,
+            ("iso2", "iso3"),
+            (("name", "country"), "name", ("latitude", "longitude")),
+            "City State",
+            "City States",
+            "name",
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
