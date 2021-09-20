@@ -5,12 +5,12 @@
 from pyob.tools.traverse_ import traverse_pyob_bases
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ INCREMENT STORE
+# │ COMMIT INSTANCE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def increment_store(cls, instance):
-    """ Increments the object store of a PyOb class and its bases """
+def commit_instance(cls, instance):
+    """ Commits an object instance by adding it to the child and parent stores """
 
     # Define callback
     def callback(cls):

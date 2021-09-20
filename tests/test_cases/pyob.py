@@ -13,6 +13,7 @@ from unittest import TestCase
 from pyob import Ob, ObSet, ObStore
 from pyob.tools import localize
 
+from examples.classes.city import City as CityGlobal
 from examples.classes.city_state import CityState as CityStateGlobal
 from examples.classes.country import Country as CountryGlobal
 
@@ -158,7 +159,7 @@ class PyObFixtureTestCase(PyObTestCase):
         # │ LOCALIZED CLASSES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        Country, CityState = localize(CountryGlobal, CityStateGlobal)
+        Country, City, CityState = localize(CountryGlobal, CityGlobal, CityStateGlobal)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRIES
@@ -169,6 +170,16 @@ class PyObFixtureTestCase(PyObTestCase):
 
         # Set Country class
         cls.Country = Country
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITIES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Populate localized CityState object store
+        City.obs.populate()
+
+        # Set City class
+        cls.City = City
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CITY-STATES

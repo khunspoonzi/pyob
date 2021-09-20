@@ -17,8 +17,8 @@ def traverse_pyob_bases(cls, callback):
     def traverse(cls):
         """ Traverses the PyOb bases of given PyOb class """
 
-        # Return if class is not a PyOb class
-        if not issubclass(cls, ob.Ob):
+        # Return if class is Ob or is not a PyOb class
+        if cls is ob.Ob or not issubclass(cls, ob.Ob):
             return
 
         # Apply callback to current PyOb class

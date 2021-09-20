@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import localize, Ob
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
@@ -218,6 +218,251 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(id(F.obs), id(F._store))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST CALL COMMIT INSTANCE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_call_commit_instance(self):
+        """ Ensures that instances are added to child and parent object stores """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENT
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class Parent1Global(Ob):
+            """ A parent class """
+
+        class Parent2Global(Ob):
+            """ A parent class """
+
+        class Parent3Global(Ob):
+            """ A parent class """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CHILD
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class ChildGlobal(Parent1Global, Parent2Global):
+            """ A child class """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ LOCALIZE CLASSES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Localize parent and child classes
+        Parent1, Parent2, Parent3, Child = localize(
+            Parent1Global, Parent2Global, Parent3Global, ChildGlobal
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ INITIAL STORE VALUES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that all object stores are empty
+        self.assertAllEqual(
+            0,
+            *[
+                Class.obs.count()
+                for Class in (
+                    Parent1Global,
+                    Parent2Global,
+                    Parent3Global,
+                    ChildGlobal,
+                    Parent1,
+                    Parent2,
+                    Parent3,
+                    Child,
+                )
+            ]
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POPULATE PARENT STORES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Iterate over parent classes
+        for Parent in (Parent1, Parent2, Parent3):
+
+            # Create parent instances
+            parents = Parent.Set() + [Parent() for i in range(0, 10)]
+
+            # Assert that parents has 10 items
+            self.assertIsObSet(parents, 10)
+
+            # Assert that parent store is an ObStore of 10 items
+            self.assertIsObStore(Parent._store, 10)
+
+            # Assert that child store is still empty
+            self.assertIsObStore(Child._store, 0)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POPULATE CHILD STORE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Populate child objects
+        children = Child.Set() + [Child() for i in range(0, 5)]
+
+        # Assert that children has 5 items
+        self.assertIsObSet(children, 5)
+
+        # Assert that child store is an ObStore of 5 items
+        self.assertIsObStore(Child._store, 5)
+
+        # Iterate over parent classes
+        for Parent in (Parent1, Parent2):
+
+            # Assert that parent object store now has 15 items
+            self.assertEqual(Parent.obs.count(), 15)
+
+            # Assert that all children are in parent object store
+            self.assertTrue(all([child in Parent.obs._obs for child in children]))
+
+        # Assert that the third parent still has 10 items
+        self.assertEqual(Parent3.obs.count(), 10)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ GLOBAL CLASSES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that the object stores of all global classes are still empty
+        self.assertAllEqual(
+            0,
+            *[
+                Class.obs.count()
+                for Class in (Parent1Global, Parent2Global, Parent3Global, ChildGlobal)
+            ]
+        )
+
+        # Ensure that pyob.Ob is not affected by the commit
+        self.assertEqual(Ob.obs.count(), 0)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST CALL ROLLBACK INSTANCE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_call_rollback_instance(self):
+        """ Ensures that instances are added to child and parent object stores """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENT
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class Parent1Global(Ob):
+            """ A parent class """
+
+            # Set keys
+            _keys = ("key1",)
+
+            # Set unique fields
+            _unique = ("unique1", ("unique2", "unique3"))
+
+            # Define init method
+            def __init__(self, key1, unique1, unique2, unique3):
+                """ Init Method """
+
+                # Set key1
+                self.key1 = key1
+
+                # Set unique fields
+                self.unique1 = unique1
+                self.unique2 = unique2
+                self.unique3 = unique3
+
+        class Parent2Global(Ob):
+            """ A parent class """
+
+            # Set keys
+            _keys = ("key2",)
+
+            # Set unique fields
+            _unique = ("unique4", ("unique5", "unique6"))
+
+            # Define init method
+            def __init__(self, key2, unique4, unique5, unique6):
+                """ Init Method """
+
+                # Set key2
+                self.key2 = key2
+
+                # Set unique fields
+                self.unique4 = unique4
+                self.unique5 = unique5
+                self.unique6 = unique6
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CHILD
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class ChildGlobal(Parent1Global, Parent2Global):
+            """ A child class """
+
+            # Set keys
+            _keys = ("key3",)
+
+            # Set unique fields
+            _unique = ("unique7", ("unique8", "unique9"))
+
+            # Define init method
+            def __init__(
+                self,
+                key1,
+                key2,
+                key3,
+                unique1,
+                unique2,
+                unique3,
+                unique4,
+                unique5,
+                unique6,
+                unique7,
+                unique8,
+                unique9,
+            ):
+                """ Init Method """
+
+                # Call parent init methods
+                Parent1Global.__init__(self, key1, unique1, unique2, unique3)
+                Parent2Global.__init__(self, key2, unique4, unique5, unique6)
+
+                # Set key3
+                self.key3 = key3
+
+                # Set unique fields
+                self.unique7 = unique7
+                self.unique8 = unique8
+                self.unique9 = unique9
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ LOCALIZE CLASSES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Localize parent and child classes
+        Parent1, Parent2, Child = localize(Parent1Global, Parent2Global, ChildGlobal)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ INITIAL STORE VALUES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that all object stores are empty
+        self.assertAllEqual(
+            0,
+            *[
+                Class.obs.count()
+                for Class in (
+                    Parent1Global,
+                    Parent2Global,
+                    ChildGlobal,
+                    Parent1,
+                    Parent2,
+                    Child,
+                )
+            ]
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POPULATE CHILD CLASSES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST GETATTR
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -376,75 +621,6 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
         # Assert that this is the case on the class as well
         self.assertEqual((Country >> "THA") + usa, tha + usa)
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST STORE INHERITANCE
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def test_store_inheritance(self):
-        """ Ensure that object store inheritance behaves as expected """
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ PARENT
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        class Parent(Ob):
-            """ A parent class """
-
-            def __init__(self, id):
-                """ Init Method """
-
-                # Set ID
-                self.id = id
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CHILD
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        class Child(Parent):
-            """ A child class """
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ INITIAL STORE VALUES
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Assert that parent store is initialized and empty
-        self.assertIsObStore(Parent._store, 0)
-
-        # Assert that child store is initialized and empty
-        self.assertIsObStore(Child._store, 0)
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ POPULATE PARENT STORE
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Populate parent objects
-        parents = Parent.Set() + [Parent(id=i) for i in range(0, 10)]
-
-        # Assert that parents has 10 items
-        self.assertIsObSet(parents, 10)
-
-        # Assert that parent store is an ObStore of 10 items
-        self.assertIsObStore(Parent._store, 10)
-
-        # Assert that child store is still empty
-        self.assertIsObStore(Child._store, 0)
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ POPULATE CHILD STORE
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Populate child objects
-        children = Child.Set() + [Child(id=i) for i in range(10, 30)]
-
-        # Assert that children has 20 items
-        self.assertIsObSet(children, 20)
-
-        # Assert that child store is an ObStore of 20 items
-        self.assertIsObStore(Child._store, 20)
-
-        # Assert that parent store has 30 items, i.e. includes child store
-        self.assertIsObStore(Parent._store, 30)
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

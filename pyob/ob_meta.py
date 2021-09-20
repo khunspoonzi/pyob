@@ -13,7 +13,7 @@ from typing import get_type_hints
 from pyob.ob_store import ObStore
 
 from pyob.mixins import ObMetaLabelMixin
-from pyob.tools import increment_store, is_iterable, remove_duplicates
+from pyob.tools import commit_instance, is_iterable, remove_duplicates
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -153,8 +153,8 @@ class ObMeta(type, ObMetaLabelMixin):
             # NOTE: Exceptions can happen when setting individual attributes
             # The above except block ensures that object initialization is atomic
 
-        # Increment store
-        increment_store(cls, instance)
+        # Commit instance
+        commit_instance(cls, instance)
 
         # Return instance
         return instance
