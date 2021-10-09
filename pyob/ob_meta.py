@@ -154,6 +154,7 @@ class ObMeta(type, ObMetaLabelMixin):
             # The above except block ensures that object initialization is atomic
 
         # Commit instance
+        # Recursively adds instance to class and parent class object stores
         commit_instance(cls, instance)
 
         # Return instance

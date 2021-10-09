@@ -580,6 +580,67 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(Country ** "THA" + usa, tha + usa)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST PREPOST HOOK INHERITANCE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_prepost_hook_inheritance(self):
+        """ Ensures that prepost hooks are inherited as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENT
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class Parent(Ob):
+            """ Parent Class """
+
+            # Define init method
+            def __init__(self, multiplied):
+
+                # Set multiplied
+                self.multiplied = multiplied
+
+            # Define pre hook method
+            def _pre_multiplied(self, value):
+                return value * 2
+
+            # Define post hook method
+            def _post_multiplied(self, value):
+                return 2
+
+        # Create new parent instance
+        parent = Parent(3)
+
+        # Assert that multiplied field is multiplied
+        self.assertEqual(parent.multiplied, 6)
+
+        # Assert that post hook returns 2
+        self.assertEqual(parent._post_multiplied(None), 2)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CHILD
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class Child(Parent):
+            """ Child Class """
+
+            # Define pre hook method
+            def _pre_multiplied(self, value):
+                return value * 3
+
+            # Define post hook method
+            def _post_multiplied(self, value):
+                return 3
+
+        # Create new child instance
+        child = Child(3)
+
+        # Assert that multiplied field is multiplied
+        self.assertEqual(child.multiplied, 9)
+
+        # Assert that post hook returns 2
+        self.assertEqual(child._post_multiplied(None), 3)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST RSHIFT
     # └─────────────────────────────────────────────────────────────────────────────────
 
