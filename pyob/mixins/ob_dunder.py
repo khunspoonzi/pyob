@@ -98,7 +98,7 @@ class ObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Determine if type checking is enabled
-        enforce_types = not self._disable_type_checking
+        enforce_types = not cls._disable_type_checking
 
         # Check if should enforce types
         if enforce_types:
