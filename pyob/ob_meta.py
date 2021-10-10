@@ -39,6 +39,13 @@ class ObMeta(type, ObMetaLabelMixin):
         cls._store = ObStore(_Ob=cls)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get parent classes
+        parents = [b for b in cls.__bases__ if hasattr(b, "_keys")]
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS
         # └─────────────────────────────────────────────────────────────────────────────
 
@@ -47,6 +54,9 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Handle case of string value as keys
         _keys = _keys and ((_keys,) if type(_keys) is str else tuple(_keys))
+
+        # Inherit parent keys
+        _keys = sum([p._keys for p in parents], ()) + _keys
 
         # Ensure that keys definition is a unique tuple
         cls._keys = remove_duplicates(_keys)
@@ -64,11 +74,14 @@ class ObMeta(type, ObMetaLabelMixin):
         # Ensure that unique together fields are tuples
         _unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
 
+        # Inherit parent unique fields
+        _unique = sum([p._unique for p in parents], ()) + _unique
+
         # Ensure that unique definition is a unique tuple
         cls._unique = remove_duplicates(_unique, recursive=True)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CACHE: PRE- AND POST-SETTERS
+        # │ PREPOST HOOKS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get all methods
@@ -79,14 +92,14 @@ class ObMeta(type, ObMetaLabelMixin):
         _POST_ = "_post_"
 
         # Define get hook cache helper
-        def get_hook_cache(hook):
+        def get_prepost(hook):
             return {k.replace(hook, "", 1): v for k, v in methods if k.startswith(hook)}
 
         # Initialize pre-setter cache
-        cls._pre = get_hook_cache(_PRE_)
+        cls._pre = get_prepost(_PRE_)
 
         # Initialize post-setter cache
-        cls._post = get_hook_cache(_POST_)
+        cls._post = get_prepost(_POST_)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CACHE: TYPE HINTS
