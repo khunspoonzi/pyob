@@ -13,7 +13,7 @@ from typing import get_type_hints
 from pyob.ob_store import ObStore
 
 from pyob.mixins import ObMetaLabelMixin
-from pyob.tools import commit_instance, is_iterable, remove_duplicates
+from pyob.tools import is_iterable, remove_duplicates
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ class ObMeta(type, ObMetaLabelMixin):
         cls._post = get_prepost(_POST_)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CACHE: TYPE HINTS
+        # │ TYPE HINTS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize type hints
@@ -103,6 +103,26 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Set type hints
         cls._type_hints = _type_hints
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ STORE RELATIONS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Iterate over bases
+        for base in cls.__bases__:
+
+            # Get store
+            _store_parent = getattr(base, "_store", None)
+
+            # Continue if store is not a PyOb object store
+            if not isinstance(_store_parent, ObStore):
+                continue
+
+            # Add parent to child store
+            cls._store._parents.append(_store_parent)
+
+            # Add child to parent store
+            _store_parent._children.append(cls._store)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
@@ -153,9 +173,8 @@ class ObMeta(type, ObMetaLabelMixin):
             # NOTE: Exceptions can happen when setting individual attributes
             # The above except block ensures that object initialization is atomic
 
-        # Commit instance
-        # Recursively adds instance to class and parent class object stores
-        commit_instance(cls, instance)
+        # Add instance to store
+        cls._store._obs[instance] = 1
 
         # Return instance
         return instance

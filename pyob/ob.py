@@ -64,7 +64,7 @@ class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
         return ObSet(_Ob=cls)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ POPULATE STORE
+    # │ _POPULATE STORE
     # └─────────────────────────────────────────────────────────────────────────────────
 
     @classmethod

@@ -8,7 +8,6 @@ from pyob.exceptions import (
     UnrelatedObjectsError,
 )
 from pyob.tools import (
-    convert_obs_dict_to_list,
     filter_by_key,
     filter_by_keys,
     is_iterable,
@@ -257,7 +256,7 @@ class ObSetDunderMixin:
         """ Get Item Method """
 
         # Get objects as list
-        _obs = convert_obs_dict_to_list(self._obs)
+        _obs = list(self)
 
         # Check if key is a slice
         if isinstance(key, slice):
@@ -275,8 +274,14 @@ class ObSetDunderMixin:
     def __iter__(self):
         """ Iterate Method """
 
-        # Return objects
-        return iter(self._obs)
+        # Iterate over objects in object set
+        for _ob, count in self._obs.items():
+
+            # Iterate over object count
+            for _ in range(count):
+
+                # Yield object
+                yield _ob
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __LEN__
@@ -327,7 +332,7 @@ class ObSetDunderMixin:
         representation += f": {self.count()}"
 
         # Get the first 20 objects
-        _obs = convert_obs_dict_to_list(self._obs)[:20]
+        _obs = list(self)[:20]
 
         # Stringify objects according to object set class string field
         _obs = [_ob.__repr__(_str=self._Ob._str) for _ob in _obs]

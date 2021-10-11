@@ -3,6 +3,7 @@
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob.ob_set import ObSet
+from pyob.mixins import ObStoreDunderMixin, ObStoreMethodMixin
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -10,7 +11,7 @@ from pyob.ob_set import ObSet
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStore(ObSet):
+class ObStore(ObStoreDunderMixin, ObStoreMethodMixin, ObSet):
     """ A base class for PyOb object stores """
 
     # Initialize objects by key to None
@@ -18,6 +19,9 @@ class ObStore(ObSet):
 
     # Initialize objects by unique field to None
     _obs_by_unique_field = None
+
+    # Initialize parents and children to None
+    _parents = _children = None
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __INIT__
@@ -34,6 +38,9 @@ class ObStore(ObSet):
 
         # Initialize objects by unique field dict
         self._obs_by_unique_field = {}
+
+        # Initialize parents and children
+        self._parents, self._children = [], []
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ POPULATE

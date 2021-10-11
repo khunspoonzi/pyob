@@ -117,7 +117,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
             self.assertEqual(Parent.obs.count(), 15)
 
             # Assert that all children are in parent object store
-            self.assertTrue(all([child in Parent.obs._obs for child in children]))
+            self.assertTrue(all([child in Parent.obs for child in children]))
 
         # Assert that the third parent still has 10 items
         self.assertEqual(Parent3.obs.count(), 10)
@@ -134,9 +134,6 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 for Class in (Parent1Global, Parent2Global, Parent3Global, ChildGlobal)
             ]
         )
-
-        # Ensure that pyob.Ob is not affected by the commit
-        self.assertEqual(Ob.obs.count(), 0)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CALL ROLLBACK INSTANCE

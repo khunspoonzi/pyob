@@ -1,0 +1,35 @@
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ OB STORE DUNDER MIXIN
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+
+class ObStoreDunderMixin:
+    """ A mixin class for PyOb object store dunder methods """
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __CONTAINS__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __contains__(self, item):
+        """ Contains Method """
+
+        # Return the result of contains for current and child stores
+        return super().__contains__(item) or any(
+            [_child.__contains__(item) for _child in self._children]
+        )
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __ITER__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __iter__(self):
+        """ Iterate Method """
+
+        # Yield from current store
+        yield from super().__iter__()
+
+        # Iterate over child stores
+        for _child in self._children:
+
+            # Yield from child store
+            yield from _child.__iter__()

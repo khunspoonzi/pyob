@@ -11,7 +11,6 @@ from operator import itemgetter
 
 from pyob.exceptions import MultipleObjectsError, NonExistentKeyError, ZeroObjectsError
 from pyob.tools import (
-    convert_obs_dict_to_list,
     filter_and,
     filter_by_key,
     filter_by_keys,
@@ -160,7 +159,7 @@ class ObSetMethodMixin:
         """ Returns the first PyOb object of a PyOb object set """
 
         # Get objects as list
-        _obs = convert_obs_dict_to_list(self._obs)
+        _obs = list(self)
 
         # Return the first (n) object(s) of the object set
         return self[: n + 1] if n is not None else (_obs[0] if _obs else None)
@@ -232,7 +231,7 @@ class ObSetMethodMixin:
         """ Returns the last PyOb object of a PyOb object set """
 
         # Get objects as list
-        _obs = convert_obs_dict_to_list(self._obs)
+        _obs = list(self)
 
         # Return the last (n) object(s) of the object set
         return self[-n:] if n is not None else (_obs[-1] if _obs else None)
