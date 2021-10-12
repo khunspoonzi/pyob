@@ -64,20 +64,26 @@ class ObSetMethodTestCase(PyObFixtureTestCase):
         for Class, count in instance_counts.items():
 
             # Assert that current count is 0
-            self.assertEqual(Class.obs.count(), 0)
+            self.assertAllEqual(
+                Class.obs.count(), len(Class.obs), Class.obs.__len__(), 0
+            )
 
             # Initialize instances
             [Class() for _ in range(count)]
 
             # Assert that count reflects created instances
-            self.assertEqual(Class.obs.count(), count)
+            self.assertAllEqual(
+                Class.obs.count(), len(Class.obs), Class.obs.__len__(), count
+            )
 
         # Iterate over classes
         for Class, *rest in ((A, B, C, D), (B, C, D), (C,), (D,)):
 
             # Assert that the count of the parent class is cumulative
-            self.assertEqual(
+            self.assertAllEqual(
                 Class.obs.count(),
+                len(Class.obs),
+                Class.obs.__len__(),
                 instance_counts[Class] + sum(instance_counts[r] for r in rest),
             )
 
