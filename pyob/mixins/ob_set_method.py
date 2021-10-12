@@ -59,7 +59,7 @@ class ObSetMethodMixin:
         """ Returns a count of PyOb objects in a PyOb object set """
 
         # Return the length of the object set
-        return sum(self._obs.values())
+        return len(self)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ DIFFERENCE

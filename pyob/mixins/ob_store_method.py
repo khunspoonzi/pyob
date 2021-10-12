@@ -7,16 +7,6 @@ class ObStoreMethodMixin:
     """ A mixin class for PyOb object store methods """
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ COUNT
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    def count(self):
-        """ Returns a count of PyOb objects in a PyOb object store """
-
-        # Return the count of the object store and its children
-        return super().count() + sum([_child.count() for _child in self._children])
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ KEY
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -27,7 +17,7 @@ class ObStoreMethodMixin:
         for ob_store in self._children:
 
             # Get object by key or default to None
-            ob = ob_store.key(*args, **kwargs, default=None)
+            ob = ob_store.key(*args, **{**kwargs, "default": None})
 
             # Return object if found
             if ob is not None:

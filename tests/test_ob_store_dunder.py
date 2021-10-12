@@ -58,6 +58,19 @@ class ObSetDunderTestCase(PyObFixtureTestCase):
         # Assert that the correct countries are sliced
         self.assertEqual([c.iso3 for c in countries], iso3s)
 
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST LEN
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_len(self):
+        """ Ensures that the len dunder method behaves as expected """
+
+        # Get Country
+        Country = self.Country
+
+        # Assert that there are 250 countries
+        self.assertAllEqual(len(Country.obs), Country.obs.__len__(), 250)
+
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ SCRIPT

@@ -33,3 +33,13 @@ class ObStoreDunderMixin:
 
             # Yield from child store
             yield from _child.__iter__()
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __LEN__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __len__(self):
+        """ Len Method """
+
+        # Return the count of the object store and its children
+        return super().__len__() + sum([len(_child) for _child in self._children])

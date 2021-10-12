@@ -291,7 +291,7 @@ class ObSetDunderMixin:
         """ Length Method """
 
         # Return length of objects
-        return len(self._obs)
+        return sum(self._obs.values())
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __OR__
@@ -325,20 +325,26 @@ class ObSetDunderMixin:
     def __repr__(self):
         """ Representation Method """
 
+        # Define threshold
+        threshold = 20
+
+        # Get object count
+        _ob_count = len(self)
+
         # Initialize representation as object set name
         representation = self.name
 
         # Add count to representation
-        representation += f": {self.count()}"
+        representation += f": {_ob_count}"
 
         # Get the first 20 objects
-        _obs = list(self)[:20]
+        _obs = list(self)[:threshold]
 
         # Stringify objects according to object set class string field
         _obs = [_ob.__repr__(_str=self._Ob._str) for _ob in _obs]
 
         # Check if there are more than n objects total
-        if len(self) > len(_obs):
+        if _ob_count > threshold:
 
             # Add truncation message to objects list
             _obs.append("...(remaining elements truncated)... ")

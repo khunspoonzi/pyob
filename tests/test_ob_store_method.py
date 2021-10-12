@@ -1,0 +1,92 @@
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ GENERAL IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+import unittest
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ PROJECT IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+from pyob import Ob
+
+from tests.test_cases.pyob import PyObFixtureTestCase
+
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ OB SET METHOD TEST CASE
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+
+class ObSetMethodTestCase(PyObFixtureTestCase):
+    """ Ob Set Method Test Case """
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST COUNT
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_count(self):
+        """ Ensures that the count method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get Country
+        Country = self.Country
+
+        # Get country count
+        country_count = Country.obs.count()
+
+        # Assert that count method invokes __len__ dunder
+        self.assertAllEqual(country_count, len(Country.obs), Country.obs.__len__(), 250)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A generic test class """
+
+        class B(A):
+            """ A generic test class """
+
+        class C(B):
+            """ A generic test class """
+
+        class D(B):
+            """ A generic test class """
+
+        # Define instance counts
+        instance_counts = {A: 1, B: 3, C: 5, D: 7}
+
+        # Iterate over class instance counts
+        for Class, count in instance_counts.items():
+
+            # Assert that current count is 0
+            self.assertEqual(Class.obs.count(), 0)
+
+            # Initialize instances
+            [Class() for _ in range(count)]
+
+            # Assert that count reflects created instances
+            self.assertEqual(Class.obs.count(), count)
+
+        # Iterate over classes
+        for Class, *rest in ((A, B, C, D), (B, C, D), (C,), (D,)):
+
+            # Assert that the count of the parent class is cumulative
+            self.assertEqual(
+                Class.obs.count(),
+                instance_counts[Class] + sum(instance_counts[r] for r in rest),
+            )
+
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ SCRIPT
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+
+    # Run unittest
+    unittest.main()
