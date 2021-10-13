@@ -48,17 +48,6 @@ class ObSet(ObSetLabelMixin, ObSetDunderMixin, ObSetMethodMixin):
         return ObSet(_Ob=self._Ob)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _KEYS
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    @property
-    def _keys(self):
-        """ Returns the keys of the related object class if any """
-
-        # Return object class keys
-        return self._Ob._keys if self._Ob else None
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ NAME
     # └─────────────────────────────────────────────────────────────────────────────────
 

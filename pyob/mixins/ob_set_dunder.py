@@ -180,7 +180,7 @@ class ObSetDunderMixin:
 
         # Resolve potential keys
         other_keys = filter_by_keys(
-            self._obs, self._keys, other_keys, ob_label_plural=self.ob_label_plural
+            self._obs, self._Ob._keys, other_keys, ob_label_plural=self.ob_label_plural
         )
 
         # Combine resolved objects
@@ -209,7 +209,7 @@ class ObSetDunderMixin:
         # Return whether item or key in objects
         return (item in self._obs) or len(
             filter_by_key(
-                self._obs, self._keys, item, ob_label_plural=self.ob_label_plural
+                self._obs, self._Ob._keys, item, ob_label_plural=self.ob_label_plural
             )
         ) > 0
 
