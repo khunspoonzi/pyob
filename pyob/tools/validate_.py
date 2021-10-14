@@ -63,6 +63,9 @@ def validate_attribute_value(self, cls, name, value):
             # Add store ID to seen
             seen.add(store_id)
 
+            # Redefine class
+            cls = store._Ob
+
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ KEY TYPE
             # └─────────────────────────────────────────────────────────────────────────
