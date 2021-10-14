@@ -8,68 +8,79 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
+from pyob import Ob
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB STORE DUNDER TEST CASE
+# │ OB SET INIT TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStoreDunderTestCase(PyObFixtureTestCase):
-    """ Ob Store Dunder Test Case """
+class ObSetInitTestCase(PyObFixtureTestCase):
+    """ Ob Set Init Test Case """
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST GETITEM
+    # │ TEST CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def test_getitem(self):
-        """ Ensures that the getitem dunder method behaves as expected """
-
-        # Get Country
-        Country = self.Country
+    def test_class_attributes(self):
+        """ Ensures that class attributes are initialized as expected """
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ INDEX
+        # │ OB
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Iterate over index and ISO3 codes
-        for i, iso3 in ((0, "AFG"), (246, "ZWE"), (249, "VAT")):
+        # Get store
+        _store = Ob.obs
 
-            # Assert that index retrieves the correct country
-            self.assertEqual(Country.obs[i], Country.obs >> iso3)
+        # Assert that objects by key and objects by unique field are an empty dict
+        self.assertAllEqual(_store._obs_by_key, _store._obs_by_unique_field, {})
 
-        # Initialize assertRaises block
-        with self.assertRaises(IndexError):
-
-            # Try to get a country whose index is out of range
-            Country.obs[250]
+        # Assert that the pyob.Ob store is initialized with no parents
+        self.assertAllEqual(_store._parents, [])
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ SLICE
+        # │ A
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Define expected country slice
-        (istart, iend), iso3s = (1, 5), ["ALA", "ALB", "DZA", "ASM"]
+        class A(Ob):
+            """ A PyOb test class """
 
-        # Get countries slice
-        countries = Country.obs[istart:iend]
+        # Get store
+        _store = A.obs
 
-        # Assert that the correct countries are sliced
-        self.assertEqual([c.iso3 for c in countries], iso3s)
+        # Assert that parent store is pyob.Ob store
+        self.assertEqual(_store._parents, [Ob.obs])
 
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST LEN
-    # └─────────────────────────────────────────────────────────────────────────────────
+        # Assert that the store has no children
+        self.assertEqual(_store._children, [])
 
-    def test_len(self):
-        """ Ensures that the len dunder method behaves as expected """
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ B
+        # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get Country
-        Country = self.Country
+        class B(A):
+            """ A PyOb test class """
 
-        # Assert that there are 250 countries
-        self.assertAllEqual(len(Country.obs), Country.obs.__len__(), 250)
+        # Get store
+        _store = B.obs
+
+        # Assert that parent store is A's store
+        self.assertEqual(_store._parents, [A.obs])
+
+        # Assert that the store has no children
+        self.assertEqual(_store._children, [])
+
+        # Assert that A's child store is now B's store
+        self.assertEqual(A.obs._children, [B.obs])
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ OB
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Assert that the pyob.Ob store continues to have no parents
+        self.assertAllEqual(Ob.obs._parents, [])
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

@@ -14,12 +14,12 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB SET METHOD TEST CASE
+# │ OB STORE METHOD TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObSetMethodTestCase(PyObFixtureTestCase):
-    """ Ob Set Method Test Case """
+class ObStoreMethodTestCase(PyObFixtureTestCase):
+    """ Ob Store Method Test Case """
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST COUNT
