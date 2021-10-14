@@ -1,20 +1,9 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ GENERAL IMPORTS
-# └─────────────────────────────────────────────────────────────────────────────────────
-
-from typeguard import check_type
-
-# ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import (
-    DuplicateKeyError,
-    InvalidKeyError,
-    InvalidTypeError,
-    UnicityError,
-)
-from pyob.tools import convert_string_to_pascal_case, is_ob
+from pyob.exceptions import UnicityError
+from pyob.tools import convert_string_to_pascal_case, is_ob, validate_attribute_value
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -61,8 +50,18 @@ class ObDunderMixin:
     def __setattr__(self, name, value):
         """ Set Attr Method """
 
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ ATTRIBUTES
+        # └─────────────────────────────────────────────────────────────────────────────
+
         # Get object class
         cls = self.__class__
+
+        # Get keys
+        _keys = cls._keys or ()
+
+        # Determin if key
+        is_key = _keys and name in _keys
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PRE-SETTER
@@ -78,95 +77,23 @@ class ObDunderMixin:
             value = _pre[name](self, value)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ ENFORCE KEY
+        # │ VALIDATE ATTRIBUTE VALUE
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get keys
-        _keys = cls._keys or ()
+        # Validate attribute value
+        validate_attribute_value(self, cls, name, value)
 
-        # Determin if key
-        is_key = _keys and name in _keys
-
-        # Check if key and is None
-        if is_key and value is None:
-
-            # Raise InvalidKeyError
-            raise InvalidKeyError("A key value cannot be None")
+        # Checks types, keys, and unique fields of constraints in all related classes
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ ENFORCE TYPES
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Determine if type checking is enabled
-        enforce_types = not cls._disable_type_checking
-
-        # Check if should enforce types
-        if enforce_types:
-
-            # ┌─────────────────────────────────────────────────────────────────────────
-            # │ GET CACHED TYPE HINTS
-            # └─────────────────────────────────────────────────────────────────────────
-
-            # Get cached type hints
-            _type_hints = cls._type_hints
-
-            # ┌─────────────────────────────────────────────────────────────────────────
-            # │ ENFORCE TYPE HINTS
-            # └─────────────────────────────────────────────────────────────────────────
-
-            # Check if name in type hints
-            if name in _type_hints:
-
-                # Get expected type
-                expected_type = _type_hints[name]
-
-                # Initialize try-except block
-                try:
-
-                    # Check type
-                    check_type(name, value, expected_type)
-
-                # Handle TypeError
-                except TypeError:
-
-                    # Raise InvalidTypeError
-                    raise InvalidTypeError(
-                        f"{cls.__name__}.{name} expects a value of type "
-                        f"{expected_type} but got: {value} ({type(value)})"
-                    )
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COMMIT KEY
+        # │ INDEX KEY
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Check if name is key
         if is_key:
 
-            # ┌─────────────────────────────────────────────────────────────────────────
-            # │ CHECK KEY INDEX
-            # └─────────────────────────────────────────────────────────────────────────
-
             # Get objects by key map
             _obs_by_key = cls._store._obs_by_key
-
-            # Check if value in objects by key map
-            if value in _obs_by_key and (other := _obs_by_key[value]) != self:
-
-                # ┌─────────────────────────────────────────────────────────────────────
-                # │ RAISE DUPLICATE KEY ERROR
-                # └─────────────────────────────────────────────────────────────────────
-
-                # Get singular label
-                label_singular = cls.label_singular
-
-                # Raise DuplicateKeyError
-                raise DuplicateKeyError(
-                    f"A {label_singular} with a key of {value} already exists: {other}"
-                )
-
-            # ┌─────────────────────────────────────────────────────────────────────────
-            # │ RE-INDEX KEY
-            # └─────────────────────────────────────────────────────────────────────────
 
             # Check previous value is defined
             if name in self.__dict__:
@@ -184,7 +111,7 @@ class ObDunderMixin:
             _obs_by_key[value] = self
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COMMIT UNIQUE FIELDS
+        # │ INDEX UNIQUE FIELDS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get unique fields
