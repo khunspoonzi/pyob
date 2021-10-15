@@ -607,6 +607,41 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(child._post_multiplied(None), 3)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST INSTANCE CHECK
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_instancecheck(self):
+        """ Ensures that the instancecheck dunder behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A AND B
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+        class B(A):
+            """ A PyOb test class """
+
+        # Create B instance
+        b = B()
+
+        # Assert that B() is an instance of A
+        self.assertAllEqual(isinstance(b, A), A.__instancecheck__(b), True)
+
+        # Localize A and B
+        _A, _B = localize(A, B)
+
+        # Create _B instance
+        _b = _B()
+
+        # Assert that _B() is an instance of _A
+        self.assertAllEqual(isinstance(_b, _A), _A.__instancecheck__(_b), True)
+
+        # Assert that _B() is an instance of A
+        self.assertAllEqual(isinstance(_b, A), A.__instancecheck__(_b), True)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST POW
     # └─────────────────────────────────────────────────────────────────────────────────
 

@@ -160,3 +160,4 @@ def validate_attribute_value(self, cls, name, value):
     # TEST unicity
     # Be sure to ignore pyob.Ob and WRITE TEST
     # OPTIMIZE by caching seen unique fields and keys
+    # TEST that the correct class is reference in store iteration (redefine cls)

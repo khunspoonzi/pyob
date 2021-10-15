@@ -33,6 +33,10 @@ def localize(*classes):
         # Get and set localized class
         cache[Class] = type(Class.__name__, bases, dict(Class.__dict__))
 
+        # Set localized from attribute
+        # This will ensure that isinstance() still works with localized PyOb classes
+        cache[Class]._localized_from = Class
+
         # Return the localized class
         return cache[Class]
 
@@ -41,3 +45,5 @@ def localize(*classes):
 
     # Return localized classes
     return classes[0] if len(classes) == 1 else tuple(classes)
+
+    # DECISION: Should pyob.Ob be localized as well?

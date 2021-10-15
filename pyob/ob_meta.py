@@ -125,6 +125,13 @@ class ObMeta(type, ObMetaLabelMixin):
             _store_parent._children.append(cls._store)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ LOCALIZATION
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Set localized from attribute
+        cls._localized_from = None
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
         # └─────────────────────────────────────────────────────────────────────────────
 
@@ -188,6 +195,25 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Attempt to return PyOb object by key
         return cls._store.__getattr__(name)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __INSTANCECHECK__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __instancecheck__(cls, instance):
+        """ Instance Check Method """
+
+        # Get localized from
+        _localized_from = getattr(instance.__class__, "_localized_from", None)
+
+        # Check if localized from current class
+        if _localized_from and issubclass(_localized_from, cls):
+
+            # Return True
+            return True
+
+        # Return default instance check
+        return super().__instancecheck__(instance)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __POW__
