@@ -307,9 +307,3 @@ def validate_and_index_pyob_attribute_value(cls, self, name, value):
 
     # Traverse object stores
     traverse(cls)
-
-    # TEST unicity
-    # Be sure to ignore pyob.Ob and WRITE TEST
-    # OPTIMIZE by caching seen unique fields and keys
-    # TEST that the correct class is reference in store iteration (redefine cls)
-    # FIX traversal so that it recurses properly

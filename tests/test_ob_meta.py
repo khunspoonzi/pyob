@@ -546,6 +546,106 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(id(F.obs), id(F._store))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST INIT CLASS ATTRIBUITE INHERITANCE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_init_class_attribute_inheritance(self):
+        """ Ensure that user-defined attributes are inherited as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CONSTANTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        KEY_A = "key_a"
+        KEY_B = "key_b"
+        KEY_C = "key_c"
+        KEY_D = "key_d"
+
+        UNIQUE_A1 = "unique_a1"
+        UNIQUE_A2 = ("unique_a2a", "unique_a2b")
+        UNIQUE_B1 = "unique_b1"
+        UNIQUE_B2 = ("unique_b2a", "unique_b2b")
+        UNIQUE_C1 = "unique_c1"
+        UNIQUE_C2 = ("unique_c2a", "unique_c2b")
+        UNIQUE_D1 = "unique_d1"
+        UNIQUE_D2 = ("unique_d2a", "unique_d2b")
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_A,)
+
+            # Define unique fields
+            _unique = (UNIQUE_A1, UNIQUE_A2)
+
+        class B(A):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_B,)
+
+            # Define unique fields
+            _unique = (UNIQUE_B1, UNIQUE_B2)
+
+        class C(A):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_C,)
+
+            # Define unique fields
+            _unique = (UNIQUE_C1, UNIQUE_C2)
+
+        class D(B, C):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_D,)
+
+            # Define unique fields
+            _unique = (UNIQUE_D1, UNIQUE_D2)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CHECK INHERITANCE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Iterate over classes
+        for Class, keys, unique in (
+            (A, (KEY_A,), (UNIQUE_A1, UNIQUE_A2)),
+            (B, (KEY_A, KEY_B), (UNIQUE_A1, UNIQUE_A2, UNIQUE_B1, UNIQUE_B2)),
+            (
+                C,
+                (KEY_A, KEY_C),
+                (UNIQUE_A1, UNIQUE_A2, UNIQUE_C1, UNIQUE_C2),
+            ),
+            (
+                D,
+                (KEY_A, KEY_B, KEY_C, KEY_D),
+                (
+                    UNIQUE_A1,
+                    UNIQUE_A2,
+                    UNIQUE_B1,
+                    UNIQUE_B2,
+                    UNIQUE_C1,
+                    UNIQUE_C2,
+                    UNIQUE_D1,
+                    UNIQUE_D2,
+                ),
+            ),
+        ):
+
+            # Assert that keys are correctly inherited
+            self.assertEqual(Class._keys, keys)
+
+            # Assert that unique fields are correctly inherited
+            self.assertEqual(Class._unique, unique)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST INIT PREPOST HOOK INHERITANCE
     # └─────────────────────────────────────────────────────────────────────────────────
 

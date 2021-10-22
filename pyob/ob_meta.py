@@ -32,11 +32,37 @@ class ObMeta(type, ObMetaLabelMixin):
         """ Init Method """
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Initialize parents
+        parents = []
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ STORE
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize store
         cls._store = ObStore(_Ob=cls)
+
+        # Iterate over bases
+        for base in cls.__bases__:
+
+            # Get store
+            _store_parent = getattr(base, "_store", None)
+
+            # Continue if store is not a PyOb object store
+            if not isinstance(_store_parent, ObStore):
+                continue
+
+            # Add parent to child store
+            cls._store._parents.append(_store_parent)
+
+            # Add child to parent store
+            _store_parent._children.append(cls._store)
+
+            # Add parent to parents
+            parents.append(_store_parent._Ob)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS
@@ -47,6 +73,9 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Handle case of string value as keys
         _keys = _keys and ((_keys,) if type(_keys) is str else tuple(_keys))
+
+        # Merge with parent keys
+        _keys = sum([p._keys for p in parents] + [_keys], ())
 
         # Ensure that keys definition is a unique tuple
         cls._keys = remove_duplicates(_keys)
@@ -63,6 +92,9 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Ensure that unique together fields are tuples
         _unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
+
+        # Merge with parent unique fields
+        _unique = sum([p._unique for p in parents] + [_unique], ())
 
         # Ensure that unique definition is a unique tuple
         cls._unique = remove_duplicates(_unique, recursive=True)
@@ -103,26 +135,6 @@ class ObMeta(type, ObMetaLabelMixin):
 
         # Set type hints
         cls._type_hints = _type_hints
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ STORE RELATIONS
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Iterate over bases
-        for base in cls.__bases__:
-
-            # Get store
-            _store_parent = getattr(base, "_store", None)
-
-            # Continue if store is not a PyOb object store
-            if not isinstance(_store_parent, ObStore):
-                continue
-
-            # Add parent to child store
-            cls._store._parents.append(_store_parent)
-
-            # Add child to parent store
-            _store_parent._children.append(cls._store)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ LOCALIZATION
