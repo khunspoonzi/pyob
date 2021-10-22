@@ -2,7 +2,6 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import UnicityError
 from pyob.tools import (
     convert_string_to_pascal_case,
     is_ob,
