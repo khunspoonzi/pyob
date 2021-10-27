@@ -413,7 +413,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # In this case, A is the top-level parent with a defined key
 
         # Create an instance of A, B, and C
-        A(KEY_A), B(KEY_B), C(KEY_C)
+        a, b, c = A(KEY_A), B(KEY_B), C(KEY_C)
 
         # Iterate over classes
         for Class in (A, B, C, D, E, F, G):
@@ -435,12 +435,27 @@ class ObDunderTestCase(PyObFixtureTestCase):
                     # This should fail regardless of whether the class is a parent,
                     # sibling, or child of B or C because they all share a common key.
                     Class(key)
-                    print("--------------------------------------------------------")
+
+        # Iterate over instances
+        for instance, keys in (
+            (a, (KEY_B, KEY_C)),
+            (b, (KEY_A, KEY_C)),
+            (c, (KEY_A, KEY_B)),
+        ):
+
+            # Iterate over keys
+            for key in keys:
+
+                # Initialize assertRaises block
+                with self.assertRaises(DuplicateKeyError):
+
+                    # Try to set key of existing instance to existing key
+                    instance.key = key
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C, D
         # │
-        # │ Show that keys are checked going downward and not upward
+        # │ Show that keys are checked going downward according to inheritance
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
@@ -492,7 +507,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C
         # │
-        # │ Show that keys are specifically NOT checked upward
+        # │ Show that keys are specifically NOT checked upward if not inherited
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Define key constants
@@ -679,7 +694,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # TODO: Add test to ensure that key indices are not wiped if not is_creating
         # TODO: Test mismatches on exceptions for non-created objects
-
         # TODO: Test that clean method does not fail on init when pre-referencing
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
