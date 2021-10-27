@@ -358,6 +358,182 @@ class ObDunderTestCase(PyObFixtureTestCase):
         usa.iso2 = usa.iso2
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR KEYS TRAVERSAL
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_setattr_keys_traversal(self):
+        """ Ensures that the setattr dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CONSTANTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define key constants
+        KEY = "key"
+        KEY_A = "key_a"
+        KEY_B = "key_b"
+        KEY_C = "key_c"
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D, E, F, G
+        # │
+        # │ Show that keys are checked for all classes with a shared key (inherited)
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY,)
+
+            # Define init method
+            def __init__(self, key):
+
+                # Set key
+                self.key = key
+
+        class B(A):
+            """ A PyOb test class """
+
+        class C(A):
+            """ A PyOb test class """
+
+        class D(B):
+            """ A PyOb test class """
+
+        class E(B):
+            """ A PyOb test class """
+
+        class F(C):
+            """ A PyOb test class """
+
+        class G(C):
+            """ A PyOb test class """
+
+        # In this case, A is the top-level parent with a defined key
+
+        # Create an instance of A, B, and C
+        A(KEY_A), B(KEY_B), C(KEY_C)
+
+        # Iterate over classes
+        for Class in (A, B, C, D, E, F, G):
+
+            # Initialize assertRaises block
+            with self.assertRaises(DuplicateKeyError):
+
+                # Try to create an instance with a duplicate key
+                # This should fail because an A instance already exists with the key
+                Class(KEY_A)
+
+            # Iterate over keys
+            for key in (KEY_B, KEY_C):
+
+                # Initialize assertRaises block
+                with self.assertRaises(DuplicateKeyError):
+
+                    # Try to create an instance with a duplicate key
+                    # This should fail regardless of whether the class is a parent,
+                    # sibling, or child of B or C because they all share a common key.
+                    Class(key)
+                    print("--------------------------------------------------------")
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D
+        # │
+        # │ Show that keys are checked going downward and not upward
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define init method
+            def __init__(self, key):
+
+                # Set key
+                self.key = key
+
+        class B(A):
+            """ A PyOb test class """
+
+        class C(A):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY,)
+
+        class D(C):
+            """ A PyOb test class """
+
+        # In this case, C is not a top-level parent but does have a defined key
+
+        # Create an instance of A, B, and C
+        A(KEY_A), B(KEY_B), C(KEY_C)
+
+        # Iterate over non-key classes
+        for Class in (A, B):
+
+            # Ensure that there are no key unicity conflicts
+            Class(KEY_A), Class(KEY_B), Class(KEY_C)
+
+            # As A and B are not children of C, we should be able to create instances
+            # with a key of KEY_C without a DuplicateKeyError, e.g. the A object set
+            # CAN contain two objects where A.key = KEY_C
+
+        # Iterate over key classes
+        for Class in (C, D):
+
+            # Initialize assertRaises block
+            with self.assertRaises(DuplicateKeyError):
+
+                # Try to create an instance with a duplicate key
+                # This should fail because an C instance already exists with the key
+                Class(KEY_C)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C
+        # │
+        # │ Show that keys are specifically NOT checked upward
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define key constants
+        KEY_1 = "key_1"
+        KEY_2 = "key_2"
+        KEY_3 = "key_3"
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_1,)
+
+            # Define init method
+            def __init__(self, key_1, key_2, key_3):
+
+                # Set keys
+                self.key_1 = key_1
+                self.key_2 = key_2
+                self.key_3 = key_3
+
+        class B(A):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_2,)
+
+        class C(A):
+            """ A PyOb test class """
+
+            # Define keys
+            _keys = (KEY_3,)
+
+        # In this case, all classes have the same fields but different keys
+
+        # Create A instances
+        A("a1", "b1", "c1")
+        B("a2", "a1", "c1")
+        C("a3", "b2", "a1")
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR PRE AND POST HOOKS
     # └─────────────────────────────────────────────────────────────────────────────────
 

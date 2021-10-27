@@ -8,4 +8,5 @@ from pyob.tools.is_ import is_iterable, is_ob, is_ob_set
 from pyob.tools.localize_ import localize
 from pyob.tools.remove_ import remove_duplicates
 from pyob.tools.split_ import split_camel_case
+from pyob.tools.traverse_ import traverse_pyob_ancestors, traverse_pyob_relatives
 from pyob.tools.validate_ import validate_and_index_pyob_attribute_value
