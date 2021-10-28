@@ -373,6 +373,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         KEY_A = "key_a"
         KEY_B = "key_b"
         KEY_C = "key_c"
+        KEY_D = "key_d"
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C, D, E, F, G
@@ -418,22 +419,13 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Iterate over classes
         for Class in (A, B, C, D, E, F, G):
 
-            # Initialize assertRaises block
-            with self.assertRaises(DuplicateKeyError):
-
-                # Try to create an instance with a duplicate key
-                # This should fail because an A instance already exists with the key
-                Class(KEY_A)
-
             # Iterate over keys
-            for key in (KEY_B, KEY_C):
+            for key in (KEY_A, KEY_B, KEY_C):
 
                 # Initialize assertRaises block
                 with self.assertRaises(DuplicateKeyError):
 
                     # Try to create an instance with a duplicate key
-                    # This should fail regardless of whether the class is a parent,
-                    # sibling, or child of B or C because they all share a common key.
                     Class(key)
 
         # Iterate over instances
@@ -481,18 +473,21 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # In this case, C is not a top-level parent but does have a defined key
 
-        # Create an instance of A, B, and C
-        A(KEY_A), B(KEY_B), C(KEY_C)
+        # Create an instance of A and B
+        A(KEY_A), B(KEY_B)
+
+        # Create an instance of C and D
+        c, d = C(KEY_C), D(KEY_D)
 
         # Iterate over non-key classes
         for Class in (A, B):
 
             # Ensure that there are no key unicity conflicts
-            Class(KEY_A), Class(KEY_B), Class(KEY_C)
+            Class(KEY_A), Class(KEY_B), Class(KEY_C), Class(KEY_D)
 
             # As A and B are not children of C, we should be able to create instances
-            # with a key of KEY_C without a DuplicateKeyError, e.g. the A object set
-            # CAN contain two objects where A.key = KEY_C
+            # with a key of KEY_C and KEY_D without a DuplicateKeyError,
+            # e.g. the A object set CAN contain two objects where A.key = KEY_C / KEY_D
 
         # Iterate over key classes
         for Class in (C, D):
@@ -502,7 +497,16 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
                 # Try to create an instance with a duplicate key
                 # This should fail because an C instance already exists with the key
-                Class(KEY_C)
+                Class(KEY_C), Class(KEY_D)
+
+        # Iterate over key instances
+        for instance, key in ((c, KEY_D), (d, KEY_C)):
+
+            # Initialize assertRaises block
+            with self.assertRaises(DuplicateKeyError):
+
+                # Try to set instance key to an existing key
+                instance.key = key
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C
@@ -541,7 +545,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Define keys
             _keys = (KEY_3,)
 
-        # In this case, all classes have the same fields but different keys
+        # In this case, all classes have the same fields but different key definitions
 
         # Create A instances
         A("a1", "b1", "c1")

@@ -181,7 +181,6 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                 "name": {"China": ff0x14},
                 ("latitude", "longitude") : {(1.1, 2.2): ff0x14}
             }
-
             """
 
             # Check if value is already indexed
