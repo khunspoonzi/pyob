@@ -547,10 +547,52 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # In this case, all classes have the same fields but different key definitions
 
-        # Create A instances
+        # Define unique constant
+        UNIQUE = "unique"
+
+        # Define assertDuplicateKey helper
+        def assertDuplicateKey(Class, *args):
+
+            # Initialize assertRaises block
+            with self.assertRaises(DuplicateKeyError):
+
+                # Try to initialize instance
+                Class(*args)
+
+        # Create A instance
         A("a1", "b1", "c1")
+
+        # Assert that key 1 is enforced
+        assertDuplicateKey(A, "a1", UNIQUE, UNIQUE)
+
+        # Create B instance where b.key_2 == a.key_1
+        # There should be no conflict since key_2 is not a key for A
         B("a2", "a1", "c1")
-        C("a3", "b2", "a1")
+
+        # Assert that key 1 is still enforced on B
+        assertDuplicateKey(B, "a1", UNIQUE, UNIQUE)
+
+        # Assert that key 2 is enforced on B
+        assertDuplicateKey(B, UNIQUE, "a1", UNIQUE)
+
+        # Create C instance where c.key_2 == b.key_2 and c.key_3 == a.key_1
+        # There should be no conflict since key_2 is not a key for C and
+        # key_3 is not a key for A
+        C("a3", "a1", "a1")
+
+        # Create C instance where c.key_2 == b.key_2 and c.key_3 == b.key_3
+        # There should be no conflict since key_2 is not a key for C and
+        # key_3 is not a key for B
+        C("a4", "a1", "c1")
+
+        # Assert that key 1 is still enforced on C
+        assertDuplicateKey(C, "a1", UNIQUE, UNIQUE)
+
+        # Assert that key 2 is enforced on B
+        assertDuplicateKey(C, UNIQUE, UNIQUE, "a1")
+
+        # Assert that key 2 is enforced on B
+        assertDuplicateKey(C, UNIQUE, UNIQUE, "c1")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR PRE AND POST HOOKS
