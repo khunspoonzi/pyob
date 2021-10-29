@@ -419,6 +419,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Iterate over classes
         for Class in (A, B, C, D, E, F, G):
 
+            # Initialize assertRaises block
+            with self.assertRaises(InvalidKeyError):
+
+                # Try to create an instance where key is None
+                Class(None)
+
             # Iterate over keys
             for key in (KEY_A, KEY_B, KEY_C):
 
@@ -434,6 +440,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
             (b, (KEY_A, KEY_C)),
             (c, (KEY_A, KEY_B)),
         ):
+
+            # Initialize assertRaises block
+            with self.assertRaises(InvalidKeyError):
+
+                # Try to set key to None
+                instance.key = None
 
             # Iterate over keys
             for key in keys:
@@ -482,6 +494,9 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Iterate over non-key classes
         for Class in (A, B):
 
+            # Ensure that you can set key to None (as Class.key isn't actually a key)
+            Class(None)
+
             # Ensure that there are no key unicity conflicts
             Class(KEY_A), Class(KEY_B), Class(KEY_C), Class(KEY_D)
 
@@ -493,6 +508,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
         for Class in (C, D):
 
             # Initialize assertRaises block
+            with self.assertRaises(InvalidKeyError):
+
+                # Try to create an instance where key is None
+                Class(None)
+
+            # Initialize assertRaises block
             with self.assertRaises(DuplicateKeyError):
 
                 # Try to create an instance with a duplicate key
@@ -501,6 +522,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Iterate over key instances
         for instance, key in ((c, KEY_D), (d, KEY_C)):
+
+            # Initialize assertRaises block
+            with self.assertRaises(InvalidKeyError):
+
+                # Try to set key to None
+                instance.key = None
 
             # Initialize assertRaises block
             with self.assertRaises(DuplicateKeyError):
