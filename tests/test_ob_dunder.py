@@ -4,6 +4,8 @@
 
 import unittest
 
+from typing import Union
+
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
@@ -244,11 +246,15 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(repr(b), f"<B: {hex(id(b))}>")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST SETATTR
+    # │ TEST SETATTR TYPE CHECKING
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def test_setattr(self):
+    def test_setattr_type_checking(self):
         """ Ensures that the setattr dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ COUNTRY
+        # └─────────────────────────────────────────────────────────────────────────────
 
         # Get Thailand
         tha = self.Country.obs.THA
@@ -258,6 +264,96 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
             # Try to set invalid type
             tha.iso2 = 35
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define init method
+            def __init__(self, number: int):
+                """ Init Method """
+
+                # Set number
+                self.number = number
+
+        # Create A instance
+        a = A(5)
+
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidTypeError):
+
+            # Try to set a.number to a non-integer
+            a.number = 5.5
+
+        # Disable type checking
+        A._disable_type_checking = True
+
+        # Ensure that you can now set a.number to a non-integer
+        a.number = 5.5
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR TYPE CHECKING TRAVERSAL
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_setattr_type_checking_traversal(self):
+        """ Ensures that the setattr dunder method behaves as expected """
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """ A PyOb test class """
+
+            # Define init method
+            def __init__(self, number: Union[int, str]):
+                """ Init Method """
+
+                # Set number
+                self.number = number
+
+        class B(A):
+            """ A PyOb test class """
+
+            # Define init method
+            def __init__(self, number: str):
+                """ Init Method """
+
+                # Call parent init method
+                super().__init__(number)
+
+        class C(A):
+            """ A PyOb test class """
+
+        # Initialize an instance for each class with an integer
+        a, b, c = [Class("5") for Class in (A, B, C)]
+
+        # Iterate over instances
+        for instance in (a, b, c):
+
+            # Ensure that number can be set to a string in all cases
+            instance.number = "7"
+
+        # Iterate over instances where number can be an integer
+        for instance in (a, c):
+
+            # Ensure that number can be set to an integer
+            instance.number = 7
+
+        # Initialize assertRaises block
+        with self.assertRaises(InvalidTypeError):
+
+            # Try to set B instance number to an integer
+            b.number = 9
+
+        # Initialize assertRaises block
+        # with self.assertRaises(InvalidTypeError):
+
+        # Try to set C instance number to a boolean
+        #    c.number = True
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR KEYS
