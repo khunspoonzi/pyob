@@ -350,10 +350,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
             b.number = 9
 
         # Initialize assertRaises block
-        # with self.assertRaises(InvalidTypeError):
+        with self.assertRaises(InvalidTypeError):
 
-        # Try to set C instance number to a boolean
-        #    c.number = True
+            # Try to set C instance number to a boolean
+            c.number = True
+
+        # TODO: Fix type checks with int / float / bool -- they pass
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR KEYS
