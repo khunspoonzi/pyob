@@ -23,7 +23,7 @@ from pyob.tools import traverse_pyob_relatives
 
 
 def validate_and_index_pyob_attribute_value(Class, instance, name, value):
-    """ Validates and indexes a PyOb instance attribute value """
+    """Validates and indexes a PyOb instance attribute value"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ VALIDATE KEY TYPE
@@ -58,7 +58,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
     # Define callback
     def callback(Class):
-        """ A callback that validates the type of a PyOb attribute value """
+        """A callback that validates the type of a PyOb attribute value"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ GET CLASS ID
@@ -94,6 +94,14 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                         # Check type
                         check_type(name, value, expected_type)
+
+                        # Check if value is boolean when it shouldn't be
+                        if type(value) is bool and expected_type is not bool:
+
+                            # Raise a TypeError
+                            raise TypeError
+
+                            # NOTE: Booleans pass for ints / floats under MyPy
 
                     # Handle TypeError
                     except TypeError:

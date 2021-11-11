@@ -28,14 +28,14 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 class ObDunderTestCase(PyObFixtureTestCase):
-    """ Ob Dunder Test Case """
+    """Ob Dunder Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST ADD
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_add(self):
-        """ Ensures that the add dunder method behaves as expected """
+        """Ensures that the add dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -94,14 +94,14 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
-            """ A generic PyOb test class """
+            """A generic PyOb test class"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
         # └─────────────────────────────────────────────────────────────────────────────
 
         class B(Ob):
-            """ A generic PyOb test class """
+            """A generic PyOb test class"""
 
             # Define keys
             _keys = ("key",)
@@ -140,7 +140,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_repr(self):
-        """ Ensures that the repr dunder method behaves as expected """
+        """Ensures that the repr dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -199,7 +199,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Define A
         class A(Ob):
-            """ A test class for instances that will serve as a key """
+            """A test class for instances that will serve as a key"""
 
             # Define string field
             _str = "name"
@@ -216,7 +216,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
         # Define B
         class B(Ob):
-            """ A test class with an A key """
+            """A test class with an A key"""
 
             # Define keys
             _keys = ("key",)
@@ -250,7 +250,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_type_checking(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -270,11 +270,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define init method
             def __init__(self, number: int):
-                """ Init Method """
+                """Init Method"""
 
                 # Set number
                 self.number = number
@@ -299,34 +299,34 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_type_checking_traversal(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define init method
             def __init__(self, number: Union[int, str]):
-                """ Init Method """
+                """Init Method"""
 
                 # Set number
                 self.number = number
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define init method
             def __init__(self, number: str):
-                """ Init Method """
+                """Init Method"""
 
                 # Call parent init method
                 super().__init__(number)
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # Initialize an instance for each class with an integer
         a, b, c = [Class("5") for Class in (A, B, C)]
@@ -355,14 +355,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Try to set C instance number to a boolean
             c.number = True
 
-        # TODO: Fix type checks with int / float / bool -- they pass
-
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST SETATTR KEYS
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_keys(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # Get Country class
         Country = self.Country
@@ -460,7 +458,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_keys_traversal(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CONSTANTS
@@ -480,7 +478,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY,)
@@ -492,22 +490,22 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.key = key
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class D(B):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class E(B):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class F(C):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class G(C):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # In this case, A is the top-level parent with a defined key
 
@@ -561,7 +559,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Ob):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define init method
             def __init__(self, key):
@@ -570,16 +568,16 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.key = key
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY,)
 
         class D(C):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # In this case, C is not a top-level parent but does have a defined key
 
@@ -645,7 +643,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         KEY_3 = "key_3"
 
         class A(Ob):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_1,)
@@ -659,13 +657,13 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.key_3 = key_3
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_2,)
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_3,)
@@ -724,7 +722,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_pre_and_post_hooks(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # Get Country class
         Country = self.Country
@@ -763,7 +761,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_setattr_unicity(self):
-        """ Ensures that the setattr dunder method behaves as expected """
+        """Ensures that the setattr dunder method behaves as expected"""
 
         # Get Country class
         Country = self.Country
@@ -872,7 +870,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_str(self):
-        """ Ensures that the str dunder method behaves as expected """
+        """Ensures that the str dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -930,14 +928,14 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class Child(Ob):
-            """ A test class to represent the child of a parent """
+            """A test class to represent the child of a parent"""
 
             # Define string field
             _str = "parent"
 
             # Define init method
             def __init__(self, parent):
-                """ Init Method """
+                """Init Method"""
 
                 # Set parent
                 self.parent = parent
@@ -947,21 +945,21 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(Child):
-            """ A class whose string field will point to C """
+            """A class whose string field will point to C"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
         # └─────────────────────────────────────────────────────────────────────────────
 
         class B(Child):
-            """ A class whose string field will point to A """
+            """A class whose string field will point to A"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ C
         # └─────────────────────────────────────────────────────────────────────────────
 
         class C(Child):
-            """ A class whose string field will point to B """
+            """A class whose string field will point to B"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILDREN
