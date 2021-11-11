@@ -711,10 +711,10 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that key 1 is still enforced on C
         assertDuplicateKey(C, "a1", UNIQUE, UNIQUE)
 
-        # Assert that key 2 is enforced on B
+        # Assert that key 3 is enforced on C
         assertDuplicateKey(C, UNIQUE, UNIQUE, "a1")
 
-        # Assert that key 2 is enforced on B
+        # Assert that key 3 is enforced on C
         assertDuplicateKey(C, UNIQUE, UNIQUE, "c1")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
