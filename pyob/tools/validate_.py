@@ -40,7 +40,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
         # Raise InvalidKeyError
         raise InvalidKeyError(
-            "{cls.__name__}.{name}, a key, cannot have a value of None"
+            "{cls.__name__}.{name} is a key and therefore cannot have a value of None"
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
