@@ -856,7 +856,38 @@ class ObDunderTestCase(PyObFixtureTestCase):
         usa.name = usa_name
 
         # Change Thailand latitude to United States latitude
-        # tha.latitude = usa.latitude
+        tha.latitude = usa_latitude
+
+        # Assert that latitude + longitude has been re-indexed
+        assertUniqueReIndexed(
+            ("latitude", "longitude"),
+            tha,
+            (tha_latitude, tha_longitude),
+            (usa_latitude, tha_longitude),
+            usa,
+            (usa_latitude, usa_longitude),
+        )
+
+        # Initialize assertRaises block
+        with self.assertRaises(UnicityError):
+
+            # Try to change Thailand longitude to United States longitude
+            tha.longitude = usa.longitude
+
+        # Restore Thailand latitude
+        tha.latitude = tha_latitude
+
+        # Change Thailand longitude to United States longitude
+        tha.longitude = usa.longitude
+
+        # Initialize assertRaises block
+        with self.assertRaises(UnicityError):
+
+            # Try to change Thailand latitude to United States latitude
+            tha.latitude = usa.latitude
+
+        # Restore Thailand longitude
+        tha.longitude = tha_longitude
 
         # Assert that unique fields have returned to baseline
         assertUnicityBaseline()
@@ -864,6 +895,140 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # TODO: Add test to ensure that key indices are not wiped if not is_creating
         # TODO: Test mismatches on exceptions for non-created objects
         # TODO: Test that clean method does not fail on init when pre-referencing
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST SETATTR UNICITY TRAVERSAL
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_setattr_unicity_traversal(self):
+        """Ensures that the setattr dunder method behaves as expected"""
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CONSTANTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define unique constants
+        UNIQUE = "unique"
+        UNIQUE_1 = "unique_1"
+        UNIQUE_2 = "unique_2"
+        UNIQUE_3 = "unique_3"
+
+        UNIQUE_A = "unique_a"
+        UNIQUE_B = "unique_b"
+        UNIQUE_C = "unique_c"
+        UNIQUE_D = "unique_d"
+        UNIQUE_E = "unique_e"
+        UNIQUE_F = "unique_f"
+        UNIQUE_G = "unique_g"
+        UNIQUE_H = "unique_h"
+        UNIQUE_I = "unique_i"
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D, E, F, G
+        # │
+        # │ Show that unique fields are checked for all inherited classes
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """A PyOb test class"""
+
+            # Define unique fields
+            _unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
+
+            # Define init method
+            def __init__(self, unique_1, unique_2, unique_3):
+
+                # Set unique fields
+                self.unique_1 = unique_1
+                self.unique_2 = unique_2
+                self.unique_3 = unique_3
+
+        class B(A):
+            """A PyOb test class"""
+
+        class C(A):
+            """A PyOb test class"""
+
+        class D(B):
+            """A PyOb test class"""
+
+        class E(B):
+            """A PyOb test class"""
+
+        class F(C):
+            """A PyOb test class"""
+
+        class G(C):
+            """A PyOb test class"""
+
+        # In this case, A is the top-level parent with defined unique fields
+
+        # Create an instance of A, B, and C
+        a, b, c = (
+            A(UNIQUE_A, UNIQUE_B, UNIQUE_C),
+            B(UNIQUE_D, UNIQUE_E, UNIQUE_F),
+            C(UNIQUE_G, UNIQUE_H, UNIQUE_I),
+        )
+
+        # Iterate over classes
+        for Class in (A, B, C, D, E, F, G):
+
+            # Iterate over args
+            for args in (
+                # A Instance
+                (UNIQUE_A, UNIQUE, UNIQUE),
+                (UNIQUE, UNIQUE_B, UNIQUE_C),
+                # B Instance
+                (UNIQUE_D, UNIQUE, UNIQUE),
+                (UNIQUE, UNIQUE_E, UNIQUE_F),
+                # C Instance
+                (UNIQUE_G, UNIQUE, UNIQUE),
+                (UNIQUE, UNIQUE_H, UNIQUE_I),
+            ):
+
+                # Initialize assertRaises block
+                with self.assertRaises(UnicityError):
+
+                    # Try to create an instance with a duplicate key
+                    Class(*args)
+
+        # Iterate over instances
+        for instance, singles, togethers in (
+            (a, (UNIQUE_D, UNIQUE_G), []),
+            (b, (UNIQUE_A, UNIQUE_G), []),
+            (c, (UNIQUE_A, UNIQUE_D), []),
+        ):
+
+            # Iterate over singles
+            for single in singles:
+
+                # Initialize assertRaises block
+                with self.assertRaises(UnicityError):
+
+                    # Try to set existing unique value
+                    instance.unique_1 = single
+
+            # Iterate over togethers
+            for unique_2, unique_3 in togethers:
+
+                # Get original values
+                unique_2_original = instance.unique_2
+                unique_3_original = instance.unique_3
+
+                # Set unique 2 value
+                instance.unique_2 = unique_2
+
+                # Initialize assertRaises block
+                with self.assertRaises(UnicityError):
+
+                    # Try to set unique 3 value
+                    instance.unique_3 = unique_3
+
+                # Reset original values
+                instance.unique_2 = unique_2_original
+                instance.unique_3 = unique_3_original
+
+        # TODO: Complete unicity traversal tests
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST STR
