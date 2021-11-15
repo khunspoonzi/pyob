@@ -44,10 +44,22 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ DETERMINE IF UNIQUE
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    # Initialize is unique to False
+    is_unique = any(
+        [
+            ((type(_field) is tuple and name in _field) or name == _field)
+            for _field in Class._unique or ()
+        ]
+    )
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TRAVERSE PYOB RELATIVES
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize
+    # Initialize unique values
     unique_values = []
 
     # Get root class ID
@@ -129,7 +141,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                 other = _obs_by_key[value]
 
                 # Check if existing index is not the current object
-                if other != instance:
+                if id(other) != id(instance):
 
                     # Get singular label
                     label_singular = Class.label_singular
@@ -144,75 +156,80 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         # │ VALIDATE UNIQUE FIELDS
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get unique fields
-        _unique = Class._unique or ()
+        # Check if is unique
+        if is_unique:
 
-        # Iterate over unique fields
-        for _field in _unique:
+            # Get unique fields
+            _unique = Class._unique or ()
 
-            # Determine if unique together (a tuple of fields)
-            is_unique_together = type(_field) is tuple
+            # Iterate over unique fields
+            for _field in _unique:
 
-            # Determine if is unique field
-            is_unique_field = (is_unique_together and name in _field) or name == _field
+                # Determine if unique together (a tuple of fields)
+                is_unique_together = type(_field) is tuple
 
-            # Continue if current field is not a unique field
-            if not is_unique_field:
-                continue
+                # Determine if is unique field
+                is_unique_field = (
+                    is_unique_together and name in _field
+                ) or name == _field
 
-            # Check if is unique together (a tuple of fields)
-            if is_unique_together:
-
-                # Continue if field combination is not yet defined
-                if not all([(f == name or f in instance.__dict__) for f in _field]):
+                # Continue if current field is not a unique field
+                if not is_unique_field:
                     continue
 
-                # Get value
-                _value = tuple(
-                    value if f == name else instance.__dict__[f] for f in _field
-                )
+                # Check if is unique together (a tuple of fields)
+                if is_unique_together:
 
-            # Otherwise handle case of single field
-            else:
+                    # Continue if field combination is not yet defined
+                    if not all([(f == name or f in instance.__dict__) for f in _field]):
+                        continue
 
-                _value = value
-
-            # Get objects by unique value given field
-            _obs_by_unique_value = Class._store._obs_by_unique_field.setdefault(
-                _field, {}
-            )
-
-            """
-            NOTE: Objects by unique field structure looks like this:
-
-            _obs_by_unique_field = {
-                "name": {"China": ff0x14},
-                ("latitude", "longitude") : {(1.1, 2.2): ff0x14}
-            }
-            """
-
-            # Check if value is already indexed
-            if _value in _obs_by_unique_value:
-
-                # Get other
-                other = _obs_by_unique_value[_value]
-
-                # Check if unique constraint is violated
-                if other != instance:
-
-                    # Raise UnicityError
-                    raise UnicityError(
-                        f"A {Class.label_singular} with a(n) {_field} of {_value} "
-                        f"already exists: {other}"
+                    # Get value
+                    _value = tuple(
+                        value if f == name else instance.__dict__[f] for f in _field
                     )
 
-            # Check if should index
-            if class_id == root_class_id:
+                # Otherwise handle case of single field
+                else:
 
-                # Append unique value to unique values
-                unique_values.append(
-                    (_field, _value, _obs_by_unique_value, is_unique_together)
+                    _value = value
+
+                # Get objects by unique value given field
+                _obs_by_unique_value = Class._store._obs_by_unique_field.setdefault(
+                    _field, {}
                 )
+
+                """
+                NOTE: Objects by unique field structure looks like this:
+
+                _obs_by_unique_field = {
+                    "name": {"China": ff0x14},
+                    ("latitude", "longitude") : {(1.1, 2.2): ff0x14}
+                }
+                """
+
+                # Check if value is already indexed
+                if _value in _obs_by_unique_value:
+
+                    # Get other
+                    other = _obs_by_unique_value[_value]
+
+                    # Check if unique constraint is violated
+                    if id(other) != id(instance):
+
+                        # Raise UnicityError
+                        raise UnicityError(
+                            f"A {Class.label_singular} with a(n) {_field} of {_value} "
+                            f"already exists: {other}"
+                        )
+
+                # Check if should index
+                if class_id == root_class_id:
+
+                    # Append unique value to unique values
+                    unique_values.append(
+                        (_field, _value, _obs_by_unique_value, is_unique_together)
+                    )
 
     # Apply callback to current PyOb class and its relatives
     traverse_pyob_relatives(Class=Class, callback=callback, inclusive=True)

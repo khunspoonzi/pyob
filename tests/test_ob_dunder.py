@@ -609,12 +609,15 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 # Try to create an instance where key is None
                 Class(None)
 
-            # Initialize assertRaises block
-            with self.assertRaises(DuplicateKeyError):
+            # Iterate over args
+            for arg in (KEY_C, KEY_D):
 
-                # Try to create an instance with a duplicate key
-                # This should fail because an C instance already exists with the key
-                Class(KEY_C), Class(KEY_D)
+                # Initialize assertRaises block
+                with self.assertRaises(DuplicateKeyError):
+
+                    # Try to create an instance with a duplicate key
+                    # This should fail because an C instance already exists with the key
+                    Class(arg)
 
         # Iterate over key instances
         for instance, key in ((c, KEY_D), (d, KEY_C)):
@@ -922,6 +925,26 @@ class ObDunderTestCase(PyObFixtureTestCase):
         UNIQUE_G = "unique_g"
         UNIQUE_H = "unique_h"
         UNIQUE_I = "unique_i"
+        UNIQUE_J = "unique_j"
+        UNIQUE_K = "unique_k"
+        UNIQUE_L = "unique_l"
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PERMUTATE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define permutate helper
+        def permutate(u1, u2, u3):
+            """Returns a list of permutations of three unique fields"""
+
+            # Return permutations
+            return [
+                (u1, u2, u3),
+                (UNIQUE, u2, u3),
+                (u1, UNIQUE, u3),
+                (u1, u2, UNIQUE),
+                (u1, UNIQUE, UNIQUE),
+            ]
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C, D, E, F, G
@@ -976,14 +999,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Iterate over args
             for args in (
                 # A Instance
-                (UNIQUE_A, UNIQUE, UNIQUE),
-                (UNIQUE, UNIQUE_B, UNIQUE_C),
+                *permutate(UNIQUE_A, UNIQUE_B, UNIQUE_C),
                 # B Instance
-                (UNIQUE_D, UNIQUE, UNIQUE),
-                (UNIQUE, UNIQUE_E, UNIQUE_F),
+                *permutate(UNIQUE_D, UNIQUE_E, UNIQUE_F),
                 # C Instance
-                (UNIQUE_G, UNIQUE, UNIQUE),
-                (UNIQUE, UNIQUE_H, UNIQUE_I),
+                *permutate(UNIQUE_G, UNIQUE_H, UNIQUE_I),
             ):
 
                 # Initialize assertRaises block
@@ -992,41 +1012,118 @@ class ObDunderTestCase(PyObFixtureTestCase):
                     # Try to create an instance with a duplicate key
                     Class(*args)
 
-        # Iterate over instances
-        for instance, singles, togethers in (
-            (a, (UNIQUE_D, UNIQUE_G), []),
-            (b, (UNIQUE_A, UNIQUE_G), []),
-            (c, (UNIQUE_A, UNIQUE_D), []),
-        ):
+        # Define set unique field helper
+        def set_unique_fields(*instances):
 
-            # Iterate over singles
-            for single in singles:
+            # Iterate over instances
+            for instance, singles, togethers in instances:
+
+                # Iterate over singles
+                for single in singles:
+
+                    # Initialize assertRaises block
+                    with self.assertRaises(UnicityError):
+
+                        # Try to set existing unique value
+                        instance.unique_1 = single
+
+                # Iterate over togethers
+                for unique_2, unique_3 in togethers:
+
+                    # Get original values
+                    unique_2_original = instance.unique_2
+                    unique_3_original = instance.unique_3
+
+                    # Set unique 2 value
+                    instance.unique_2 = unique_2
+
+                    # Initialize assertRaises block
+                    with self.assertRaises(UnicityError):
+
+                        # Try to set unique 3 value
+                        instance.unique_3 = unique_3
+
+                    # Reset original values
+                    instance.unique_2 = unique_2_original
+                    instance.unique_3 = unique_3_original
+
+        # Test setting unique fields
+        set_unique_fields(
+            (a, (UNIQUE_D, UNIQUE_G), [(UNIQUE_E, UNIQUE_F), (UNIQUE_H, UNIQUE_I)]),
+            (b, (UNIQUE_A, UNIQUE_G), [(UNIQUE_B, UNIQUE_C), (UNIQUE_H, UNIQUE_I)]),
+            (c, (UNIQUE_A, UNIQUE_D), [(UNIQUE_B, UNIQUE_C), (UNIQUE_E, UNIQUE_F)]),
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C, D
+        # │
+        # │ Show that unique fields are checked going downward according to inheritance
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """A PyOb test class"""
+
+            # Define init method
+            def __init__(self, unique_1, unique_2, unique_3):
+
+                # Set unique fields
+                self.unique_1 = unique_1
+                self.unique_2 = unique_2
+                self.unique_3 = unique_3
+
+        class B(A):
+            """A PyOb test class"""
+
+        class C(A):
+            """A PyOb test class"""
+
+            # Define unique fields
+            _unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
+
+        class D(C):
+            """A PyOb test class"""
+
+        # In this case, C is not a top-level parent but has defined unique fields
+
+        # Create an instance of A and B
+        A(UNIQUE_A, UNIQUE_B, UNIQUE_C), B(UNIQUE_D, UNIQUE_E, UNIQUE_F),
+
+        # Create an instance of C and D
+        c, d = C(UNIQUE_G, UNIQUE_H, UNIQUE_I), D(UNIQUE_J, UNIQUE_K, UNIQUE_L)
+
+        # Iterate over non-key classes
+        for Class in (A, B):
+
+            # Ensure that there are no field unicity conflicts
+            Class(UNIQUE_A, UNIQUE_B, UNIQUE_C)
+            Class(UNIQUE_D, UNIQUE_E, UNIQUE_F)
+            Class(UNIQUE_G, UNIQUE_H, UNIQUE_I)
+            Class(UNIQUE_J, UNIQUE_K, UNIQUE_L)
+
+            # As A and B are not children of C, we should be able to create instances
+            # with reused fields without a UnicityError,
+
+        # Iterate over key classes
+        for Class in (C, D):
+
+            # Iterate over args
+            for args in (
+                *permutate(UNIQUE_G, UNIQUE_H, UNIQUE_I),
+                *permutate(UNIQUE_J, UNIQUE_K, UNIQUE_L),
+            ):
 
                 # Initialize assertRaises block
                 with self.assertRaises(UnicityError):
 
-                    # Try to set existing unique value
-                    instance.unique_1 = single
+                    # Try to create an instance with a duplicate field
+                    # This should fail because an instance already exists with the field
+                    Class(*args)
 
-            # Iterate over togethers
-            for unique_2, unique_3 in togethers:
-
-                # Get original values
-                unique_2_original = instance.unique_2
-                unique_3_original = instance.unique_3
-
-                # Set unique 2 value
-                instance.unique_2 = unique_2
-
-                # Initialize assertRaises block
-                with self.assertRaises(UnicityError):
-
-                    # Try to set unique 3 value
-                    instance.unique_3 = unique_3
-
-                # Reset original values
-                instance.unique_2 = unique_2_original
-                instance.unique_3 = unique_3_original
+        # Test setting unique fields
+        set_unique_fields(
+            (c, (UNIQUE_J,), [(UNIQUE_K, UNIQUE_L)]),
+            (d, (UNIQUE_G,), [(UNIQUE_H, UNIQUE_I)]),
+        )
 
         # TODO: Complete unicity traversal tests
 

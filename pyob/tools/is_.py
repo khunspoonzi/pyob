@@ -12,7 +12,7 @@ import pyob.ob_set as ob_set
 
 
 def is_iterable(item):
-    """ Returns a boolean of whether an item is iterable """
+    """Returns a boolean of whether an item is iterable"""
 
     # Return boolean of whether item is an iterable type
     return type(item) in [list, set, tuple, ob_set.ObSet]
@@ -24,7 +24,7 @@ def is_iterable(item):
 
 
 def is_ob(item):
-    """ Returns a boolean of whether an item is an Ob instance """
+    """Returns a boolean of whether an item is an Ob instance"""
 
     # Return boolean of whether item is an Ob instance
     return isinstance(item, ob.Ob)
@@ -36,7 +36,7 @@ def is_ob(item):
 
 
 def is_ob_set(item):
-    """ Returns a boolean of whether an item is an ObSet instance """
+    """Returns a boolean of whether an item is an ObSet instance"""
 
     # Return boolean of whether item is an ObSet instance
     return isinstance(item, ob_set.ObSet)
