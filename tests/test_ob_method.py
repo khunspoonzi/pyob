@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 
 from tests.test_cases.pyob import PyObFixtureTestCase
 
@@ -19,14 +19,14 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 class ObMethodTestCase(PyObFixtureTestCase):
-    """ Ob Method Test Case """
+    """Ob Method Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST LOCALIZED
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_localized(self):
-        """ Ensures that the Localized class method behaves as expected """
+        """Ensures that the Localized class method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -48,26 +48,26 @@ class ObMethodTestCase(PyObFixtureTestCase):
         # │ VEHICLE
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Vehicle(Ob):
-            """ A PyOb class representing vehicle objects """
+        class Vehicle(PyOb):
+            """A PyOb class representing vehicle objects"""
 
         class TwoWheelVehicle(Vehicle):
-            """ A PyOb class representing two-wheel vehicle objects """
+            """A PyOb class representing two-wheel vehicle objects"""
 
         class MotorizedVehicle(Vehicle):
-            """ A PyOb class representing motorized vehicle objects """
+            """A PyOb class representing motorized vehicle objects"""
 
         class FourWheelVehicle(Vehicle):
-            """ A PyOb class representing four-wheel vehicle objects """
+            """A PyOb class representing four-wheel vehicle objects"""
 
         class Bicycle(TwoWheelVehicle):
-            """ A PyOb class representing bicycle objects """
+            """A PyOb class representing bicycle objects"""
 
         class Motorcycle(TwoWheelVehicle, MotorizedVehicle):
-            """ A PyOb class representing motorcycle objects """
+            """A PyOb class representing motorcycle objects"""
 
         class Car(FourWheelVehicle, MotorizedVehicle):
-            """ A PyOb class representing car objects """
+            """A PyOb class representing car objects"""
 
         # Localize vehicle classes
         _Vehicle, _Bicycle, _Motorcycle, _Car = Vehicle.Localized(
@@ -158,7 +158,7 @@ class ObMethodTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_set(self):
-        """ Ensures that the Set class method behaves as expected """
+        """Ensures that the Set class method behaves as expected"""
 
         # Initialize new Country object set
         countries = self.Country.Set()

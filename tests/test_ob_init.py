@@ -13,7 +13,7 @@ from datetime import datetime
 from examples.classes.city import City
 from examples.classes.city_state import CityState
 from examples.classes.country import Country, CountryBase
-from pyob import Ob
+from pyob import PyOb
 from pyob.exceptions import (
     DuplicateKeyError,
     InvalidKeyError,
@@ -29,7 +29,7 @@ from tests.test_cases.pyob import PyObTestCase
 
 
 def get_country_kwargs(dummy=False):
-    """ Returns a new dict of common country kwargs """
+    """Returns a new dict of common country kwargs"""
 
     # Check if dummy
     if dummy:
@@ -73,14 +73,14 @@ def get_country_kwargs(dummy=False):
 
 
 class ObInitTestCase(PyObTestCase):
-    """ Ob Init Test Case """
+    """Ob Init Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_class_attributes(self):
-        """ Ensures that the test classes have the expected class attributes """
+        """Ensures that the test classes have the expected class attributes"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -129,7 +129,7 @@ class ObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_instance_attributes(self):
-        """ Ensures that an object instance attributes are correctly initialized """
+        """Ensures that an object instance attributes are correctly initialized"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY LOCALIZED
@@ -217,7 +217,7 @@ class ObInitTestCase(PyObTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         def assertBaseState():
-            """ A helper to assert a base state after encountering exceptions """
+            """A helper to assert a base state after encountering exceptions"""
 
             # Get store
             _store = _Country._store
@@ -344,7 +344,7 @@ class ObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_type_enforcement(self):
-        """ Ensures that types are enforced / disabled upon object initialization """
+        """Ensures that types are enforced / disabled upon object initialization"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ TYPED
@@ -402,8 +402,8 @@ class ObInitTestCase(PyObTestCase):
         # NOTE: Do not use Country here as its _pre method will interfere with test
 
         # Define A class
-        class A(Ob):
-            """ A test class to to ensure correct type-hint precedence """
+        class A(PyOb):
+            """A test class to to ensure correct type-hint precedence"""
 
             # Define population type as int
             population: int
@@ -429,14 +429,14 @@ class ObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_speed(self):
-        """ Ensures that an object instance is initialized quick enough """
+        """Ensures that an object instance is initialized quick enough"""
 
         # Get country kwargs
         country_kwargs = get_country_kwargs()
 
         # Define initialize country base
         def initialize_country_base():
-            """ Initializes a DummyPyOb instance """
+            """Initializes a DummyPyOb instance"""
 
             # Define localized Country
             Country.Localized()
@@ -446,7 +446,7 @@ class ObInitTestCase(PyObTestCase):
 
         # Define initialize country
         def initialize_country():
-            """ Initializes a DummyBase instance """
+            """Initializes a DummyBase instance"""
 
             # Define localized Country
             _Country = Country.Localized()

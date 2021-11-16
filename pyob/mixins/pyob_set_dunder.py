@@ -17,19 +17,19 @@ from pyob.tools import (
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB SET DUNDER MIXIN
+# │ PYOB SET DUNDER MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObSetDunderMixin:
-    """ A mixin class for PyOb object set dunder methods """
+class PyObSetDunderMixin:
+    """A mixin class for PyOb object set dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ADD__
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __add__(self, others):
-        """ Add Method """
+        """Add Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ OBJECT SET
@@ -167,7 +167,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __and__(self, other):
-        """ And Method """
+        """And Method"""
 
         # Ensure other is iterable
         other = other if is_iterable(other) else [other]
@@ -194,7 +194,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __bool__(self):
-        """ Bool Method """
+        """Bool Method"""
 
         # Return whether object count is greater than zero
         return len(self._obs) > 0
@@ -204,7 +204,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __contains__(self, item):
-        """ Contains Method """
+        """Contains Method"""
 
         # Return whether item or key in objects
         return (item in self._obs) or len(
@@ -218,7 +218,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __eq__(self, other):
-        """ Eq Method """
+        """Eq Method"""
 
         # Return False if other is not an object set
         if not is_ob_set(other):
@@ -232,7 +232,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __getattr__(self, name):
-        """ Get Attr Method """
+        """Get Attr Method"""
 
         # Initialize try-except block
         try:
@@ -253,7 +253,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __getitem__(self, key):
-        """ Get Item Method """
+        """Get Item Method"""
 
         # Get objects as list
         _obs = list(self)
@@ -272,7 +272,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __iter__(self):
-        """ Iterate Method """
+        """Iterate Method"""
 
         # Iterate over objects in object set
         for _ob, count in self._obs.items():
@@ -288,7 +288,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __len__(self):
-        """ Length Method """
+        """Length Method"""
 
         # Return length of objects
         return sum(self._obs.values())
@@ -298,7 +298,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __or__(self, other):
-        """ Or Method """
+        """Or Method"""
 
         # Ensure other is iterable
         other_obs = other if is_iterable(other) else [other]
@@ -311,7 +311,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __pow__(self, other):
-        """ Pow Method """
+        """Pow Method"""
 
         # Apply rshift method
         return self.__rshift__(other)
@@ -323,7 +323,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __repr__(self):
-        """ Representation Method """
+        """Representation Method"""
 
         # Define threshold
         threshold = 20
@@ -363,7 +363,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __rshift__(self, other):
-        """ Rshift Method """
+        """Rshift Method"""
 
         # Get by key
         return self.key(other)
@@ -373,7 +373,7 @@ class ObSetDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __sub__(self, other):
-        """ Sub Method """
+        """Sub Method"""
 
         # Ensure other is iterable
         other = other if is_iterable(other) else [other]

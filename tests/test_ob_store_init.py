@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
@@ -18,21 +18,21 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 class ObSetInitTestCase(PyObFixtureTestCase):
-    """ Ob Set Init Test Case """
+    """Ob Set Init Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_class_attributes(self):
-        """ Ensures that class attributes are initialized as expected """
+        """Ensures that class attributes are initialized as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ OB
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get store
-        _store = Ob.obs
+        _store = PyOb.obs
 
         # Assert that objects by key and objects by unique field are an empty dict
         self.assertAllEqual(_store._obs_by_key, _store._obs_by_unique_field, {})
@@ -44,14 +44,14 @@ class ObSetInitTestCase(PyObFixtureTestCase):
         # │ A
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A PyOb test class """
+        class A(PyOb):
+            """A PyOb test class"""
 
         # Get store
         _store = A.obs
 
         # Assert that parent store is pyob.Ob store
-        self.assertEqual(_store._parents, [Ob.obs])
+        self.assertEqual(_store._parents, [PyOb.obs])
 
         # Assert that the store has no children
         self.assertEqual(_store._children, [])
@@ -61,7 +61,7 @@ class ObSetInitTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # Get store
         _store = B.obs
@@ -80,7 +80,7 @@ class ObSetInitTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Assert that the pyob.Ob store continues to have no parents
-        self.assertAllEqual(Ob.obs._parents, [])
+        self.assertAllEqual(PyOb.obs._parents, [])
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

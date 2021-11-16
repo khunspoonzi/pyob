@@ -2,20 +2,20 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.ob_meta import ObMeta
-from pyob.ob_set import ObSet
+from pyob.pyob_meta import PyObMeta
+from pyob.pyob_set import PyObSet
 
-from pyob.mixins import ObDunderMixin, ObLabelMixin
+from pyob.mixins import PyObDunderMixin, PyObLabelMixin
 from pyob.tools import localize
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB
+# │ PYOB
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
-    """ A base class for PyOb objects """
+class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
+    """A base class for PyOb objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OBJECT SETTINGS
@@ -47,7 +47,7 @@ class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
 
     @classmethod
     def Localized(cls, include=None):
-        """ Returns a localized version of the PyOb class with an empty object store """
+        """Returns a localized version of the PyOb class with an empty object store"""
 
         # Return localized classes
         return localize(cls, *(include or []))
@@ -58,10 +58,10 @@ class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
 
     @classmethod
     def Set(cls):
-        """ Initializes a new PyOb object set for the current PyOb object class """
+        """Initializes a new PyOb object set for the current PyOb object class"""
 
         # Return the initialized object set
-        return ObSet(_Ob=cls)
+        return PyObSet(_Ob=cls)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ _POPULATE STORE
@@ -69,7 +69,7 @@ class Ob(ObLabelMixin, ObDunderMixin, metaclass=ObMeta):
 
     @classmethod
     def _populate_store(cls):
-        """ Populates the object store of a PyOb class """
+        """Populates the object store of a PyOb class"""
 
         # Return None
         return None

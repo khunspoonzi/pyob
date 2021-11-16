@@ -1,29 +1,45 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB LABEL MIXIN
+# │ PYOB STORE DUNDER MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObLabelMixin:
-    """ A mixin class for PyOb object label methods """
+class PyObStoreDunderMixin:
+    """A mixin class for PyOb object store dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ LABEL SINGULAR
+    # │ __CONTAINS__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    @property
-    def label_singular(self):
-        """ Returns a singular label based on the class label definition or name """
+    def __contains__(self, item):
+        """Contains Method"""
 
-        # Return singular label
-        return self.__class__.label_singular
+        # Return the result of contains for current and child stores
+        return super().__contains__(item) or any(
+            [_child.__contains__(item) for _child in self._children]
+        )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ LABEL PLURAL
+    # │ __ITER__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    @property
-    def label_plural(self):
-        """ Returns a plural label based on the class definition or singular label """
+    def __iter__(self):
+        """Iterate Method"""
 
-        # Return plural label
-        return self.__class__.label_plural
+        # Yield from current store
+        yield from super().__iter__()
+
+        # Iterate over child stores
+        for _child in self._children:
+
+            # Yield from child store
+            yield from _child.__iter__()
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __LEN__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __len__(self):
+        """Len Method"""
+
+        # Return the count of the object store and its children
+        return super().__len__() + sum([len(_child) for _child in self._children])

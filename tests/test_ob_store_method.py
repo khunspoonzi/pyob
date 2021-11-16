@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 
 from tests.test_cases.pyob import PyObFixtureTestCase
 
@@ -19,14 +19,14 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 class ObStoreMethodTestCase(PyObFixtureTestCase):
-    """ Ob Store Method Test Case """
+    """Ob Store Method Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST COUNT
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_count(self):
-        """ Ensures that the count method behaves as expected """
+        """Ensures that the count method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -45,17 +45,17 @@ class ObStoreMethodTestCase(PyObFixtureTestCase):
         # │ A, B, C, D
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A generic test class """
+        class A(PyOb):
+            """A generic test class"""
 
         class B(A):
-            """ A generic test class """
+            """A generic test class"""
 
         class C(B):
-            """ A generic test class """
+            """A generic test class"""
 
         class D(B):
-            """ A generic test class """
+            """A generic test class"""
 
         # Define instance counts
         instance_counts = {A: 1, B: 3, C: 5, D: 7}

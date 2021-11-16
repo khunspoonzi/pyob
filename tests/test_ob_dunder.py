@@ -10,7 +10,7 @@ from typing import Union
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 from pyob.exceptions import (
     DuplicateKeyError,
     InvalidKeyError,
@@ -93,14 +93,14 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ A
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A generic PyOb test class"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class B(Ob):
+        class B(PyOb):
             """A generic PyOb test class"""
 
             # Define keys
@@ -198,7 +198,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Define A
-        class A(Ob):
+        class A(PyOb):
             """A test class for instances that will serve as a key"""
 
             # Define string field
@@ -215,7 +215,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Define B
-        class B(Ob):
+        class B(PyOb):
             """A test class with an A key"""
 
             # Define keys
@@ -269,7 +269,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ A
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define init method
@@ -305,7 +305,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ A, B, C
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define init method
@@ -477,7 +477,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ Show that keys are checked for all classes with a shared key (inherited)
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define keys
@@ -558,7 +558,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ Show that keys are checked going downward according to inheritance
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define init method
@@ -645,7 +645,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         KEY_2 = "key_2"
         KEY_3 = "key_3"
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define keys
@@ -957,7 +957,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ Show that unique fields are checked for all inherited classes
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define unique fields
@@ -1061,7 +1061,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ Show that unique fields are checked going downward according to inheritance
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define init method
@@ -1132,7 +1132,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ Show that unique fields are specifically NOT checked upward if not inherited
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
+        class A(PyOb):
             """A PyOb test class"""
 
             # Define unique fields
@@ -1330,7 +1330,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # │ CHILD
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Child(Ob):
+        class Child(PyOb):
             """A test class to represent the child of a parent"""
 
             # Define string field

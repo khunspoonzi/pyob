@@ -1,17 +1,17 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB STORE METHOD MIXIN
+# │ PYOB STORE METHOD MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStoreMethodMixin:
-    """ A mixin class for PyOb object store methods """
+class PyObStoreMethodMixin:
+    """A mixin class for PyOb object store methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ KEY
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def key(self, *args, **kwargs):
-        """ Returns the PyOb object associated with a key from the PyOb object store """
+        """Returns the PyOb object associated with a key from the PyOb object store"""
 
         # Iterate over child stores
         for ob_store in self._children:

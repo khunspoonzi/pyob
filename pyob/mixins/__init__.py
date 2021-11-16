@@ -2,11 +2,11 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.mixins.ob_dunder import ObDunderMixin
-from pyob.mixins.ob_label import ObLabelMixin
-from pyob.mixins.ob_meta_label import ObMetaLabelMixin
-from pyob.mixins.ob_set_dunder import ObSetDunderMixin
-from pyob.mixins.ob_set_label import ObSetLabelMixin
-from pyob.mixins.ob_set_method import ObSetMethodMixin
-from pyob.mixins.ob_store_dunder import ObStoreDunderMixin
-from pyob.mixins.ob_store_method import ObStoreMethodMixin
+from pyob.mixins.pyob_dunder import PyObDunderMixin
+from pyob.mixins.pyob_label import PyObLabelMixin
+from pyob.mixins.pyob_meta_label import PyObMetaLabelMixin
+from pyob.mixins.pyob_set_dunder import PyObSetDunderMixin
+from pyob.mixins.pyob_set_label import PyObSetLabelMixin
+from pyob.mixins.pyob_set_method import PyObSetMethodMixin
+from pyob.mixins.pyob_store_dunder import PyObStoreDunderMixin
+from pyob.mixins.pyob_store_method import PyObStoreMethodMixin

@@ -1,45 +1,57 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB STORE DUNDER MIXIN
+# │ PYOB SET LABEL MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStoreDunderMixin:
-    """ A mixin class for PyOb object store dunder methods """
+class PyObSetLabelMixin:
+    """A mixin class for PyOb object set label methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ __CONTAINS__
+    # │ LABEL SINGULAR
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __contains__(self, item):
-        """ Contains Method """
+    @property
+    def label_singular(self):
+        """Returns a singular label for the object set"""
 
-        # Return the result of contains for current and child stores
-        return super().__contains__(item) or any(
-            [_child.__contains__(item) for _child in self._children]
-        )
+        # Determine if object set is mixed
+        is_mixed = self.count() > 1 and self._Ob is None
+
+        # Get object label
+        ob_label = "Mixed" if is_mixed else self.ob_label_singular
+
+        # Return singular label
+        return self.__class__.__name__.replace("Ob", ob_label + " ")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ __ITER__
+    # │ LABEL PLURAL
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __iter__(self):
-        """ Iterate Method """
+    @property
+    def label_plural(self):
+        """Returns a plural label for the object set"""
 
-        # Yield from current store
-        yield from super().__iter__()
-
-        # Iterate over child stores
-        for _child in self._children:
-
-            # Yield from child store
-            yield from _child.__iter__()
+        # Return plural label
+        return self.label_singular + "s"
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ __LEN__
+    # │ OB LABEL SINGULAR
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __len__(self):
-        """ Len Method """
+    @property
+    def ob_label_singular(self):
+        """Returns a singular label based on related object if any"""
 
-        # Return the count of the object store and its children
-        return super().__len__() + sum([len(_child) for _child in self._children])
+        # Return singular label
+        return (self._Ob and self._Ob.label_singular) or "Ob"
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ OB LABEL PLURAL
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @property
+    def ob_label_plural(self):
+        """Returns a plural label based on related object if any"""
+
+        # Return plural label
+        return (self._Ob and self._Ob.label_plural) or "Obs"

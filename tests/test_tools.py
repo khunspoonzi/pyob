@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 from pyob.tools import traverse_pyob_relatives
 
 
@@ -18,14 +18,14 @@ from pyob.tools import traverse_pyob_relatives
 
 
 class ToolsTestCase(unittest.TestCase):
-    """ Tools Test Case """
+    """Tools Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST TRAVERSE PYOB RELATIVES
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_traverse_pyob_relatives(self):
-        """ Ensures that the traverse PyOb relatives tool behaves as expected """
+        """Ensures that the traverse PyOb relatives tool behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A, B, C, D
@@ -33,17 +33,17 @@ class ToolsTestCase(unittest.TestCase):
         # │ Show that class relations are not double traversed
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A PyOb test class """
+        class A(PyOb):
+            """A PyOb test class"""
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         class D(C):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # Define classes
         classes = (A, B, C, D)

@@ -2,7 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-import pyob.ob as ob
+import pyob.pyob as pyob
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -11,7 +11,7 @@ import pyob.ob as ob
 
 
 def localize(*classes):
-    """ Localizes and returns an interable of PyOb class instances """
+    """Localizes and returns an interable of PyOb class instances"""
 
     # Initialize cache
     cache = {}
@@ -20,7 +20,7 @@ def localize(*classes):
     def _localize(Class):
 
         # Return if class is not a PyOb subclass
-        if Class is ob.Ob or not issubclass(Class, ob.Ob):
+        if Class is pyob.PyOb or not issubclass(Class, pyob.PyOb):
             return Class
 
         # Return if class in cache

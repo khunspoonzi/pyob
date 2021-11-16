@@ -20,19 +20,19 @@ from pyob.utils import Nothing
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB SET METHOD MIXIN
+# │ PYOB SET METHOD MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObSetMethodMixin:
-    """ A mixin class for PyOb object set methods """
+class PyObSetMethodMixin:
+    """A mixin class for PyOb object set methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ APPEND
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def append(self, ob, distinct=False):
-        """ Appends a PyOb object to a PyOb object set """
+        """Appends a PyOb object to a PyOb object set"""
 
         # Return if distinct and object already in object set
         if distinct and ob in self:
@@ -46,7 +46,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def copy(self):
-        """ Copies a PyOB object set into a new PyOb object set """
+        """Copies a PyOB object set into a new PyOb object set"""
 
         # Return a copied object set
         return self.New() + self
@@ -56,7 +56,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def count(self):
-        """ Returns a count of PyOb objects in a PyOb object set """
+        """Returns a count of PyOb objects in a PyOb object set"""
 
         # Return the length of the object set
         return len(self)
@@ -66,7 +66,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def difference(self, obs):
-        """ Returns the difference of two object sets using the - operator """
+        """Returns the difference of two object sets using the - operator"""
 
         # Return the difference of the object sets
         return self - obs
@@ -76,7 +76,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def distinct(self):
-        """ Returns an object set of distinct items from the current object set """
+        """Returns an object set of distinct items from the current object set"""
 
         # Return the union of an empty and the current object set
         return self.New() + set(self)
@@ -86,7 +86,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def extend(self, obs, distinct=False):
-        """ Extends the current PyOb object set by another PyOb object set """
+        """Extends the current PyOb object set by another PyOb object set"""
 
         # Check if distinct
         if distinct:
@@ -102,7 +102,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter(self, **kwargs):
-        """ Filters a PyOb object set based on a series of keyword arguments """
+        """Filters a PyOb object set based on a series of keyword arguments"""
 
         # Return filtered object set
         return self.New() + filter_and(self._obs, **kwargs)
@@ -112,7 +112,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_by_key(self, value):
-        """ Filters a PyOb object set based on key """
+        """Filters a PyOb object set based on key"""
 
         # Return filtered object set
         return self.New() + filter_by_key(
@@ -124,7 +124,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_by_keys(self, *values):
-        """ Filters a PyOb object set based on key """
+        """Filters a PyOb object set based on key"""
 
         # Return filtered object set
         return self.New() + filter_by_keys(
@@ -136,7 +136,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_first(self, **kwargs):
-        """ Filters a PyOb object set and returns the first result """
+        """Filters a PyOb object set and returns the first result"""
 
         # Return first object of filtered object set
         return self.filter(**kwargs).first()
@@ -146,7 +146,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_only(self, **kwargs):
-        """ Filters a PyOb object set and returns the only result or error """
+        """Filters a PyOb object set and returns the only result or error"""
 
         # Return the only object of the filtered object set
         return self.filter(**kwargs).only()
@@ -156,7 +156,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def first(self, n=None):
-        """ Returns the first PyOb object of a PyOb object set """
+        """Returns the first PyOb object of a PyOb object set"""
 
         # Get objects as list
         _obs = list(self)
@@ -169,7 +169,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def intersection(self, obs):
-        """ Returns the intersection of two object sets using the & operator """
+        """Returns the intersection of two object sets using the & operator"""
 
         # Return the intersection of both object sets
         return self & obs
@@ -179,7 +179,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def key(self, key, default=Nothing):
-        """ Returns the PyOb object associated with a key from the PyOb object set """
+        """Returns the PyOb object associated with a key from the PyOb object set"""
 
         # Get objects by key
         obs = self.filter_by_key(key)
@@ -209,7 +209,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def keys(self, *keys):
-        """ Returns a PyOb object set of objects associated with a series of keys """
+        """Returns a PyOb object set of objects associated with a series of keys"""
 
         # Initialize an empty object set
         obs = self.New()
@@ -228,7 +228,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def last(self, n=None):
-        """ Returns the last PyOb object of a PyOb object set """
+        """Returns the last PyOb object of a PyOb object set"""
 
         # Get objects as list
         _obs = list(self)
@@ -241,7 +241,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def only(self):
-        """ Returns the one and only object in an object set or raises an error """
+        """Returns the one and only object in an object set or raises an error"""
 
         # Get distinct object count
         ob_count = self.distinct().count()
@@ -302,7 +302,7 @@ class ObSetMethodMixin:
 
         # Define inner cmp helper function
         def cmp__(x, y):
-            """ Compares the x and y values """
+            """Compares the x and y values"""
 
             # Return result
             return (x > y) - (x < y)
@@ -373,7 +373,7 @@ class ObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def union(self, obs):
-        """ Returns the union of two object sets using the | operator """
+        """Returns the union of two object sets using the | operator"""
 
         # Return the union of both object sets
         return self | obs

@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 from tests.test_cases.pyob import PyObTestCase
 
 
@@ -18,14 +18,14 @@ from tests.test_cases.pyob import PyObTestCase
 
 
 class ObLabelTestCase(PyObTestCase):
-    """ Ob Label Test Case """
+    """Ob Label Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT LABELS CORRECT
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertLabelsCorrect(self, Class, expected_singular, expected_plural):
-        """ Asserts that all labels in a class are equal to their expected values """
+        """Asserts that all labels in a class are equal to their expected values"""
 
         # Create an instance
         instance = Class()
@@ -51,14 +51,14 @@ class ObLabelTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_label_nation(self):
-        """ Ensures that label variants of an Ob class and instance are correct """
+        """Ensures that label variants of an Ob class and instance are correct"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ DYNAMIC LABELS
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Nation(Ob):
-            """ Nation with no labels """
+        class Nation(PyOb):
+            """Nation with no labels"""
 
         # Define nation labels
         nation_label_singular = "Nation"
@@ -71,8 +71,8 @@ class ObLabelTestCase(PyObTestCase):
         # │ DEFINED LABELS
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Nation_(Ob):
-            """ Nation with labels """
+        class Nation_(PyOb):
+            """Nation with labels"""
 
             # Set labels
             _label_singular = "State"
@@ -88,10 +88,10 @@ class ObLabelTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_label_nationality(self):
-        """ Ensures that label variants of an Ob class and instance are correct """
+        """Ensures that label variants of an Ob class and instance are correct"""
 
-        class Nationality(Ob):
-            """ Nationality with no labels """
+        class Nationality(PyOb):
+            """Nationality with no labels"""
 
         # Define labels
         label_singular = "Nationality"
@@ -105,10 +105,10 @@ class ObLabelTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_label_api_response(self):
-        """ Ensures that label variants of an Ob class and instance are correct """
+        """Ensures that label variants of an Ob class and instance are correct"""
 
-        class APIResponse(Ob):
-            """ API Response with no labels """
+        class APIResponse(PyOb):
+            """API Response with no labels"""
 
         # Define labels
         label_singular = "API Response"
@@ -122,10 +122,10 @@ class ObLabelTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_label_box(self):
-        """ Ensures that label variants of an Ob class and instance are correct """
+        """Ensures that label variants of an Ob class and instance are correct"""
 
-        class Box(Ob):
-            """ Research with no labels """
+        class Box(PyOb):
+            """Research with no labels"""
 
         # Define labels
         label_singular = "Box"
@@ -139,10 +139,10 @@ class ObLabelTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_label_research(self):
-        """ Ensures that label variants of an Ob class and instance are correct """
+        """Ensures that label variants of an Ob class and instance are correct"""
 
-        class Research(Ob):
-            """ Research with no labels """
+        class Research(PyOb):
+            """Research with no labels"""
 
         # Define labels
         label_singular = "Research"

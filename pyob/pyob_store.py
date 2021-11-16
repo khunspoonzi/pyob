@@ -2,17 +2,17 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.ob_set import ObSet
-from pyob.mixins import ObStoreDunderMixin, ObStoreMethodMixin
+from pyob.pyob_set import PyObSet
+from pyob.mixins import PyObStoreDunderMixin, PyObStoreMethodMixin
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB STORE
+# │ PYOB STORE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStore(ObStoreDunderMixin, ObStoreMethodMixin, ObSet):
-    """ A base class for PyOb object stores """
+class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
+    """A base class for PyOb object stores"""
 
     # Initialize objects by key to None
     _obs_by_key = None
@@ -28,7 +28,7 @@ class ObStore(ObStoreDunderMixin, ObStoreMethodMixin, ObSet):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __init__(self, *args, **kwargs):
-        """ Init Method """
+        """Init Method"""
 
         # Call parent init method
         super().__init__(*args, **kwargs)
@@ -47,7 +47,7 @@ class ObStore(ObStoreDunderMixin, ObStoreMethodMixin, ObSet):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def populate(self):
-        """ Populates the object store based on a user-defined populate method """
+        """Populates the object store based on a user-defined populate method"""
 
         # Call user-defined populate store method
         return self._Ob and self._Ob._populate_store()

@@ -10,26 +10,26 @@ from typing import get_type_hints
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.ob_store import ObStore
+from pyob.pyob_store import PyObStore
 
-from pyob.mixins import ObMetaLabelMixin
+from pyob.mixins import PyObMetaLabelMixin
 from pyob.tools import is_iterable, remove_duplicates
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB META
+# │ PYOB META
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObMeta(type, ObMetaLabelMixin):
-    """ A metaclass for the Ob base class """
+class PyObMeta(type, PyObMetaLabelMixin):
+    """A metaclass for the Ob base class"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __init__(cls, *args, **kwargs):
-        """ Init Method """
+        """Init Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENTS
@@ -43,7 +43,7 @@ class ObMeta(type, ObMetaLabelMixin):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize store
-        cls._store = ObStore(_Ob=cls)
+        cls._store = PyObStore(_Ob=cls)
 
         # Iterate over bases
         for base in cls.__bases__:
@@ -52,7 +52,7 @@ class ObMeta(type, ObMetaLabelMixin):
             _store_parent = getattr(base, "_store", None)
 
             # Continue if store is not a PyOb object store
-            if not isinstance(_store_parent, ObStore):
+            if not isinstance(_store_parent, PyObStore):
                 continue
 
             # Add parent to child store
@@ -155,7 +155,7 @@ class ObMeta(type, ObMetaLabelMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __call__(cls, *args, **kwargs):
-        """ Call Method """
+        """Call Method"""
 
         # Get object store
         _store = cls._store
@@ -203,7 +203,7 @@ class ObMeta(type, ObMetaLabelMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __getattr__(cls, name):
-        """ Get Attr Method """
+        """Get Attr Method"""
 
         # Attempt to return PyOb object by key
         return cls._store.__getattr__(name)
@@ -213,7 +213,7 @@ class ObMeta(type, ObMetaLabelMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __instancecheck__(cls, instance):
-        """ Instance Check Method """
+        """Instance Check Method"""
 
         # Get localized from
         _localized_from = getattr(instance.__class__, "_localized_from", None)
@@ -232,7 +232,7 @@ class ObMeta(type, ObMetaLabelMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __pow__(cls, other):
-        """ Pow Method """
+        """Pow Method"""
 
         # Return rshift of object store
         return cls._store >> other
@@ -242,7 +242,7 @@ class ObMeta(type, ObMetaLabelMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __rshift__(cls, other):
-        """ Rshift Method """
+        """Rshift Method"""
 
         # Return rshift of object store
         return cls._store >> other
@@ -253,7 +253,7 @@ class ObMeta(type, ObMetaLabelMixin):
 
     @property
     def obs(cls):
-        """ Returns the PyOb object class's object store """
+        """Returns the PyOb object class's object store"""
 
         # Return object store
         return cls._store

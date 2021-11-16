@@ -10,7 +10,7 @@ from unittest import TestCase
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob, ObSet, ObStore
+from pyob import PyOb, PyObSet, PyObStore
 from pyob.tools import localize
 
 from examples.classes.city import City as CityGlobal
@@ -24,14 +24,14 @@ from examples.classes.country import Country as CountryGlobal
 
 
 class PyObTestCase(TestCase):
-    """ PyOb Test Case """
+    """PyOb Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT ALL EQUAL
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertAllEqual(self, expected_value, *values):
-        """ Asserts that all values are equal to an expected value """
+        """Asserts that all values are equal to an expected value"""
 
         # Iterate over values
         for value in values:
@@ -52,7 +52,7 @@ class PyObTestCase(TestCase):
         _label_plural,
         _str,
     ):
-        """ Asserts that all class attributes class are correct for testing """
+        """Asserts that all class attributes class are correct for testing"""
 
         # Assert that keys are of expected value
         self.assertEqual(Class._keys, _keys)
@@ -72,20 +72,20 @@ class PyObTestCase(TestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertIsOb(self, item):
-        """ Asserts that an item is an Ob instance """
+        """Asserts that an item is an Ob instance"""
 
         # Assert that item is an Ob instance
-        self.assertIsInstance(item, Ob)
+        self.assertIsInstance(item, PyOb)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT IS OB SET
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertIsObSet(self, item, count=None, store=False):
-        """ Asserts that an item is an instance of ObSet """
+        """Asserts that an item is an instance of ObSet"""
 
         # Assert that item is an instance of ObSet
-        self.assertIs(type(item), (ObStore if store else ObSet))
+        self.assertIs(type(item), (PyObStore if store else PyObSet))
 
         # Check if count is not None
         if count is not None:
@@ -98,7 +98,7 @@ class PyObTestCase(TestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertIsObStore(self, item, count=None):
-        """ Asserts that an item is an instance of ObStore """
+        """Asserts that an item is an instance of ObStore"""
 
         # Assert that item is an instance of ObStore
         self.assertIsObSet(item, count=count, store=True)
@@ -108,7 +108,7 @@ class PyObTestCase(TestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def assertTimeLTE(self, lte, control, *args, number=1000):
-        """ Asserts that a time disparity is less than or equal to a percentage """
+        """Asserts that a time disparity is less than or equal to a percentage"""
 
         # Get control time
         time_control = self.timeit(control, number=number)
@@ -130,7 +130,7 @@ class PyObTestCase(TestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def timeit(self, func, number=1000):
-        """ Times a function or callable for speed tests """
+        """Times a function or callable for speed tests"""
 
         # Time the function
         return timeit.timeit(func, number=number)
@@ -142,7 +142,7 @@ class PyObTestCase(TestCase):
 
 
 class PyObFixtureTestCase(PyObTestCase):
-    """ PyObFixture Test Case """
+    """PyObFixture Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ SET UP CLASS
@@ -150,7 +150,7 @@ class PyObFixtureTestCase(PyObTestCase):
 
     @classmethod
     def setUpClass(cls):
-        """ Set Up Class Method """
+        """Set Up Class Method"""
 
         # Call parent method
         super().setUpClass()

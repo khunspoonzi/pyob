@@ -8,7 +8,7 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import localize, Ob
+from pyob import localize, PyOb
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
@@ -18,34 +18,34 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 class ObMetaTestCase(PyObFixtureTestCase):
-    """ Ob Meta Test Case """
+    """Ob Meta Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CALL COMMIT INSTANCE
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_call_commit_instance(self):
-        """ Ensures that instances are added to child and parent object stores """
+        """Ensures that instances are added to child and parent object stores"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Parent1Global(Ob):
-            """ A parent class """
+        class Parent1Global(PyOb):
+            """A parent class"""
 
-        class Parent2Global(Ob):
-            """ A parent class """
+        class Parent2Global(PyOb):
+            """A parent class"""
 
-        class Parent3Global(Ob):
-            """ A parent class """
+        class Parent3Global(PyOb):
+            """A parent class"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILD
         # └─────────────────────────────────────────────────────────────────────────────
 
         class ChildGlobal(Parent1Global, Parent2Global):
-            """ A child class """
+            """A child class"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ LOCALIZE CLASSES
@@ -140,14 +140,14 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_call_rollback_instance(self):
-        """ Ensures that instances are added to child and parent object stores """
+        """Ensures that instances are added to child and parent object stores"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Parent1Global(Ob):
-            """ A parent class """
+        class Parent1Global(PyOb):
+            """A parent class"""
 
             # Set keys
             _keys = ("key1",)
@@ -157,7 +157,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
             # Define init method
             def __init__(self, key1, unique1, unique2, unique3):
-                """ Init Method """
+                """Init Method"""
 
                 # Set key1
                 self.key1 = key1
@@ -167,8 +167,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 self.unique2 = unique2
                 self.unique3 = unique3
 
-        class Parent2Global(Ob):
-            """ A parent class """
+        class Parent2Global(PyOb):
+            """A parent class"""
 
             # Set keys
             _keys = ("key2",)
@@ -178,7 +178,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
             # Define init method
             def __init__(self, key2, unique4, unique5, unique6):
-                """ Init Method """
+                """Init Method"""
 
                 # Set key2
                 self.key2 = key2
@@ -193,7 +193,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class ChildGlobal(Parent1Global, Parent2Global):
-            """ A child class """
+            """A child class"""
 
             # Set keys
             _keys = ("key3",)
@@ -217,7 +217,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 unique8,
                 unique9,
             ):
-                """ Init Method """
+                """Init Method"""
 
                 # Call parent init methods
                 Parent1Global.__init__(self, key1, unique1, unique2, unique3)
@@ -267,7 +267,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_getattr(self):
-        """ Ensures that the getattr dunder method behaves as expected """
+        """Ensures that the getattr dunder method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY
@@ -300,8 +300,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         THA = "THA"
         USA = "USA"
 
-        class A(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class A(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Set JPN as a class attribute
             JPN = _JPN
@@ -311,7 +311,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
             # Define init method
             def __init__(self, THA, iso3):
-                """ Init Method """
+                """Init Method"""
 
                 # Set instance attributes
                 self.THA = THA
@@ -353,7 +353,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_init_class_attributes(self):
-        """ Ensure that user-defined attributes are initialized as expected """
+        """Ensure that user-defined attributes are initialized as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CONSTANTS
@@ -373,8 +373,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
             # │ A
             # └─────────────────────────────────────────────────────────────────────────
 
-            class A1(Ob):
-                """ A test class to ensure that PyOb attributes are initialized """
+            class A1(PyOb):
+                """A test class to ensure that PyOb attributes are initialized"""
 
                 # Define keys
                 _keys = itertype((KEY_1, KEY_2))
@@ -382,8 +382,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 # Define unique fields
                 _unique = itertype((UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3))))
 
-            class A2(Ob):
-                """ A test class to ensure that PyOb attributes are initialized """
+            class A2(PyOb):
+                """A test class to ensure that PyOb attributes are initialized"""
 
                 # Define keys
                 _keys = itertype((KEY_1, KEY_2, KEY_2))
@@ -408,8 +408,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ B
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class B(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class B(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Define keys
             _keys = {KEY_1, KEY_2}
@@ -435,8 +435,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ C
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class C(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class C(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Define keys
             _keys = KEY_1
@@ -454,8 +454,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ D
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class D(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class D(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Set keys to None
             _keys = None
@@ -467,8 +467,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ E
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class E(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class E(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Set keys to None
             _keys = ["a", "b"]
@@ -478,12 +478,12 @@ class ObMetaTestCase(PyObFixtureTestCase):
 
             # Define a pre-setter method for a field
             def _pre_a(self, value):
-                """ Pre-setter for the a field """
+                """Pre-setter for the a field"""
                 return value
 
             # Define a post-setter method for b field
             def _post_b(self, value):
-                """ Post-setter for the a field """
+                """Post-setter for the a field"""
                 return value
 
         # Iterate over test classes
@@ -508,8 +508,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ F
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class F(Ob):
-            """ A test class to ensure that PyOb attributes are initialized """
+        class F(PyOb):
+            """A test class to ensure that PyOb attributes are initialized"""
 
             # Set class-level type hint
             str_int: int
@@ -550,7 +550,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_init_class_attribute_inheritance(self):
-        """ Ensure that user-defined attributes are inherited as expected """
+        """Ensure that user-defined attributes are inherited as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CONSTANTS
@@ -574,8 +574,8 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # │ A, B, C, D
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A PyOb test class """
+        class A(PyOb):
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_A,)
@@ -584,7 +584,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
             _unique = (UNIQUE_A1, UNIQUE_A2)
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_B,)
@@ -593,7 +593,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
             _unique = (UNIQUE_B1, UNIQUE_B2)
 
         class C(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_C,)
@@ -602,7 +602,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
             _unique = (UNIQUE_C1, UNIQUE_C2)
 
         class D(B, C):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
             # Define keys
             _keys = (KEY_D,)
@@ -650,14 +650,14 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_init_prepost_hook_inheritance(self):
-        """ Ensures that prepost hooks are inherited as expected """
+        """Ensures that prepost hooks are inherited as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class Parent(Ob):
-            """ Parent Class """
+        class Parent(PyOb):
+            """Parent Class"""
 
             # Define init method
             def __init__(self, multiplied):
@@ -687,7 +687,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         # └─────────────────────────────────────────────────────────────────────────────
 
         class Child(Parent):
-            """ Child Class """
+            """Child Class"""
 
             # Define pre hook method
             def _pre_multiplied(self, value):
@@ -711,17 +711,17 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_instancecheck(self):
-        """ Ensures that the instancecheck dunder behaves as expected """
+        """Ensures that the instancecheck dunder behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A AND B
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(Ob):
-            """ A PyOb test class """
+        class A(PyOb):
+            """A PyOb test class"""
 
         class B(A):
-            """ A PyOb test class """
+            """A PyOb test class"""
 
         # Create B instance
         b = B()
@@ -746,7 +746,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_pow(self):
-        """ Ensures that the pow dunder method behaves as expected """
+        """Ensures that the pow dunder method behaves as expected"""
 
         # Get Country
         Country = self.Country
@@ -777,7 +777,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_rshift(self):
-        """ Ensures that the rshift dunder method behaves as expected """
+        """Ensures that the rshift dunder method behaves as expected"""
 
         # Get Country
         Country = self.Country

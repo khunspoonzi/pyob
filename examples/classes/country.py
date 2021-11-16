@@ -11,7 +11,7 @@ from typing import Optional, Union
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ from pyob import Ob
 
 
 class CountryBase:
-    """ A utility class to represent vanilla country objects """
+    """A utility class to represent vanilla country objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ CLASS-LEVEL TYPE HINTS
@@ -44,7 +44,7 @@ class CountryBase:
         is_un_member: bool,
         is_un_member_at: Union[datetime, str, None],
     ):
-        """ Init Method """
+        """Init Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ INSTANCE ATTRIBUTES
@@ -77,8 +77,8 @@ class CountryBase:
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class Country(CountryBase, Ob):
-    """ A utility class to represent PyOb country objects """
+class Country(CountryBase, PyOb):
+    """A utility class to represent PyOb country objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ PYOB ATTRIBUTES
@@ -103,7 +103,7 @@ class Country(CountryBase, Ob):
 
     @classmethod
     def _populate_store(cls):
-        """ Populates the object store """
+        """Populates the object store"""
 
         # Open countries fixture
         with open("examples/fixtures/countries.json") as f:
@@ -116,7 +116,7 @@ class Country(CountryBase, Ob):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def _pre_is_un_member_at(self, value):
-        """ Pre-setter for is_un_member_at before setting as an attribute """
+        """Pre-setter for is_un_member_at before setting as an attribute"""
 
         # Check if value is a string
         if type(value) is str:
@@ -135,7 +135,7 @@ class Country(CountryBase, Ob):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def _post_is_un_member_at(self, value):
-        """ Post-setter for is_un_member_at after setting as an attribute """
+        """Post-setter for is_un_member_at after setting as an attribute"""
 
         # Determine if is UN member based on value
         is_un_member = value is not None

@@ -8,7 +8,7 @@ from typing import Optional
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 from examples.classes.country import Country
 
 
@@ -18,7 +18,7 @@ from examples.classes.country import Country
 
 
 class CityBase:
-    """ A utility class to represent vanilla city objects """
+    """A utility class to represent vanilla city objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT METHOD
@@ -32,7 +32,7 @@ class CityBase:
         latitude: float,
         longitude: float,
     ):
-        """ Init Method """
+        """Init Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ INSTANCE ATTRIBUTES
@@ -57,8 +57,8 @@ class CityBase:
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class City(CityBase, Ob):
-    """ A utility class to represent PyOb city objects """
+class City(CityBase, PyOb):
+    """A utility class to represent PyOb city objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ PYOB ATTRIBUTES

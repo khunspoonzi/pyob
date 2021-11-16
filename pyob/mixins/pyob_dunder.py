@@ -10,19 +10,19 @@ from pyob.tools import (
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB DUNDER MIXIN
+# │ PYOB DUNDER MIXIN
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObDunderMixin:
-    """ A mixin class for PyOb object dunder methods """
+class PyObDunderMixin:
+    """A mixin class for PyOb object dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ADD__
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __add__(self, other):
-        """ Add Method """
+        """Add Method"""
 
         # Return an object set containing the two objects
         return self.Set() + self + other
@@ -32,7 +32,7 @@ class ObDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __repr__(self, _str=None):
-        """ Representation Method """
+        """Representation Method"""
 
         # Initialize representation
         representation = self.label_singular
@@ -51,7 +51,7 @@ class ObDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __setattr__(self, name, value):
-        """ Set Attr Method """
+        """Set Attr Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ ATTRIBUTES
@@ -105,7 +105,7 @@ class ObDunderMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def __str__(self, root=None, _str=None):
-        """ String Method """
+        """String Method"""
 
         # Initialize root
         root = root if root is not None else self
