@@ -21,12 +21,12 @@ pip install pyob
 
 ## Basic Usage
 
-Convert your Python classes into PyOb classes by simply inheriting from `pyob.Ob`:
+Convert your Python classes into PyOb classes by simply inheriting from `pyob.PyOb`:
 
 ```python
-from pyob import Ob
+from pyob import PyOb
 
-class Country(Ob):
+class Country(PyOb):
     """ A PyOb class to represent country objects """
 
     _str = "name"             # Optional PyOb attribute for a pretty str representation
@@ -235,13 +235,13 @@ For demonstration purposes, we'll go ahead and create a PyOb class to represent 
 # │ PYOB IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import Ob
+from pyob import PyOb
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ COUNTRY
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-class Country(Ob):
+class Country(PyOb):
     """ A PyOb class to represent country objects """
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -298,7 +298,7 @@ Note that the type hints in the `Country` init method are optional but recommend
 
 <br/>
 
-An object set (`pyob.ObSet`) represents a collection of object instances.
+An object set (`pyob.PyObSet`) represents a collection of object instances.
 
 Let's create two `Country` instances representing North and South Korea:
 
@@ -342,12 +342,12 @@ prk + kor + kor
 
 <br/>
 
-All PyOb classes are initialized with an object store (`pyob.ObStore`) that keeps track of object instances initialized during runtime. For those familiar with databases, objects are to rows as object stores are to tables.
+All PyOb classes are initialized with an object store (`pyob.PyObStore`) that keeps track of object instances initialized during runtime. For those familiar with databases, objects are to rows as object stores are to tables.
 
 We can verify that the `Country` object store contains no `Country` instances upon class definition:
 
 ```python
-class Country(Ob):
+class Country(PyOb):
     """ A PyOb class to represent country objects """
     # [ ... ]
 
@@ -479,7 +479,7 @@ In cases where the init method expects a type that will change before being set 
 # │ MY OBJECT
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-class MyObject(Ob):
+class MyObject(PyOb):
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TYPE HINTS
@@ -515,7 +515,7 @@ Runtime type checking can be disabled with the following PyOb attribute:
 # │ MY OBJECT
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-class MyObject(Ob):
+class MyObject(PyOb):
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ PYOB ATTRIBUTES
