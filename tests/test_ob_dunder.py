@@ -929,6 +929,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         UNIQUE_K = "unique_k"
         UNIQUE_L = "unique_l"
 
+        UNIQUE_A_GROUP = (UNIQUE_A, UNIQUE_B, UNIQUE_C)
+        UNIQUE_B_GROUP = (UNIQUE_D, UNIQUE_E, UNIQUE_F)
+        UNIQUE_C_GROUP = (UNIQUE_G, UNIQUE_H, UNIQUE_I)
+        UNIQUE_D_GROUP = (UNIQUE_J, UNIQUE_K, UNIQUE_L)
+
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PERMUTATE
         # └─────────────────────────────────────────────────────────────────────────────
@@ -987,11 +992,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # In this case, A is the top-level parent with defined unique fields
 
         # Create an instance of A, B, and C
-        a, b, c = (
-            A(UNIQUE_A, UNIQUE_B, UNIQUE_C),
-            B(UNIQUE_D, UNIQUE_E, UNIQUE_F),
-            C(UNIQUE_G, UNIQUE_H, UNIQUE_I),
-        )
+        a, b, c = (A(*UNIQUE_A_GROUP), B(*UNIQUE_B_GROUP), C(*UNIQUE_C_GROUP))
 
         # Iterate over classes
         for Class in (A, B, C, D, E, F, G):
@@ -999,11 +1000,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
             # Iterate over args
             for args in (
                 # A Instance
-                *permutate(UNIQUE_A, UNIQUE_B, UNIQUE_C),
+                *permutate(*UNIQUE_A_GROUP),
                 # B Instance
-                *permutate(UNIQUE_D, UNIQUE_E, UNIQUE_F),
+                *permutate(*UNIQUE_B_GROUP),
                 # C Instance
-                *permutate(UNIQUE_G, UNIQUE_H, UNIQUE_I),
+                *permutate(*UNIQUE_C_GROUP),
             ):
 
                 # Initialize assertRaises block
@@ -1086,19 +1087,19 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # In this case, C is not a top-level parent but has defined unique fields
 
         # Create an instance of A and B
-        A(UNIQUE_A, UNIQUE_B, UNIQUE_C), B(UNIQUE_D, UNIQUE_E, UNIQUE_F),
+        A(*UNIQUE_A_GROUP), B(*UNIQUE_B_GROUP)
 
         # Create an instance of C and D
-        c, d = C(UNIQUE_G, UNIQUE_H, UNIQUE_I), D(UNIQUE_J, UNIQUE_K, UNIQUE_L)
+        c, d = C(*UNIQUE_C_GROUP), D(*UNIQUE_D_GROUP)
 
         # Iterate over non-key classes
         for Class in (A, B):
 
             # Ensure that there are no field unicity conflicts
-            Class(UNIQUE_A, UNIQUE_B, UNIQUE_C)
-            Class(UNIQUE_D, UNIQUE_E, UNIQUE_F)
-            Class(UNIQUE_G, UNIQUE_H, UNIQUE_I)
-            Class(UNIQUE_J, UNIQUE_K, UNIQUE_L)
+            Class(*UNIQUE_A_GROUP)
+            Class(*UNIQUE_B_GROUP)
+            Class(*UNIQUE_C_GROUP)
+            Class(*UNIQUE_D_GROUP)
 
             # As A and B are not children of C, we should be able to create instances
             # with reused fields without a UnicityError,
@@ -1108,8 +1109,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
 
             # Iterate over args
             for args in (
-                *permutate(UNIQUE_G, UNIQUE_H, UNIQUE_I),
-                *permutate(UNIQUE_J, UNIQUE_K, UNIQUE_L),
+                *permutate(*UNIQUE_C_GROUP),
+                *permutate(*UNIQUE_D_GROUP),
             ):
 
                 # Initialize assertRaises block
@@ -1125,6 +1126,116 @@ class ObDunderTestCase(PyObFixtureTestCase):
             (d, (UNIQUE_G,), [(UNIQUE_H, UNIQUE_I)]),
         )
 
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ A, B, C
+        # │
+        # │ Show that unique fields are specifically NOT checked upward if not inherited
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(Ob):
+            """A PyOb test class"""
+
+            # Define unique fields
+            _unique = ("unique_1", ("unique_2", "unique_3"))
+
+            # Define init method
+            def __init__(
+                self,
+                unique_1,
+                unique_2,
+                unique_3,
+                unique_4,
+                unique_5,
+                unique_6,
+                unique_7,
+                unique_8,
+                unique_9,
+            ):
+
+                # Set unique fields
+                self.unique_1 = unique_1
+                self.unique_2 = unique_2
+                self.unique_3 = unique_3
+
+                self.unique_4 = unique_4
+                self.unique_5 = unique_5
+                self.unique_6 = unique_6
+
+                self.unique_7 = unique_7
+                self.unique_8 = unique_8
+                self.unique_9 = unique_9
+
+        class B(A):
+            """A PyOb test class"""
+
+            # Define unique fields
+            _unique = ("unique_4", ("unique_5", "unique_6"))
+
+        class C(A):
+            """A PyOb test class"""
+
+            # Define unique fields
+            _unique = ("unique_7", ("unique_8", "unique_9"))
+
+        # Here, all classes have the same fields but different unique definitions
+
+        # Define assertDuplicateValue helper
+        def assertDuplicateValue(Class, *args):
+
+            # Initialize assertRaises block
+            with self.assertRaises(UnicityError):
+
+                # Try to initialize instance
+                Class(*args)
+
+        # Create A instance
+        A("a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1")
+
+        # Assert that unique 1, 2, and 3 are enforced
+        assertDuplicateValue(
+            A, "a1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
+        assertDuplicateValue(
+            A, UNIQUE, "b1", "c1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
+
+        # Create B instance where b.unique_4 == a.unique_1
+        # There should be no conflict since unique_4 is not unique for A
+        B("a2", "b2", "c2", "a1", "e2", "f2", "g2", "h2", "i2")
+
+        # Create B instance where b.unique_5 and b.unique_6 == a.unique_2 and a.unique_3
+        # There should be no conflict since unique_5 and unique_6 are not unique for A
+        B("a3", "b3", "c3", "d3", "b1", "c1", "g3", "h3", "i3")
+
+        """
+
+
+        # Assert that key 1 is still enforced on B
+        assertDuplicateKey(B, "a1", UNIQUE, UNIQUE)
+
+        # Assert that key 2 is enforced on B
+        assertDuplicateKey(B, UNIQUE, "a1", UNIQUE)
+
+        # Create C instance where c.key_2 == b.key_2 and c.key_3 == a.key_1
+        # There should be no conflict since key_2 is not a key for C and
+        # key_3 is not a key for A
+        C("a3", "a1", "a1")
+
+        # Create C instance where c.key_2 == b.key_2 and c.key_3 == b.key_3
+        # There should be no conflict since key_2 is not a key for C and
+        # key_3 is not a key for B
+        C("a4", "a1", "c1")
+
+        # Assert that key 1 is still enforced on C
+        assertDuplicateKey(C, "a1", UNIQUE, UNIQUE)
+
+        # Assert that key 3 is enforced on C
+        assertDuplicateKey(C, UNIQUE, UNIQUE, "a1")
+
+        # Assert that key 3 is enforced on C
+        assertDuplicateKey(C, UNIQUE, UNIQUE, "c1")
+
+        """
         # TODO: Complete unicity traversal tests
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
