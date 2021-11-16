@@ -14,7 +14,7 @@ from pyob.tools import (
     filter_and,
     filter_by_key,
     filter_by_keys,
-    is_ob_set,
+    is_pyob_set,
 )
 from pyob.utils import Nothing
 
@@ -92,7 +92,7 @@ class PyObSetMethodMixin:
         if distinct:
 
             # Filter out objects that already exist in current object set
-            obs = obs - self if is_ob_set(obs) else [o for o in obs if o not in self]
+            obs = obs - self if is_pyob_set(obs) else [o for o in obs if o not in self]
 
         # Update current instance
         self.__dict__ = (self + obs).__dict__

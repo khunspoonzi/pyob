@@ -19,11 +19,11 @@ def is_iterable(item):
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS OB
+# │ IS PYOB
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_ob(item):
+def is_pyob(item):
     """Returns a boolean of whether an item is an Ob instance"""
 
     # Return boolean of whether item is an Ob instance
@@ -31,11 +31,11 @@ def is_ob(item):
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS OB SET
+# │ IS PYOB SET
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_ob_set(item):
+def is_pyob_set(item):
     """Returns a boolean of whether an item is an ObSet instance"""
 
     # Return boolean of whether item is an ObSet instance

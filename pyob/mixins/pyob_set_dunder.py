@@ -11,8 +11,8 @@ from pyob.tools import (
     filter_by_key,
     filter_by_keys,
     is_iterable,
-    is_ob,
-    is_ob_set,
+    is_pyob,
+    is_pyob_set,
 )
 
 
@@ -110,7 +110,7 @@ class PyObSetDunderMixin:
             # └─────────────────────────────────────────────────────────────────────────
 
             # Check if not PyOb object
-            if not is_ob(other):
+            if not is_pyob(other):
 
                 # Raise InvalidObjectError
                 raise InvalidObjectError(
@@ -173,7 +173,7 @@ class PyObSetDunderMixin:
         other = other if is_iterable(other) else [other]
 
         # Extract PyOb objects from others
-        other_obs = [o for o in other if is_ob(o)]
+        other_obs = [o for o in other if is_pyob(o)]
 
         # Extract potential keys from others
         other_keys = [o for o in other if o not in other_obs]
@@ -221,7 +221,7 @@ class PyObSetDunderMixin:
         """Eq Method"""
 
         # Return False if other is not an object set
-        if not is_ob_set(other):
+        if not is_pyob_set(other):
             return False
 
         # Return True if the objects of both object sets match

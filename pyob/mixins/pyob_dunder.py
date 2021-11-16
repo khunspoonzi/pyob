@@ -4,7 +4,7 @@
 
 from pyob.tools import (
     convert_string_to_pascal_case,
-    is_ob,
+    is_pyob,
     validate_and_index_pyob_attribute_value,
 )
 
@@ -117,7 +117,7 @@ class PyObDunderMixin:
         string = string_field and getattr(self, string_field, None)
 
         # Check if string is a PyOb object
-        if is_ob(string):
+        if is_pyob(string):
 
             # Check if related object is not root and has a string field
             if string != root and (string._str or string._keys):
