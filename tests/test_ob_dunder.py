@@ -1191,10 +1191,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Create A instance
         A("a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1", "i1")
 
-        # Assert that unique 1, 2, and 3 are enforced
+        # Assert that unique 1 is enforced
         assertDuplicateValue(
             A, "a1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
         )
+
+        # Assert that unique 2 and unique 3 are enforced
         assertDuplicateValue(
             A, UNIQUE, "b1", "c1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
         )
@@ -1207,36 +1209,64 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # There should be no conflict since unique_5 and unique_6 are not unique for A
         B("a3", "b3", "c3", "d3", "b1", "c1", "g3", "h3", "i3")
 
-        """
+        # Assert that unique 1 is still enforced on B
+        assertDuplicateValue(
+            B, "a1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
 
+        # Assert that unique 2 and unique 3 are still enforced on B
+        assertDuplicateValue(
+            B, UNIQUE, "b1", "c1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
 
-        # Assert that key 1 is still enforced on B
-        assertDuplicateKey(B, "a1", UNIQUE, UNIQUE)
+        # Assert that unique 4 is enforced on B
+        assertDuplicateValue(
+            B, UNIQUE, UNIQUE, UNIQUE, "d3", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
 
-        # Assert that key 2 is enforced on B
-        assertDuplicateKey(B, UNIQUE, "a1", UNIQUE)
+        # Assert that unique 5 and unique 6 are enforced on B
+        assertDuplicateValue(
+            B, UNIQUE, UNIQUE, UNIQUE, UNIQUE, "e2", "f2", UNIQUE, UNIQUE, UNIQUE
+        )
 
-        # Create C instance where c.key_2 == b.key_2 and c.key_3 == a.key_1
-        # There should be no conflict since key_2 is not a key for C and
-        # key_3 is not a key for A
-        C("a3", "a1", "a1")
+        # Create C instance where c.unique_4 and c.unique_7 == a.unique_1
+        # There should be no conflict with A since unique_4 and 7 are not unique for A
+        # There should be no conflict with B.unique_4 since C does not inherit from B
+        C("a4", "b4", "c4", "a1", "e4", "f4", "a1", "h4", "i4")
 
-        # Create C instance where c.key_2 == b.key_2 and c.key_3 == b.key_3
-        # There should be no conflict since key_2 is not a key for C and
-        # key_3 is not a key for B
-        C("a4", "a1", "c1")
+        # Create C instance where c.unique_4 and c.unique_7 == b.unique_4
+        # There should be no conflict since C does not inherit from B
+        C("a5", "b5", "c5", "d3", "e5", "f5", "d3", "h5", "i5")
 
-        # Assert that key 1 is still enforced on C
-        assertDuplicateKey(C, "a1", UNIQUE, UNIQUE)
+        # Create C instance where (c.unique_5 and c.unique_6) and
+        # (c.unique_8 and c.unique_9) == a.unique_2 and a.unique_3
+        # There should be no conflict since (5 and 6) and (8 and 9) are not unique for A
+        C("a6", "b6", "c6", "d6", "b1", "c1", "g6", "b1", "c1")
 
-        # Assert that key 3 is enforced on C
-        assertDuplicateKey(C, UNIQUE, UNIQUE, "a1")
+        # Create C instance where (c.unique_5 and c.unique_6) and
+        # (c.unique_8 and c.unique_9) == b.unique_5 and b.unique_6
+        # There should be no conflict since C does not inherit from B
+        C("a7", "b7", "c7", "d7", "e2", "f2", "g7", "e2", "f2")
 
-        # Assert that key 3 is enforced on C
-        assertDuplicateKey(C, UNIQUE, UNIQUE, "c1")
+        # Assert that unique 1 is still enforced on C
+        assertDuplicateValue(
+            C, "a1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
 
-        """
-        # TODO: Complete unicity traversal tests
+        # Assert that unique 2 and unique 3 are still enforced on C
+        assertDuplicateValue(
+            C, UNIQUE, "b1", "c1", UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE
+        )
+
+        # Assert that unique 7 is enforced on C
+        assertDuplicateValue(
+            C, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, "g6", UNIQUE, UNIQUE
+        )
+
+        # Assert that unique 8 and unique 9 are enforced on C
+        assertDuplicateValue(
+            C, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, UNIQUE, "h4", "i4"
+        )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST STR
