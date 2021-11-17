@@ -147,7 +147,9 @@ class Country(CountryBase, PyOb):
         def post_is_un_member_at(country, value):
             """Post-setter for is_un_member_at after setting as an attribute"""
 
-            # Determine if is UN member based on value
+            # Determine if is UN member based on whether value is None
+            # i.e. If there is a date for when the country became a UN member, we can
+            # therefore infer that the country is a UN member
             is_un_member = value is not None
 
             # Check if is UN member should be updated
