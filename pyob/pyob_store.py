@@ -50,4 +50,4 @@ class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
         """Populates the object store based on a user-defined populate method"""
 
         # Call user-defined populate store method
-        return self._Ob and self._Ob._populate_store()
+        return self._Ob and self._Ob.PyObMeta.populate_store(self._Ob)

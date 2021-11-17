@@ -42,7 +42,7 @@ class ObLabelTestCase(PyObTestCase):
         self.assertAllEqual(
             expected_plural,
             instance.label_plural,
-            Class.label_plural,
+            Class.PyObMeta.label_plural,
             Class.Set().ob_label_plural,
         )
 
@@ -74,13 +74,20 @@ class ObLabelTestCase(PyObTestCase):
         class Nation_(PyOb):
             """Nation with labels"""
 
-            # Set labels
-            _label_singular = "State"
-            _label_plural = "States"
+            # ┌─────────────────────────────────────────────────────────────────────────
+            # │ PYOB META
+            # └─────────────────────────────────────────────────────────────────────────
+
+            class PyObMeta:
+                """PyOb Meta Class"""
+
+                # Set labels
+                label_singular = "State"
+                label_plural = "States"
 
         # Assert labels are correct
         self.assertLabelsCorrect(
-            Nation_, Nation_._label_singular, Nation_._label_plural
+            Nation_, Nation_.PyObMeta.label_singular, Nation_.PyObMeta.label_plural
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────

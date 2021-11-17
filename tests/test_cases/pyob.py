@@ -46,26 +46,26 @@ class PyObTestCase(TestCase):
     def assertAttributesCorrect(
         self,
         Class,
-        _keys,
-        _unique,
-        _label_singular,
-        _label_plural,
-        _str,
+        keys,
+        unique,
+        label_singular,
+        label_plural,
+        display,
     ):
         """Asserts that all class attributes class are correct for testing"""
 
         # Assert that keys are of expected value
-        self.assertEqual(Class._keys, _keys)
+        self.assertEqual(Class.PyObMeta.keys, keys)
 
         # Assert that unique fields are of expected value
-        self.assertEqual(Class._unique, _unique)
+        self.assertEqual(Class.PyObMeta.unique, unique)
 
         # Assert that labels are of expected value
-        self.assertEqual(Class._label_singular, _label_singular)
-        self.assertEqual(Class._label_plural, _label_plural)
+        self.assertEqual(Class.PyObMeta.label_singular, label_singular)
+        self.assertEqual(Class.PyObMeta.label_plural, label_plural)
 
         # Assert that string field is of expected value
-        self.assertEqual(Class._str, _str)
+        self.assertEqual(Class.PyObMeta.display, display)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT IS OB

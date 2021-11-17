@@ -35,7 +35,7 @@ def localize(*classes):
 
         # Set localized from attribute
         # This will ensure that isinstance() still works with localized PyOb classes
-        cache[Class]._localized_from = Class
+        cache[Class].PyObMeta.localized_from = Class
 
         # Return the localized class
         return cache[Class]

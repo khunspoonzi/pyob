@@ -31,7 +31,7 @@ class PyObDunderMixin:
     # │ __REPR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __repr__(self, _str=None):
+    def __repr__(self, display=None):
         """Representation Method"""
 
         # Initialize representation
@@ -41,7 +41,7 @@ class PyObDunderMixin:
         representation = convert_string_to_pascal_case(representation)
 
         # Add angle brackets to representation
-        representation = f"<{representation}: {self.__str__(_str=_str)}>"
+        representation = f"<{representation}: {self.__str__(display=display)}>"
 
         # Return representation
         return representation
@@ -65,13 +65,13 @@ class PyObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get pre-setter methods
-        _pre = cls._pre or {}
+        pre = cls.PyObMeta.pre or {}
 
         # Check if name in pre-setter methods
-        if name in _pre:
+        if name in pre:
 
             # Apply pre-setter to value
-            value = _pre[name](self, value)
+            value = pre[name](self, value)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ VALIDATE AND INDEX ATTRIBUTE VALUE
@@ -92,35 +92,39 @@ class PyObDunderMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get post-setter methods
-        _post = cls._post or {}
+        post = cls.PyObMeta.post or {}
 
         # Check if name in post-setter methods
-        if name in _post:
+        if name in post:
 
             # Apply post-setter to value
-            value = _post[name](self, value)
+            value = post[name](self, value)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __STR__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __str__(self, root=None, _str=None):
+    def __str__(self, root=None, display=None):
         """String Method"""
 
         # Initialize root
         root = root if root is not None else self
 
-        # Get string field if defined otherwise the first key if any
-        string_field = _str or self._str or (self._keys[0] if self._keys else None)
+        # Get display field if defined otherwise the first key if any
+        display_field = (
+            display
+            or self.PyObMeta.display
+            or (self.PyObMeta.keys[0] if self.PyObMeta.keys else None)
+        )
 
         # Set string to value of string field
-        string = string_field and getattr(self, string_field, None)
+        string = display_field and getattr(self, display_field, None)
 
         # Check if string is a PyOb object
         if is_pyob(string):
 
             # Check if related object is not root and has a string field
-            if string != root and (string._str or string._keys):
+            if string != root and (string.PyObMeta.display or string.PyObMeta.keys):
 
                 # Evaluate the string of the related object
                 # Root is passed for comparison to avoid cases of infinite recursion

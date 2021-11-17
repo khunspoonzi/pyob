@@ -39,109 +39,122 @@ class PyObMeta(type, PyObMetaLabelMixin):
         parents = []
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PYOB META
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Create a new reference for PyObMeta so that each PyOb has its own PyObMeta
+        # Otherwise we will end up reassigning the mutable store on related PyOb classes
+        cls.PyObMeta = type(
+            "PyObMeta", cls.PyObMeta.__bases__, dict(cls.PyObMeta.__dict__)
+        )
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ STORE
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize store
-        cls._store = PyObStore(_Ob=cls)
+        cls.PyObMeta.store = PyObStore(_Ob=cls)
 
         # Iterate over bases
         for base in cls.__bases__:
 
-            # Get store
-            _store_parent = getattr(base, "_store", None)
+            # Get PyObMeta of base
+            BasePyObMeta = getattr(base, "PyObMeta", None)
+
+            # Store of base
+            base_store = BasePyObMeta and BasePyObMeta.store
 
             # Continue if store is not a PyOb object store
-            if not isinstance(_store_parent, PyObStore):
+            if not isinstance(base_store, PyObStore):
                 continue
 
             # Add parent to child store
-            cls._store._parents.append(_store_parent)
+            cls.PyObMeta.store._parents.append(base_store)
 
             # Add child to parent store
-            _store_parent._children.append(cls._store)
+            base_store._children.append(cls.PyObMeta.store)
 
             # Add parent to parents
-            parents.append(_store_parent._Ob)
+            parents.append(base_store._Ob)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get keys
-        _keys = cls._keys or ()
+        keys = cls.PyObMeta.keys or ()
 
         # Handle case of string value as keys
-        _keys = _keys and ((_keys,) if type(_keys) is str else tuple(_keys))
+        keys = keys and ((keys,) if type(keys) is str else tuple(keys))
 
         # Merge with parent keys
-        _keys = sum([p._keys for p in parents] + [_keys], ())
+        keys = sum([p.PyObMeta.keys for p in parents] + [keys], ())
 
         # Ensure that keys definition is a unique tuple
-        cls._keys = remove_duplicates(_keys)
+        cls.PyObMeta.keys = remove_duplicates(keys)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ UNIQUE FIELDS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get unique fields
-        _unique = cls._unique or ()
+        unique = cls.PyObMeta.unique or ()
 
         # Handle if unique fields is a single string
-        _unique = (_unique,) if type(_unique) is str else _unique
+        unique = (unique,) if type(unique) is str else unique
 
         # Ensure that unique together fields are tuples
-        _unique = tuple(tuple(f) if is_iterable(f) else f for f in _unique)
+        unique = tuple(tuple(f) if is_iterable(f) else f for f in unique)
 
         # Merge with parent unique fields
-        _unique = sum([p._unique for p in parents] + [_unique], ())
+        unique = sum([p.PyObMeta.unique for p in parents] + [unique], ())
 
         # Ensure that unique definition is a unique tuple
-        cls._unique = remove_duplicates(_unique, recursive=True)
+        cls.PyObMeta.unique = remove_duplicates(unique, recursive=True)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PREPOST HOOKS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get all methods
-        methods = inspect.getmembers(cls, predicate=inspect.isfunction)
+        methods = inspect.getmembers(cls.PyObMeta, predicate=inspect.isfunction)
 
         # Define pre- and post- constants
-        _PRE_ = "_pre_"
-        _POST_ = "_post_"
+        PRE_ = "pre_"
+        POST_ = "post_"
 
         # Define get hook cache helper
         def get_prepost(hook):
             return {k.replace(hook, "", 1): v for k, v in methods if k.startswith(hook)}
 
         # Initialize pre-setter cache
-        cls._pre = get_prepost(_PRE_)
+        cls.PyObMeta.pre = get_prepost(PRE_)
 
         # Initialize post-setter cache
-        cls._post = get_prepost(_POST_)
+        cls.PyObMeta.post = get_prepost(POST_)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ TYPE HINTS
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize type hints
-        _type_hints = {}
+        type_hints = {}
 
         # Update type hints by init type hints
-        _type_hints.update(get_type_hints(cls.__init__) or {})
+        type_hints.update(get_type_hints(cls.__init__) or {})
 
         # Update type hints by class-level type hints
-        _type_hints.update(get_type_hints(cls) or {})
+        type_hints.update(get_type_hints(cls) or {})
 
         # Set type hints
-        cls._type_hints = _type_hints
+        cls.PyObMeta.type_hints = type_hints
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ LOCALIZATION
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Set localized from attribute
-        cls._localized_from = None
+        cls.PyObMeta.localized_from = None
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
@@ -158,10 +171,10 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Call Method"""
 
         # Get object store
-        _store = cls._store
+        store = cls.PyObMeta.store
 
         # Get store objects
-        _store_obs = _store._obs
+        store_obs = store._obs
 
         # Initialize try-except block
         try:
@@ -172,18 +185,18 @@ class PyObMeta(type, PyObMetaLabelMixin):
         except Exception:
 
             # Clean up key index as if instance never existed
-            _store._obs_by_key = {
-                key: ob for key, ob in _store._obs_by_key.items() if ob in _store_obs
+            store._obs_by_key = {
+                key: ob for key, ob in store._obs_by_key.items() if ob in store_obs
             }
 
             # Iterate over objects by unique field
-            for _field in _store._obs_by_unique_field:
+            for field in store._obs_by_unique_field:
 
                 # Clean up unique value index as if instance never created
-                _store._obs_by_unique_field[_field] = {
+                store._obs_by_unique_field[field] = {
                     val: ob
-                    for val, ob in _store._obs_by_unique_field[_field].items()
-                    if ob in _store_obs
+                    for val, ob in store._obs_by_unique_field[field].items()
+                    if ob in store_obs
                 }
 
             # Re-raise exception
@@ -193,7 +206,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
             # The above except block ensures that object initialization is atomic
 
         # Add instance to store
-        cls._store._obs[instance] = 1
+        cls.PyObMeta.store._obs[instance] = 1
 
         # Return instance
         return instance
@@ -206,7 +219,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Get Attr Method"""
 
         # Attempt to return PyOb object by key
-        return cls._store.__getattr__(name)
+        return cls.PyObMeta.store.__getattr__(name)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __INSTANCECHECK__
@@ -216,10 +229,10 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Instance Check Method"""
 
         # Get localized from
-        _localized_from = getattr(instance.__class__, "_localized_from", None)
+        localized_from = getattr(instance.__class__.PyObMeta, "localized_from", None)
 
         # Check if localized from current class
-        if _localized_from and issubclass(_localized_from, cls):
+        if localized_from and issubclass(localized_from, cls):
 
             # Return True
             return True
@@ -235,7 +248,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Pow Method"""
 
         # Return rshift of object store
-        return cls._store >> other
+        return cls.PyObMeta.store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __RSHIFT__
@@ -245,7 +258,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Rshift Method"""
 
         # Return rshift of object store
-        return cls._store >> other
+        return cls.PyObMeta.store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OBS
@@ -256,4 +269,4 @@ class PyObMeta(type, PyObMetaLabelMixin):
         """Returns the PyOb object class's object store"""
 
         # Return object store
-        return cls._store
+        return cls.PyObMeta.store

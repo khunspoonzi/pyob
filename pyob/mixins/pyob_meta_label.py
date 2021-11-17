@@ -22,7 +22,7 @@ class PyObMetaLabelMixin:
         """Returns a singular label based on the class label definition or name"""
 
         # Get label singular
-        label_singular = cls._label_singular
+        label_singular = cls.PyObMeta.label_singular
 
         # Use the class name as a label if necessary
         label_singular = label_singular or " ".join(split_camel_case(cls.__name__))
@@ -42,7 +42,7 @@ class PyObMetaLabelMixin:
         """Returns a plural label based on the class definition or singular label"""
 
         # Initialize plural label
-        label_plural = cls._label_plural
+        label_plural = cls.PyObMeta.label_plural
 
         # Check if plural label is null
         if not label_plural:

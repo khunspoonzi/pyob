@@ -116,7 +116,10 @@ class PyObSetMethodMixin:
 
         # Return filtered object set
         return self.New() + filter_by_key(
-            self._obs, self._Ob._keys, value, ob_label_plural=self.ob_label_plural
+            self._obs,
+            self._Ob.PyObMeta.keys,
+            value,
+            ob_label_plural=self.ob_label_plural,
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -128,7 +131,10 @@ class PyObSetMethodMixin:
 
         # Return filtered object set
         return self.New() + filter_by_keys(
-            self._obs, self._Ob._keys, values, ob_label_plural=self.ob_label_plural
+            self._obs,
+            self._Ob.PyObMeta.keys,
+            values,
+            ob_label_plural=self.ob_label_plural,
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
