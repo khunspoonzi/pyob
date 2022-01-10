@@ -6,10 +6,10 @@
 def traverse_pyob_relations(
     Class, callback, inclusive=False, ancestors=False, descendants=False, seen=None
 ):
-    """ Traverses a PyOb class's relations and applies a callback to each """
+    """Traverses a PyOb class's relations and applies a callback to each"""
 
     # Return if we hit ob.Ob
-    if not Class._store._parents:
+    if not Class.PyObMeta.store._parents:
         return
 
     # Initialize seen
@@ -21,13 +21,13 @@ def traverse_pyob_relations(
         # Apply callback to class
         callback(Class)
 
-    # Get store
-    _store = Class._store
+    # Get root store
+    root_store = Class.PyObMeta.store
 
     # Iterate over relative types
     for (stores, should_traverse) in (
-        (_store._parents, ancestors),
-        (_store._children, descendants),
+        (root_store._parents, ancestors),
+        (root_store._children, descendants),
     ):
 
         # Continue of not should traverse
@@ -67,7 +67,7 @@ def traverse_pyob_relations(
 
 
 def traverse_pyob_ancestors(Class, callback, inclusive=False):
-    """ Traverses a PyOb class's ancestors and applies a callback to each """
+    """Traverses a PyOb class's ancestors and applies a callback to each"""
 
     # Traverse PyOb ancestors
     traverse_pyob_relations(
@@ -85,7 +85,7 @@ def traverse_pyob_ancestors(Class, callback, inclusive=False):
 
 
 def traverse_pyob_descendants(Class, callback, inclusive=False):
-    """ Traverses a PyOb class's descendants and applies a callback to each """
+    """Traverses a PyOb class's descendants and applies a callback to each"""
 
     # Traverse PyOb ancestors
     traverse_pyob_relations(
@@ -103,7 +103,7 @@ def traverse_pyob_descendants(Class, callback, inclusive=False):
 
 
 def traverse_pyob_relatives(Class, callback, inclusive=False):
-    """ Traverses a PyOb class's relatives and applies a callback to each """
+    """Traverses a PyOb class's relatives and applies a callback to each"""
 
     # Traverse PyOb relatives
     traverse_pyob_relations(

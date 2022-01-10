@@ -61,18 +61,29 @@ class City(CityBase, PyOb):
     """A utility class to represent PyOb city objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
+    # │ PYOB META
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Define keys
-    _keys = None
+    class PyObMeta:
+        """PyOb Meta Class"""
 
-    # Define unique fields
-    _unique = (("name", "country"),)
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ STORE SETTINGS
+        # └─────────────────────────────────────────────────────────────────────────────
 
-    # Define labels
-    _label_singular = "City"
-    _label_plural = "Cities"
+        # Define keys
+        keys = None
 
-    # Define string field
-    _str = "name"
+        # Define unique fields
+        unique = (("name", "country"),)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ APPEARANCE SETTINGS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define display field
+        display = "name"
+
+        # Define labels
+        label_singular = "City"
+        label_plural = "Cities"

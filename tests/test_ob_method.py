@@ -135,15 +135,20 @@ class ObMethodTestCase(PyObFixtureTestCase):
             self.assertNotEqual(Class, ClassLocalized)
 
             # Assert that localized class store is a different reference
-            self.assertNotEqual(id(Class._store), id(ClassLocalized._store))
+            self.assertNotEqual(
+                id(Class.PyObMeta.store), id(ClassLocalized.PyObMeta.store)
+            )
 
             # Iterate over store indices
             for index, _index in (
-                (Class._store._obs, ClassLocalized._store._obs),
-                (Class._store._obs_by_key, ClassLocalized._store._obs_by_key),
+                (Class.PyObMeta.store._obs, ClassLocalized.PyObMeta.store._obs),
                 (
-                    Class._store._obs_by_unique_field,
-                    ClassLocalized._store._obs_by_unique_field,
+                    Class.PyObMeta.store._obs_by_key,
+                    ClassLocalized.PyObMeta.store._obs_by_key,
+                ),
+                (
+                    Class.PyObMeta.store._obs_by_unique_field,
+                    ClassLocalized.PyObMeta.store._obs_by_unique_field,
                 ),
             ):
 

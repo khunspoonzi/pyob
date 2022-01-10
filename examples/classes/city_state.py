@@ -21,24 +21,7 @@ from examples.classes.country import Country
 
 
 class CityState(City, Country):
-    """ A utility class to represent PyOb city state objects """
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    # Define keys
-    _keys = City._keys + Country._keys
-
-    # Define unique fields
-    _unique = City._unique + Country._unique
-
-    # Define labels
-    _label_singular = "City State"
-    _label_plural = "City States"
-
-    # Define string field
-    _str = City._str
+    """A utility class to represent PyOb city state objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT METHOD
@@ -56,7 +39,7 @@ class CityState(City, Country):
         is_un_member: bool,
         is_un_member_at: Union[datetime, str, None],
     ):
-        """ Init Method """
+        """Init Method"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT INITIALIZATION
@@ -87,15 +70,32 @@ class CityState(City, Country):
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _POPULATE STORE
+    # │ PYOB META
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    @classmethod
-    def _populate_store(cls):
-        """ Populates the object store """
+    class PyObMeta:
+        """PyOb Meta Class"""
 
-        # Open countries fixture
-        with open("examples/fixtures/city-states.json") as f:
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ APPEARANCE SETTINGS
+        # └─────────────────────────────────────────────────────────────────────────────
 
-            # Read, initialize, and create Country instances
-            [cls(**cs) for cs in json.load(f)]
+        # Define display field
+        display = City.PyObMeta.display
+
+        # Define labels
+        label_singular = "City State"
+        label_plural = "City States"
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POPULATE STORE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        def populate_store(CityState):
+            """Populates the object store"""
+
+            # Open countries fixture
+            with open("examples/fixtures/city-states.json") as f:
+
+                # Read, initialize, and create Country instances
+                [CityState(**cs) for cs in json.load(f)]

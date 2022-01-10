@@ -18,30 +18,6 @@ class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
     """A base class for PyOb objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ OBJECT SETTINGS
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    # Initialize keys to None
-    _keys = None
-
-    # Initialize unique fields to None
-    _unique = None
-
-    # Initialize labels to None
-    _label_singular = None
-    _label_plural = None
-
-    # Initialize string field to None
-    _str = None
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ RUNTIME SETTINGS
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    # Initialize disable type checking to False
-    _disable_type_checking = False
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LOCALIZED
     # └─────────────────────────────────────────────────────────────────────────────────
 
@@ -64,12 +40,8 @@ class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
         return PyObSet(_Ob=cls)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _POPULATE STORE
+    # │ PYOB META
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    @classmethod
-    def _populate_store(cls):
-        """Populates the object store of a PyOb class"""
-
-        # Return None
-        return None
+    class PyObMeta:
+        """PyOb Meta Class"""

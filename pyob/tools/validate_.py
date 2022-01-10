@@ -30,10 +30,10 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     # Get keys
-    _keys = Class._keys or ()
+    keys = Class.PyObMeta.keys or ()
 
     # Determine if key
-    is_key = _keys and name in _keys
+    is_key = keys and name in keys
 
     # Check if key and is None
     if is_key and value is None:
@@ -50,8 +50,8 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     # Initialize is unique to False
     is_unique = any(
         [
-            ((type(_field) is tuple and name in _field) or name == _field)
-            for _field in Class._unique or ()
+            ((type(field) is tuple and name in field) or name == field)
+            for field in Class.PyObMeta.unique or ()
         ]
     )
 
@@ -87,19 +87,19 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         if class_id in mro:
 
             # Determine if type checking is enabled
-            enforce_types = not Class._disable_type_checking
+            enforce_types = not Class.PyObMeta.disable_type_checking
 
             # Check if should enforce types
             if enforce_types:
 
                 # Get cached type hints
-                _type_hints = Class._type_hints
+                type_hints = Class.PyObMeta.type_hints
 
                 # Check if name in type hints
-                if name in _type_hints:
+                if name in type_hints:
 
                     # Get expected type
-                    expected_type = _type_hints[name]
+                    expected_type = type_hints[name]
 
                     # Initialize try-except block
                     try:
@@ -129,10 +129,10 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Check if is common key
-        if is_key and name in Class._keys:
+        if is_key and name in Class.PyObMeta.keys:
 
             # Get objects by key map
-            _obs_by_key = Class._store._obs_by_key
+            _obs_by_key = Class.PyObMeta.store._obs_by_key
 
             # Check if value in objects by key map
             if value in _obs_by_key:
@@ -160,18 +160,18 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         if is_unique:
 
             # Get unique fields
-            _unique = Class._unique or ()
+            unique = Class.PyObMeta.unique or ()
 
             # Iterate over unique fields
-            for _field in _unique:
+            for field in unique:
 
                 # Determine if unique together (a tuple of fields)
-                is_unique_together = type(_field) is tuple
+                is_unique_together = type(field) is tuple
 
                 # Determine if is unique field
                 is_unique_field = (
-                    is_unique_together and name in _field
-                ) or name == _field
+                    is_unique_together and name in field
+                ) or name == field
 
                 # Continue if current field is not a unique field
                 if not is_unique_field:
@@ -181,12 +181,12 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                 if is_unique_together:
 
                     # Continue if field combination is not yet defined
-                    if not all([(f == name or f in instance.__dict__) for f in _field]):
+                    if not all([(f == name or f in instance.__dict__) for f in field]):
                         continue
 
                     # Get value
                     _value = tuple(
-                        value if f == name else instance.__dict__[f] for f in _field
+                        value if f == name else instance.__dict__[f] for f in field
                     )
 
                 # Otherwise handle case of single field
@@ -195,8 +195,8 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                     _value = value
 
                 # Get objects by unique value given field
-                _obs_by_unique_value = Class._store._obs_by_unique_field.setdefault(
-                    _field, {}
+                _obs_by_unique_value = (
+                    Class.PyObMeta.store._obs_by_unique_field.setdefault(field, {})
                 )
 
                 """
@@ -219,7 +219,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                         # Raise UnicityError
                         raise UnicityError(
-                            f"A {Class.label_singular} with a(n) {_field} of {_value} "
+                            f"A {Class.label_singular} with a(n) {field} of {_value} "
                             f"already exists: {other}"
                         )
 
@@ -228,7 +228,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                     # Append unique value to unique values
                     unique_values.append(
-                        (_field, _value, _obs_by_unique_value, is_unique_together)
+                        (field, _value, _obs_by_unique_value, is_unique_together)
                     )
 
     # Apply callback to current PyOb class and its relatives
@@ -242,7 +242,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     if is_key:
 
         # Get objects by key map
-        _obs_by_key = Class._store._obs_by_key
+        _obs_by_key = Class.PyObMeta.store._obs_by_key
 
         # Check previous value is defined
         if name in instance.__dict__:

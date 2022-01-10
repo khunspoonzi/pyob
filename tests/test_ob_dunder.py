@@ -103,14 +103,17 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class B(PyOb):
             """A generic PyOb test class"""
 
-            # Define keys
-            _keys = ("key",)
-
             # Define init method
             def __init__(self, key):
 
                 # Set key
                 self.key = key
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = ("key",)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ MIXED TYPES
@@ -162,8 +165,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Define localized Country
         _Country = self.Country.Localized()
 
-        # Remove string field
-        _Country._str = None
+        # Nullify display field
+        _Country.PyObMeta.display = None
 
         # Replicate Thailand
         tha = _Country(**tha.__dict__)
@@ -172,7 +175,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(repr(tha), "<Country: TH>")
 
         # Nullify all keys
-        _Country._keys = None
+        _Country.PyObMeta.keys = None
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(repr(tha), f"<Country: {hex(id(tha))}>")
@@ -191,7 +194,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(repr(sgp), "<CityState: Singapore>")
 
         # Assert that you can pass a custom _str argument
-        self.assertEqual(sgp.__repr__(_str="iso3"), "<CityState: SGP>")
+        self.assertEqual(sgp.__repr__(display="iso3"), "<CityState: SGP>")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A
@@ -201,14 +204,17 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A test class for instances that will serve as a key"""
 
-            # Define string field
-            _str = "name"
-
             # Define init method
             def __init__(self, name):
 
                 # Set name
                 self.name = name
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define display field
+                display = "name"
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
@@ -218,14 +224,17 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class B(PyOb):
             """A test class with an A key"""
 
-            # Define keys
-            _keys = ("key",)
-
             # Define init method
             def __init__(self, key):
 
                 # Set key
                 self.key = key
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = ("key",)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ OB AS KEY
@@ -238,8 +247,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that a PyOb object as a key can be included in __repr__
         self.assertEqual(repr(b), "<B: a>")
 
-        # Nullify A._str
-        A._str = None
+        # Nullify A.PyObMeta.display
+        A.PyObMeta.display = None
 
         # Assert that b's hex is preferred over a's
         # It would just be confusing to give a's hex for the b instance
@@ -289,7 +298,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
             a.number = 5.5
 
         # Disable type checking
-        A._disable_type_checking = True
+        A.PyObMeta.disable_type_checking = True
 
         # Ensure that you can now set a.number to a non-integer
         a.number = 5.5
@@ -394,7 +403,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         usa_iso2 = usa.iso2
 
         # Get Country store
-        _store = Country._store
+        _store = Country.PyObMeta.store
 
         # Get objects by key
         _obs_by_key = _store._obs_by_key
@@ -480,14 +489,17 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY,)
-
             # Define init method
             def __init__(self, key):
 
                 # Set key
                 self.key = key
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = (KEY,)
 
         class B(A):
             """A PyOb test class"""
@@ -573,8 +585,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class C(A):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY,)
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = (KEY,)
 
         class D(C):
             """A PyOb test class"""
@@ -648,9 +663,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_1,)
-
             # Define init method
             def __init__(self, key_1, key_2, key_3):
 
@@ -659,17 +671,29 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.key_2 = key_2
                 self.key_3 = key_3
 
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = (KEY_1,)
+
         class B(A):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_2,)
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = (KEY_2,)
 
         class C(A):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_3,)
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = (KEY_3,)
 
         # In this case, all classes have the same fields but different key definitions
 
@@ -770,7 +794,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         Country = self.Country
 
         # Get Country store
-        _store = Country._store
+        _store = Country.PyObMeta.store
 
         # Get Thailand
         tha = Country.obs.THA
@@ -960,9 +984,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-            # Define unique fields
-            _unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
-
             # Define init method
             def __init__(self, unique_1, unique_2, unique_3):
 
@@ -970,6 +991,12 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.unique_1 = unique_1
                 self.unique_2 = unique_2
                 self.unique_3 = unique_3
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define unique fields
+                unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
 
         class B(A):
             """A PyOb test class"""
@@ -1078,8 +1105,11 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class C(A):
             """A PyOb test class"""
 
-            # Define unique fields
-            _unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define unique fields
+                unique = (UNIQUE_1, (UNIQUE_2, UNIQUE_3))
 
         class D(C):
             """A PyOb test class"""
@@ -1135,9 +1165,6 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-            # Define unique fields
-            _unique = ("unique_1", ("unique_2", "unique_3"))
-
             # Define init method
             def __init__(
                 self,
@@ -1165,17 +1192,29 @@ class ObDunderTestCase(PyObFixtureTestCase):
                 self.unique_8 = unique_8
                 self.unique_9 = unique_9
 
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define unique fields
+                unique = ("unique_1", ("unique_2", "unique_3"))
+
         class B(A):
             """A PyOb test class"""
 
-            # Define unique fields
-            _unique = ("unique_4", ("unique_5", "unique_6"))
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define unique fields
+                unique = ("unique_4", ("unique_5", "unique_6"))
 
         class C(A):
             """A PyOb test class"""
 
-            # Define unique fields
-            _unique = ("unique_7", ("unique_8", "unique_9"))
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define unique fields
+                unique = ("unique_7", ("unique_8", "unique_9"))
 
         # Here, all classes have the same fields but different unique definitions
 
@@ -1295,8 +1334,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Define localized Country
         _Country = self.Country.Localized()
 
-        # Remove string field
-        _Country._str = None
+        # Nullify display field
+        _Country.PyObMeta.display = None
 
         # Replicate Thailand
         tha = _Country(**tha.__dict__)
@@ -1305,7 +1344,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         self.assertEqual(str(tha), "TH")
 
         # Nullify all keys
-        _Country._keys = None
+        _Country.PyObMeta.keys = None
 
         # Assert that the string defaults to the hex of the object
         self.assertEqual(str(tha), hex(id(tha)))
@@ -1323,8 +1362,8 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that Singapore string is correct
         self.assertEqual(str(sgp), "Singapore")
 
-        # Assert that you can pass a custom _str argument
-        self.assertEqual(sgp.__str__(_str="iso3"), "SGP")
+        # Assert that you can pass a custom display argument
+        self.assertEqual(sgp.__str__(display="iso3"), "SGP")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILD
@@ -1333,15 +1372,18 @@ class ObDunderTestCase(PyObFixtureTestCase):
         class Child(PyOb):
             """A test class to represent the child of a parent"""
 
-            # Define string field
-            _str = "parent"
-
             # Define init method
             def __init__(self, parent):
                 """Init Method"""
 
                 # Set parent
                 self.parent = parent
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define display field
+                display = "parent"
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A

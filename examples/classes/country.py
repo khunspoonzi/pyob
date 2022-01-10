@@ -81,67 +81,79 @@ class Country(CountryBase, PyOb):
     """A utility class to represent PyOb country objects"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
+    # │ PYOB META
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Define keys
-    _keys = ("iso2", "iso3")
+    class PyObMeta:
+        """PyOb Meta Class"""
 
-    # Define unique fields
-    _unique = ("name", ("latitude", "longitude"))
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ STORE SETTINGS
+        # └─────────────────────────────────────────────────────────────────────────────
 
-    # Define labels
-    _label_singular = "Country"
-    _label_plural = "Countries"
+        # Define keys
+        keys = ("iso2", "iso3")
 
-    # Define string field
-    _str = "iso3"
+        # Define unique fields
+        unique = ("name", ("latitude", "longitude"))
 
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _POPULATE STORE
-    # └─────────────────────────────────────────────────────────────────────────────────
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ APPEARANCE SETTINGS
+        # └─────────────────────────────────────────────────────────────────────────────
 
-    @classmethod
-    def _populate_store(cls):
-        """Populates the object store"""
+        # Define display field
+        display = "iso3"
 
-        # Open countries fixture
-        with open("examples/fixtures/countries.json") as f:
+        # Define labels
+        label_singular = "Country"
+        label_plural = "Countries"
 
-            # Read, initialize, and create Country instances
-            [cls(**country) for country in json.load(f)]
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POPULATE STORE
+        # └─────────────────────────────────────────────────────────────────────────────
 
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _PRE IS UN MEMBER AT
-    # └─────────────────────────────────────────────────────────────────────────────────
+        def populate_store(Country):
+            """Populates the PyOb object store"""
 
-    def _pre_is_un_member_at(self, value):
-        """Pre-setter for is_un_member_at before setting as an attribute"""
+            # Open countries fixture
+            with open("examples/fixtures/countries.json") as f:
 
-        # Check if value is a string
-        if type(value) is str:
+                # Read, initialize, and create Country instances
+                [Country(**country) for country in json.load(f)]
 
-            # Split into year, month, day
-            year, month, day = [int(v) for v in value.split("-")]
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PRE IS UN MEMBER AT
+        # └─────────────────────────────────────────────────────────────────────────────
 
-            # Reassign value to datetime object
-            value = datetime(year=year, month=month, day=day)
+        def pre_is_un_member_at(country, value):
+            """Pre-setter for is_un_member_at before setting as an attribute"""
 
-        # Return value
-        return value
+            # Check if value is a string
+            if type(value) is str:
 
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ _POST IS UN MEMBER AT
-    # └─────────────────────────────────────────────────────────────────────────────────
+                # Split into year, month, day
+                year, month, day = [int(v) for v in value.split("-")]
 
-    def _post_is_un_member_at(self, value):
-        """Post-setter for is_un_member_at after setting as an attribute"""
+                # Reassign value to datetime object
+                value = datetime(year=year, month=month, day=day)
 
-        # Determine if is UN member based on value
-        is_un_member = value is not None
+            # Return value
+            return value
 
-        # Check if is UN member should be updated
-        if self.is_un_member != is_un_member:
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ POST IS UN MEMBER AT
+        # └─────────────────────────────────────────────────────────────────────────────
 
-            # Assign new value to is UN member
-            self.is_un_member = is_un_member
+        def post_is_un_member_at(country, value):
+            """Post-setter for is_un_member_at after setting as an attribute"""
+
+            # Determine if is UN member based on whether value is None
+            # i.e. If there is a date for when the country became a UN member, we can
+            # therefore infer that the country is a UN member
+            is_un_member = value is not None
+
+            # Check if is UN member should be updated
+            if country.is_un_member != is_un_member:
+
+                # Assign new value to is UN member
+                country.is_un_member = is_un_member

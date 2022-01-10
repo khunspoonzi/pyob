@@ -42,7 +42,7 @@ class PyObSetDunderMixin:
         _Ob = new._Ob
 
         # Get object store
-        _store = _Ob._store
+        store = _Ob.PyObMeta.store
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ ADD OTHER TO CURRENT
@@ -93,7 +93,10 @@ class PyObSetDunderMixin:
 
                     # Try to use object as a key
                     filtered = filter_by_key(
-                        _store._obs, _Ob._keys, other, ob_label_plural=_Ob.label_plural
+                        store._obs,
+                        _Ob.PyObMeta.keys,
+                        other,
+                        ob_label_plural=_Ob.label_plural,
                     )
 
                     # Check if there are any filtered objects
@@ -145,8 +148,8 @@ class PyObSetDunderMixin:
             # │ UPDATE STORE
             # └─────────────────────────────────────────────────────────────────────────
 
-            if other not in _store._obs:
-                _store._obs[other] = 1
+            if other not in store._obs:
+                store._obs[other] = 1
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ APPEND OBJECT
@@ -180,7 +183,10 @@ class PyObSetDunderMixin:
 
         # Resolve potential keys
         other_keys = filter_by_keys(
-            self._obs, self._Ob._keys, other_keys, ob_label_plural=self.ob_label_plural
+            self._obs,
+            self._Ob.PyObMeta.keys,
+            other_keys,
+            ob_label_plural=self.ob_label_plural,
         )
 
         # Combine resolved objects
@@ -209,7 +215,10 @@ class PyObSetDunderMixin:
         # Return whether item or key in objects
         return (item in self._obs) or len(
             filter_by_key(
-                self._obs, self._Ob._keys, item, ob_label_plural=self.ob_label_plural
+                self._obs,
+                self._Ob.PyObMeta.keys,
+                item,
+                ob_label_plural=self.ob_label_plural,
             )
         ) > 0
 
