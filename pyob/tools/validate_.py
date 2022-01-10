@@ -195,8 +195,8 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                     _value = value
 
                 # Get objects by unique value given field
-                _obs_by_unique_value = Class._store._obs_by_unique_field.setdefault(
-                    field, {}
+                _obs_by_unique_value = (
+                    Class.PyObMeta.store._obs_by_unique_field.setdefault(field, {})
                 )
 
                 """

@@ -42,7 +42,7 @@ class ObLabelTestCase(PyObTestCase):
         self.assertAllEqual(
             expected_plural,
             instance.label_plural,
-            Class.PyObMeta.label_plural,
+            Class.label_plural,
             Class.Set().ob_label_plural,
         )
 

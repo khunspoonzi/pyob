@@ -16,13 +16,60 @@ from pyob.mixins import PyObMetaLabelMixin
 from pyob.tools import is_iterable, remove_duplicates
 
 
+# ┌─────────────────────────────────────────────────────────────────────────────────
+# │ PYOB META BASE
+# └─────────────────────────────────────────────────────────────────────────────────
+
+
+class PyObMetaBase:
+    """A Base PyOb Meta Class"""
+
+    # ┌─────────────────────────────────────────────────────────────────────────────
+    # │ STORE SETTINGS
+    # └─────────────────────────────────────────────────────────────────────────────
+
+    # Initialize keys to None
+    keys = None
+
+    # Initialize unique fields to None
+    unique = None
+
+    # ┌─────────────────────────────────────────────────────────────────────────────
+    # │ APPEARANCE SETTINGS
+    # └─────────────────────────────────────────────────────────────────────────────
+
+    # Initialize display field to None
+    display = None
+
+    # Initialize labels to None
+    label_singular = None
+    label_plural = None
+
+    # ┌─────────────────────────────────────────────────────────────────────────────
+    # │ RUNTIME SETTINGS
+    # └─────────────────────────────────────────────────────────────────────────────
+
+    # Initialize disable type checking to False
+    disable_type_checking = False
+
+    # ┌─────────────────────────────────────────────────────────────────────────────
+    # │ POPULATE STORE
+    # └─────────────────────────────────────────────────────────────────────────────
+
+    def populate_store(Class):
+        """Populates the object store of a PyOb class"""
+
+        # Return None
+        return None
+
+
 # ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PYOB META
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
 class PyObMeta(type, PyObMetaLabelMixin):
-    """A metaclass for the Ob base class"""
+    """A metaclass for the PyOb base class"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT
@@ -42,11 +89,24 @@ class PyObMeta(type, PyObMetaLabelMixin):
         # │ PYOB META
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Create a new reference for PyObMeta so that each PyOb has its own PyObMeta
+        # Get dicionary of default PyObMeta settings
+        pyob_meta_dict = dict(PyObMetaBase.__dict__)
+
+        # Iterate over bases
+        for base in cls.__bases__:
+
+            # Get PyObMeta of base
+            BasePyObMeta = getattr(base, "PyObMeta", None)
+
+            # Update PyObMeta dictionary
+            BasePyObMeta and pyob_meta_dict.update(dict(base.PyObMeta.__dict__))
+
+        # Update PyObMeta dictionary
+        pyob_meta_dict.update(dict(cls.PyObMeta.__dict__))
+
+        # Create a new reference for PyObMeta so each PyOb class has its own PyObMeta
         # Otherwise we will end up reassigning the mutable store on related PyOb classes
-        cls.PyObMeta = type(
-            "PyObMeta", cls.PyObMeta.__bases__, dict(cls.PyObMeta.__dict__)
-        )
+        cls.PyObMeta = type("PyObMeta", cls.PyObMeta.__bases__, pyob_meta_dict)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ STORE
@@ -61,10 +121,10 @@ class PyObMeta(type, PyObMetaLabelMixin):
             # Get PyObMeta of base
             BasePyObMeta = getattr(base, "PyObMeta", None)
 
-            # Store of base
+            # Get store of base
             base_store = BasePyObMeta and BasePyObMeta.store
 
-            # Continue if store is not a PyOb object store
+            # Continue if store is not a PyOb store
             if not isinstance(base_store, PyObStore):
                 continue
 
@@ -228,14 +288,20 @@ class PyObMeta(type, PyObMetaLabelMixin):
     def __instancecheck__(cls, instance):
         """Instance Check Method"""
 
-        # Get localized from
-        localized_from = getattr(instance.__class__.PyObMeta, "localized_from", None)
+        # Get PyOb Meta
+        pyob_meta = getattr(instance.__class__, "PyObMeta", None)
 
-        # Check if localized from current class
-        if localized_from and issubclass(localized_from, cls):
+        # Check if PyOb Meta is not None
+        if pyob_meta is not None:
 
-            # Return True
-            return True
+            # Get localized from
+            localized_from = getattr(pyob_meta, "localized_from", None)
+
+            # Check if localized from current class
+            if localized_from and issubclass(localized_from, cls):
+
+                # Return True
+                return True
 
         # Return default instance check
         return super().__instancecheck__(instance)

@@ -220,7 +220,7 @@ class ObInitTestCase(PyObTestCase):
             """A helper to assert a base state after encountering exceptions"""
 
             # Get store
-            _store = _Country._store
+            _store = _Country.PyObMeta.store
 
             # Assert that CountryTest store has one object
             # i.e. Initialized objects are added to the store
@@ -381,7 +381,7 @@ class ObInitTestCase(PyObTestCase):
         CountryUntyped = Country.Localized()
 
         # Set disable type checking to True
-        CountryUntyped._disable_type_checking = True
+        CountryUntyped.PyObMeta.disable_type_checking = True
 
         # Initialize assertRaises block
         with self.assertRaises(InvalidKeyError):

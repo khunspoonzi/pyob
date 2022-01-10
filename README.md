@@ -1,4 +1,4 @@
-<h1 align="center">_PyOb</h1>
+<h1 align="center">PyOb</h1>
 
 <p align="center">
     <img width="241" height="221" src="./media/pyob-hierarchy.png" alt="PyOb Logo">
@@ -27,10 +27,7 @@ Convert your Python classes into PyOb classes by simply inheriting from `pyob.Py
 from pyob import PyOb
 
 class Country(PyOb):
-    """ A PyOb class to represent country objects """
-
-    _str = "name"             # Optional PyOb attribute for a pretty str representation
-    _keys = ("iso2", "iso3")  # Optional PyOb attribute defining unique key accessors
+    """A PyOb class for modeling country object instances"""
 
     def __init__(self, name: str, iso2: str, iso3: str):  # Optional type hints on attributes
         """ Init Method """
@@ -38,6 +35,12 @@ class Country(PyOb):
         self.name = name
         self.iso2 = iso2
         self.iso3 = iso3
+
+    class PyObMeta:
+        """PyOb Meta Class"""
+
+        display = "name"         # Optional meta attribute: field used for string representations
+        keys = ("iso2", "iso3")  # Optional meta attribute: fields used as unique key accessors
 ```
 
 Create object instances as you would any other Python class:
@@ -47,7 +50,7 @@ khm = Country(name="Cambodia", iso2="KH", iso3="KHM")
 jam = Country(name="Jamaica" , iso2="JM", iso3="JAM")
 ```
 
-Notice that object instances are automatically tracked by an "object store" during runtime:
+Notice that all PyOb instances are automatically tracked by a "PyOb store" during runtime:
 
 ```python
 Country.obs
@@ -59,7 +62,7 @@ Country.obs.count()
 # 2
 ```
 
-Retrieve objects from the object store by index as you would a list:
+Retrieve objects from the PyOb store by index as you would a list:
 
 ```python
 Country.obs[0]
@@ -71,7 +74,7 @@ Country.obs[-1]
 # <Country: Jamaica>
 ```
 
-Retrieve objects from the object store by a unique key accessor like a dictionary:
+Retrieve objects from the PyOb store by a unique key accessor like a dictionary:
 
 ```python
 Country.obs >> "KH"   # ISO2
@@ -91,7 +94,7 @@ Country.obs.JAM
 # <Country: Jamaica>
 ```
 
-Both of the above examples utilize the underlying `key` method which can also be used directly, particularly if you are unsure that the key and corresponding object instance exist:
+Both of the above examples utilize the underlying `key` method which can also be used directly, particularly if you are unsure that the key and corresponding PyOb instance exist:
 
 ```python
 Country.obs.key("JAM")
@@ -107,7 +110,7 @@ Country.obs.key("XYZ", default=None)
 # None
 ```
 
-Note that key accessors are synonymous with a given instance and are therefore unique across key fields:
+Note that key accessors are synonymous with a given PyOb instance and are therefore unique across key fields:
 
 ```python
 jam.iso3 = "KHM"
@@ -119,7 +122,7 @@ jam.iso3 = "KH"
 # pyob.exceptions.DuplicateKeyError: A Country with a key of KH already exists: Cambodia
 ```
 
-And because key accessors are unique, they can be used as drop-in references to an object instance:
+And because key accessors are unique, they can be used as drop-in references to a PyOb instance:
 
 ```python
 khm in Country.obs
@@ -135,7 +138,7 @@ khm in Country.obs
 # True
 ```
 
-Sort object instances by one or multiple fields:
+Sort PyOb instances by one or multiple fields:
 
 ```python
 Country.obs.sort("name")
@@ -155,7 +158,7 @@ Country.obs.sort("iso3", "name")
 # <CountrySet: 2 [<Country: Jamaica>, <Country: Cambodia>]>
 ```
 
-Filter object instances by one or multiple fields:
+Filter PyOb instances by one or multiple fields:
 
 ```python
 Country.obs.filter(name="Cambodia", iso3="KHM")
@@ -167,9 +170,9 @@ Country.obs.filter(name="Cambodia", iso3="JAM")
 # <CountrySet: 0 []>
 ```
 
-Note that the sort and filter operations both return "object sets," i.e. isolated subsets of the object store.
+Note that the sort and filter operations both return "PyOb sets," i.e. isolated subsets of the PyOb store.
 
-All operations intended to return more than one object instance produce object sets. Create your own like this:
+All operations intended to return more than one PyOb instance produce PyOb sets. Create your own like this:
 
 ```python
 countries = Country.Set()
@@ -185,7 +188,7 @@ countries += jam
 # <CountrySet: 2 [<Country: KHM>, <Country: JAM>]>
 ```
 
-You may notice that simply adding individual object instances will also result in an object set:
+You may notice that simply adding individual PyOb instances will also result in an PyOb set:
 
 ```python
 khm + jam
@@ -193,7 +196,7 @@ khm + jam
 # <CountrySet: 2 [<Country: KHM>, <Country: JAM>]>
 ```
 
-The same is true of other object sets or iterables of object instances:
+The same is true of other PyOb sets or iterables of PyOb instances:
 
 ```python
 countries = Country.Set() + khm
@@ -207,7 +210,7 @@ jam + [khm]
 # <CountrySet: 2 [<Country: JAM>, <Country: KHM>]>
 ```
 
-Type hints on instance attributes will be enforced at runtime by default:
+Type hints on PyOb instance attributes will be enforced at runtime by default:
 
 ```python
 khm.iso2 = True
@@ -224,11 +227,11 @@ See PyOb's [feature guide](#feature-guide) for further explanation of these feat
 ## Feature Guide
 
 <details>
-<summary><strong>Objects</strong></summary>
+<summary><strong>PyOb Classes</strong></summary>
 
 <br/>
 
-For demonstration purposes, we'll go ahead and create a PyOb class to represent country objects:
+For demonstration purposes, we'll go ahead and create a PyOb class to model country object instances:
 
 ```python
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -242,14 +245,7 @@ from pyob import PyOb
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 class Country(PyOb):
-    """ A PyOb class to represent country objects """
-
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
-    # └─────────────────────────────────────────────────────────────────────────────────
-
-    # Set string field
-    _str = "name"
+    """A PyOb class for modeling country object instances"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT METHOD
@@ -273,11 +269,21 @@ class Country(PyOb):
         # Set ISO codes, e.g. US, USA
         self.iso2 = iso2
         self.iso3 = iso3
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ PYOB META
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    class PyObMeta:
+        """PyOb Meta Class"""
+
+        # Define display field
+        display = "name"
 ```
 
-In this case, we assume that all `Country` objects should have a name, as well as an ISO2 and ISO3 alpha code.
+In this case, we assume that all `Country` object instances should have a name, as well as an ISO2 and ISO3 alpha code.
 
-We've also made use of our first PyOb attribute, `_str`, which informs PyOb that `Country.name` should be used when generating a `Country` instance's string representation so that it looks like this:
+We've also made use of our first PyOb meta attribute, `display`, which informs PyOb that `Country.name` should be used when generating a `Country` instance's string representation so that it looks like this:
 
 ```
 <Country: United States>
@@ -294,11 +300,11 @@ Note that the type hints in the `Country` init method are optional but recommend
 </details>
 
 <details>
-<summary><strong>Object Sets</strong></summary>
+<summary><strong>PyOb Sets</strong></summary>
 
 <br/>
 
-An object set (`pyob.PyObSet`) represents a collection of object instances.
+A PyOb set (`pyob.PyObSet`) represents a collection of PyOb instances.
 
 Let's create two `Country` instances representing North and South Korea:
 
@@ -307,7 +313,7 @@ prk = Country(name="North Korea", iso2="KP", iso3="PRK")
 kor = Country(name="South Korea", iso2="KR", iso3="KOR")
 ```
 
-We can combine these instances into an object set to represent the two Koreas:
+We can combine these PyOb instances into a PyOb set to represent the two Koreas:
 
 ```python
 prk + kor
@@ -315,7 +321,7 @@ prk + kor
 # <CountrySet: 2 [<Country: North Korea>, <Country: South Korea>]>
 ```
 
-We could create the same object set in the following ways:
+We could create the same PyOb set in the following ways:
 
 ```python
 Country.Set() + prk + kor
@@ -324,9 +330,9 @@ Country.Set() + [prk, kor]
 # <CountrySet: 2 [<Country: North Korea>, <Country: South Korea>]>
 ```
 
-As can be inferred in the above example, `Country.Set()` creates an empty `Country` object set to which `Country` instances, iterables, or other `Country` object sets can be added.
+As can be inferred in the above example, `Country.Set()` creates an empty `Country` PyOb set to which `Country` instances, iterables, or other `Country` PyOb sets can be added.
 
-The behavior of object sets is list-like in that they can contain more than one reference to the same object:
+The behavior of PyOb sets is list-like in that they can contain more than one reference to the same PyOb instance:
 
 ```python
 prk + kor + kor
@@ -338,13 +344,13 @@ prk + kor + kor
 
 
 <details>
-<summary><strong>Object Stores</strong></summary>
+<summary><strong>PyOb Stores</strong></summary>
 
 <br/>
 
-All PyOb classes are initialized with an object store (`pyob.PyObStore`) that keeps track of object instances initialized during runtime. For those familiar with databases, objects are to rows as object stores are to tables.
+All PyOb classes are initialized with a PyOb store (`pyob.PyObStore`) that keeps track of PyOb instances initialized during runtime. For those familiar with databases, PyOb instances are to rows as PyOb stores are to tables.
 
-We can verify that the `Country` object store contains no `Country` instances upon class definition:
+We can verify that the `Country` PyOb store contains no `Country` instances upon class definition:
 
 ```python
 class Country(PyOb):
@@ -356,7 +362,7 @@ Country.obs
 # <CountryStore: 0 []>
 ```
 
-Let's now create two country instances:
+Let's now create two `Country` instances:
 
 ```python
 tha = Country(name="Thailand",      iso2="TH", iso3="THA")
@@ -371,9 +377,9 @@ Country.obs
 # <CountryStore: 2 [<Country: Thailand>, <Country: United States>]>
 ```
 
-**Note:** Object stores are initialized at and persist throughout each runtime meaning that any file or script using the `Country` class will share a single object store regardless of where in your project the class is used.
+**Note:** PyOb stores are initialized at and persist throughout each runtime meaning that any file or script using the `Country` class will share a single PyOb store regardless of where in your project the PyOb class is used.
 
-Under most circumstances, this is not an issue (and may even be desired). However, to ensure that a given file or script uses an isolated object store, consider localizing your PyOb class:
+This behavior is intended to mimic the functionality of a runtime state manager in which PyOb instances are easily accessible without needing to import or pass them as function arguments. However, if you wish to ensure that a given file or script uses a clean and isolated object store, consider localizing your PyOb class:
 
 ```python
 Country.obs
@@ -508,7 +514,7 @@ my_object = MyObject(number="50")  # OK
 
 Note that PyOb utilizes the Python [typeguard](https://github.com/agronholm/typeguard) lubrary to perform these checks. Refer to the typeguard documentation for more information on type support and methodology.
 
-Runtime type checking can be disabled with the following PyOb attribute:
+Runtime type checking can be disabled or set to a variable with the following PyOb attribute:
 
 ```python
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -518,23 +524,26 @@ Runtime type checking can be disabled with the following PyOb attribute:
 class MyObject(PyOb):
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ PYOB ATTRIBUTES
+    # │ PYOB META
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Disable type checking
-    _disable_type_checking = True
+    class PyObMeta:
+        """PyOb Meta Class"""
+
+        # Disable type checking
+        disable_type_checking = True
 ```
 
 </details>
 
-## Attribute Reference
+## PyOb Meta Attribute Reference
 
 | Attribute              | Description                                                                           | Default | e.g.             |
 |------------------------|---------------------------------------------------------------------------------------|---------|------------------|
-| _str                   | The field used to generate a string representation of an object instance              | None    | "name"           |
-| _label_singular        | The label used to represent an object class in singular form                          | None    | "Country"        |
-| _label_plural          | The label used to represent an object class in plural form                            | None    | "Countries"      |
-| _keys                  | The fields used as unique key accessors for instances in an object set or object store             | None    | ("iso2", "iso3") |
-| _disable_type_checking | Whether to disable runtime type checking on instance attributes                       | False   | True             |
+| display                | The field used to generate a string representation of an object instance              | None    | "name"           |
+| label_singular         | The label used to represent an object class in singular form                          | None    | "Country"        |
+| label_plural           | The label used to represent an object class in plural form                            | None    | "Countries"      |
+| keys                   | The fields used as unique key accessors for instances in an object set or object store             | None    | ("iso2", "iso3") |
+| disable_type_checking  | Whether to disable runtime type checking on instance attributes                       | False   | True             |
 
 ### More feature documentation as unit tests are completed...

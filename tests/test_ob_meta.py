@@ -92,10 +92,10 @@ class ObMetaTestCase(PyObFixtureTestCase):
             self.assertIsObSet(parents, 10)
 
             # Assert that parent store is an ObStore of 10 items
-            self.assertIsObStore(Parent._store, 10)
+            self.assertIsObStore(Parent.PyObMeta.store, 10)
 
             # Assert that child store is still empty
-            self.assertIsObStore(Child._store, 0)
+            self.assertIsObStore(Child.PyObMeta.store, 0)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ POPULATE CHILD STORE
@@ -108,7 +108,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertIsObSet(children, 5)
 
         # Assert that child store is an ObStore of 5 items
-        self.assertIsObStore(Child._store, 5)
+        self.assertIsObStore(Child.PyObMeta.store, 5)
 
         # Iterate over parent classes
         for Parent in (Parent1, Parent2):
@@ -149,12 +149,6 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class Parent1Global(PyOb):
             """A parent class"""
 
-            # Set keys
-            _keys = ("key1",)
-
-            # Set unique fields
-            _unique = ("unique1", ("unique2", "unique3"))
-
             # Define init method
             def __init__(self, key1, unique1, unique2, unique3):
                 """Init Method"""
@@ -167,14 +161,17 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 self.unique2 = unique2
                 self.unique3 = unique3
 
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Set keys
+                keys = ("key1",)
+
+                # Set unique fields
+                unique = ("unique1", ("unique2", "unique3"))
+
         class Parent2Global(PyOb):
             """A parent class"""
-
-            # Set keys
-            _keys = ("key2",)
-
-            # Set unique fields
-            _unique = ("unique4", ("unique5", "unique6"))
 
             # Define init method
             def __init__(self, key2, unique4, unique5, unique6):
@@ -188,18 +185,21 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 self.unique5 = unique5
                 self.unique6 = unique6
 
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Set keys
+                keys = ("key2",)
+
+                # Set unique fields
+                unique = ("unique4", ("unique5", "unique6"))
+
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILD
         # └─────────────────────────────────────────────────────────────────────────────
 
         class ChildGlobal(Parent1Global, Parent2Global):
             """A child class"""
-
-            # Set keys
-            _keys = ("key3",)
-
-            # Set unique fields
-            _unique = ("unique7", ("unique8", "unique9"))
 
             # Define init method
             def __init__(
@@ -230,6 +230,15 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 self.unique7 = unique7
                 self.unique8 = unique8
                 self.unique9 = unique9
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Set keys
+                keys = ("key3",)
+
+                # Set unique fields
+                unique = ("unique7", ("unique8", "unique9"))
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ LOCALIZE CLASSES
@@ -306,9 +315,6 @@ class ObMetaTestCase(PyObFixtureTestCase):
             # Set JPN as a class attribute
             JPN = _JPN
 
-            # Define keys
-            _keys = ("iso3",)
-
             # Define init method
             def __init__(self, THA, iso3):
                 """Init Method"""
@@ -316,6 +322,12 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 # Set instance attributes
                 self.THA = THA
                 self.iso3 = iso3
+
+            # Define PyOb Meta
+            class PyObMeta:
+
+                # Define keys
+                keys = ("iso3",)
 
         # Initialize an A instance without a getattr conflict
         usa = A(THA=THA, iso3=USA)
@@ -376,33 +388,39 @@ class ObMetaTestCase(PyObFixtureTestCase):
             class A1(PyOb):
                 """A test class to ensure that PyOb attributes are initialized"""
 
-                # Define keys
-                _keys = itertype((KEY_1, KEY_2))
+                # Define PyOb Meta
+                class PyObMeta:
 
-                # Define unique fields
-                _unique = itertype((UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3))))
+                    # Define keys
+                    keys = itertype((KEY_1, KEY_2))
+
+                    # Define unique fields
+                    unique = itertype((UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3))))
 
             class A2(PyOb):
                 """A test class to ensure that PyOb attributes are initialized"""
 
-                # Define keys
-                _keys = itertype((KEY_1, KEY_2, KEY_2))
+                # Define PyOb Meta
+                class PyObMeta:
 
-                # Define unique fields
-                _unique = itertype(
-                    (UNIQUE_1, UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3, UNIQUE_3)))
-                )
+                    # Define keys
+                    keys = itertype((KEY_1, KEY_2, KEY_2))
 
-                # NOTE: Duplicate values should be removed
+                    # Define unique fields
+                    unique = itertype(
+                        (UNIQUE_1, UNIQUE_1, itertype((UNIQUE_2, UNIQUE_3, UNIQUE_3)))
+                    )
+
+                    # NOTE: Duplicate values should be removed
 
             # Iterate over A classes
             for A in (A1, A2):
 
                 # Assert that keys are converted to tuple
-                self.assertEqual(A._keys, (KEY_1, KEY_2))
+                self.assertEqual(A.PyObMeta.keys, (KEY_1, KEY_2))
 
                 # Assert that unique fields are converted to tuples
-                self.assertEqual(A._unique, (UNIQUE_1, (UNIQUE_2, UNIQUE_3)))
+                self.assertEqual(A.PyObMeta.unique, (UNIQUE_1, (UNIQUE_2, UNIQUE_3)))
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
@@ -411,24 +429,27 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class B(PyOb):
             """A test class to ensure that PyOb attributes are initialized"""
 
-            # Define keys
-            _keys = {KEY_1, KEY_2}
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = (UNIQUE_1, {UNIQUE_2, UNIQUE_3})
+                # Define keys
+                keys = {KEY_1, KEY_2}
+
+                # Define unique fields
+                unique = (UNIQUE_1, {UNIQUE_2, UNIQUE_3})
 
         # Assert that keys are converted to tuple
         self.assertTrue(
-            type(B._keys) is tuple
-            and len(B._keys) == 2
-            and all([k in B._keys for k in (KEY_1, KEY_2)])
+            type(B.PyObMeta.keys) is tuple
+            and len(B.PyObMeta.keys) == 2
+            and all([k in B.PyObMeta.keys for k in (KEY_1, KEY_2)])
         )
 
         # Assert that unique fields are converted to tuples
         self.assertTrue(
-            len(B._unique) == 2
-            and B._unique[0] == UNIQUE_1
-            and all([u in B._unique[1] for u in (UNIQUE_2, UNIQUE_3)])
+            len(B.PyObMeta.unique) == 2
+            and B.PyObMeta.unique[0] == UNIQUE_1
+            and all([u in B.PyObMeta.unique[1] for u in (UNIQUE_2, UNIQUE_3)])
         )
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -438,17 +459,20 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class C(PyOb):
             """A test class to ensure that PyOb attributes are initialized"""
 
-            # Define keys
-            _keys = KEY_1
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = UNIQUE_1
+                # Define keys
+                keys = KEY_1
+
+                # Define unique fields
+                unique = UNIQUE_1
 
         # Assert that keys are converted to tuple
-        self.assertEqual(C._keys, (KEY_1,))
+        self.assertEqual(C.PyObMeta.keys, (KEY_1,))
 
         # Assert that unique fields are converted to tuples
-        self.assertEqual(C._unique, (UNIQUE_1,))
+        self.assertEqual(C.PyObMeta.unique, (UNIQUE_1,))
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ D
@@ -457,11 +481,14 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class D(PyOb):
             """A test class to ensure that PyOb attributes are initialized"""
 
-            # Set keys to None
-            _keys = None
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Set unique to None
-            _unique = None
+                # Set keys to None
+                keys = None
+
+                # Set unique to None
+                unique = None
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ E
@@ -470,39 +497,44 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class E(PyOb):
             """A test class to ensure that PyOb attributes are initialized"""
 
-            # Set keys to None
-            _keys = ["a", "b"]
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Set unique to None
-            _unique = [["c", "d"], "e"]
+                # Set keys to None
+                keys = ["a", "b"]
 
-            # Define a pre-setter method for a field
-            def _pre_a(self, value):
-                """Pre-setter for the a field"""
-                return value
+                # Set unique to None
+                unique = [["c", "d"], "e"]
 
-            # Define a post-setter method for b field
-            def _post_b(self, value):
-                """Post-setter for the a field"""
-                return value
+                # Define a pre-setter method for a field
+                def pre_a(self, value):
+                    """Pre-setter for the a field"""
+                    return value
+
+                # Define a post-setter method for b field
+                def post_b(self, value):
+                    """Post-setter for the a field"""
+                    return value
 
         # Iterate over test classes
         for Class in (D, E):
 
             # Iterate over iterable PyOb attributes in class
-            for value in (Class._keys, Class._unique):
+            for value in (Class.PyObMeta.keys, Class.PyObMeta.unique):
 
                 # Assert that the value is initialized to a tuple
                 self.assertIs(type(value), tuple)
 
             # Ensure that all items in unique are a tuple or string
-            self.assertTrue(all([type(i) in (str, tuple) for i in Class._unique]))
+            self.assertTrue(
+                all([type(i) in (str, tuple) for i in Class.PyObMeta.unique])
+            )
 
         # Assert that the pre-setter method in E class is cached
-        self.assertTrue("a" in E._pre)
+        self.assertTrue("a" in E.PyObMeta.pre)
 
         # Assert that the post-setter method in E class is cached
-        self.assertTrue("b" in E._post)
+        self.assertTrue("b" in E.PyObMeta.post)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ F
@@ -540,10 +572,10 @@ class ObMetaTestCase(PyObFixtureTestCase):
             ("str_int", int),
         ):
             # Assert that cached type hint is correct
-            self.assertEqual(F._type_hints[field], field_type)
+            self.assertEqual(F.PyObMeta.type_hints[field], field_type)
 
         # Assert that the obs property points to the store
-        self.assertEqual(id(F.obs), id(F._store))
+        self.assertEqual(id(F.obs), id(F.PyObMeta.store))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST INIT CLASS ATTRIBUITE INHERITANCE
@@ -577,38 +609,50 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_A,)
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = (UNIQUE_A1, UNIQUE_A2)
+                # Define keys
+                keys = (KEY_A,)
+
+                # Define unique fields
+                unique = (UNIQUE_A1, UNIQUE_A2)
 
         class B(A):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_B,)
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = (UNIQUE_B1, UNIQUE_B2)
+                # Define keys
+                keys = (KEY_B,)
+
+                # Define unique fields
+                unique = (UNIQUE_B1, UNIQUE_B2)
 
         class C(A):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_C,)
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = (UNIQUE_C1, UNIQUE_C2)
+                # Define keys
+                keys = (KEY_C,)
+
+                # Define unique fields
+                unique = (UNIQUE_C1, UNIQUE_C2)
 
         class D(B, C):
             """A PyOb test class"""
 
-            # Define keys
-            _keys = (KEY_D,)
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define unique fields
-            _unique = (UNIQUE_D1, UNIQUE_D2)
+                # Define keys
+                keys = (KEY_D,)
+
+                # Define unique fields
+                unique = (UNIQUE_D1, UNIQUE_D2)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHECK INHERITANCE
@@ -640,10 +684,10 @@ class ObMetaTestCase(PyObFixtureTestCase):
         ):
 
             # Assert that keys are correctly inherited
-            self.assertEqual(Class._keys, keys)
+            self.assertEqual(Class.PyObMeta.keys, keys)
 
             # Assert that unique fields are correctly inherited
-            self.assertEqual(Class._unique, unique)
+            self.assertEqual(Class.PyObMeta.unique, unique)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST INIT PREPOST HOOK INHERITANCE
@@ -665,13 +709,16 @@ class ObMetaTestCase(PyObFixtureTestCase):
                 # Set multiplied
                 self.multiplied = multiplied
 
-            # Define pre hook method
-            def _pre_multiplied(self, value):
-                return value * 2
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define post hook method
-            def _post_multiplied(self, value):
-                return 2
+                # Define pre hook method
+                def pre_multiplied(instance, value):
+                    return value * 2
+
+                # Define post hook method
+                def post_multiplied(instance, value):
+                    return 2
 
         # Create new parent instance
         parent = Parent(3)
@@ -680,7 +727,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(parent.multiplied, 6)
 
         # Assert that post hook returns 2
-        self.assertEqual(parent._post_multiplied(None), 2)
+        self.assertEqual(parent.PyObMeta.post_multiplied(parent, None), 2)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ CHILD
@@ -689,13 +736,16 @@ class ObMetaTestCase(PyObFixtureTestCase):
         class Child(Parent):
             """Child Class"""
 
-            # Define pre hook method
-            def _pre_multiplied(self, value):
-                return value * 3
+            # Define PyOb Meta
+            class PyObMeta:
 
-            # Define post hook method
-            def _post_multiplied(self, value):
-                return 3
+                # Define pre hook method
+                def pre_multiplied(self, value):
+                    return value * 3
+
+                # Define post hook method
+                def post_multiplied(self, value):
+                    return 3
 
         # Create new child instance
         child = Child(3)
@@ -704,7 +754,7 @@ class ObMetaTestCase(PyObFixtureTestCase):
         self.assertEqual(child.multiplied, 9)
 
         # Assert that post hook returns 2
-        self.assertEqual(child._post_multiplied(None), 3)
+        self.assertEqual(child.PyObMeta.post_multiplied(child, None), 3)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST INSTANCE CHECK
