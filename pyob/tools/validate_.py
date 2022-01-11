@@ -22,7 +22,7 @@ from pyob.tools import traverse_pyob_relatives
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def validate_and_index_pyob_attribute_value(Class, instance, name, value):
+def validate_and_index_pyob_attribute_value(PyObClass, instance, name, value):
     """Validates and indexes a PyOb instance attribute value"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     # Get keys
-    keys = Class.PyObMeta.keys or ()
+    keys = PyObClass.PyObMeta.keys or ()
 
     # Determine if key
     is_key = keys and name in keys
@@ -51,7 +51,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     is_unique = any(
         [
             ((type(field) is tuple and name in field) or name == field)
-            for field in Class.PyObMeta.unique or ()
+            for field in PyObClass.PyObMeta.unique or ()
         ]
     )
 
@@ -63,13 +63,13 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     unique_values = []
 
     # Get root class ID
-    root_class_id = id(Class)
+    root_class_id = id(PyObClass)
 
     # Get method resolution order
-    mro = {id(m) for m in Class.__mro__}
+    mro = {id(m) for m in PyObClass.__mro__}
 
     # Define callback
-    def callback(Class):
+    def callback(PyObClass):
         """A callback that validates the type of a PyOb attribute value"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -77,7 +77,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Get class ID
-        class_id = id(Class)
+        class_id = id(PyObClass)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ VALIDATE GENERAL TYPE
@@ -87,13 +87,13 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         if class_id in mro:
 
             # Determine if type checking is enabled
-            enforce_types = not Class.PyObMeta.disable_type_checking
+            enforce_types = not PyObClass.PyObMeta.disable_type_checking
 
             # Check if should enforce types
             if enforce_types:
 
                 # Get cached type hints
-                type_hints = Class.PyObMeta.type_hints
+                type_hints = PyObClass.PyObMeta.type_hints
 
                 # Check if name in type hints
                 if name in type_hints:
@@ -120,7 +120,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                         # Raise InvalidTypeError
                         raise InvalidTypeError(
-                            f"{Class.__name__}.{name} expects a value of type "
+                            f"{PyObClass.__name__}.{name} expects a value of type "
                             f"{expected_type} but got: {value} ({type(value)})"
                         )
 
@@ -129,10 +129,10 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Check if is common key
-        if is_key and name in Class.PyObMeta.keys:
+        if is_key and name in PyObClass.PyObMeta.keys:
 
             # Get objects by key map
-            _obs_by_key = Class.PyObMeta.store._obs_by_key
+            _obs_by_key = PyObClass.PyObMeta.store._obs_by_key
 
             # Check if value in objects by key map
             if value in _obs_by_key:
@@ -144,7 +144,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                 if id(other) != id(instance):
 
                     # Get singular label
-                    label_singular = Class.label_singular
+                    label_singular = PyObClass.label_singular
 
                     # Raise DuplicateKeyError
                     raise DuplicateKeyError(
@@ -160,7 +160,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
         if is_unique:
 
             # Get unique fields
-            unique = Class.PyObMeta.unique or ()
+            unique = PyObClass.PyObMeta.unique or ()
 
             # Iterate over unique fields
             for field in unique:
@@ -196,7 +196,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                 # Get objects by unique value given field
                 _obs_by_unique_value = (
-                    Class.PyObMeta.store._obs_by_unique_field.setdefault(field, {})
+                    PyObClass.PyObMeta.store._obs_by_unique_field.setdefault(field, {})
                 )
 
                 """
@@ -219,8 +219,8 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
 
                         # Raise UnicityError
                         raise UnicityError(
-                            f"A {Class.label_singular} with a(n) {field} of {_value} "
-                            f"already exists: {other}"
+                            f"A {PyObClass.label_singular} with a(n) {field} of "
+                            f"{_value} already exists: {other}"
                         )
 
                 # Check if should index
@@ -232,7 +232,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
                     )
 
     # Apply callback to current PyOb class and its relatives
-    traverse_pyob_relatives(Class=Class, callback=callback, inclusive=True)
+    traverse_pyob_relatives(PyObClass=PyObClass, callback=callback, inclusive=True)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INDEX KEY
@@ -242,7 +242,7 @@ def validate_and_index_pyob_attribute_value(Class, instance, name, value):
     if is_key:
 
         # Get objects by key map
-        _obs_by_key = Class.PyObMeta.store._obs_by_key
+        _obs_by_key = PyObClass.PyObMeta.store._obs_by_key
 
         # Check previous value is defined
         if name in instance.__dict__:

@@ -18,8 +18,8 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
     # │ CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize object class to None
-    _Ob = None
+    # Initialize PyOb class to None
+    PyObClass = None
 
     # Initialize objects to None
     _obs = None
@@ -28,11 +28,11 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
     # │ INIT METHOD
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def __init__(self, _Ob):
+    def __init__(self, PyObClass):
         """Init Method"""
 
         # Set object class
-        self._Ob = _Ob
+        self.PyObClass = PyObClass
 
         # Initialize objects dict
         self._obs = {}
@@ -45,7 +45,7 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
         """Returns a new empty object set with the same object class"""
 
         # Return new object set
-        return PyObSet(_Ob=self._Ob)
+        return PyObSet(PyObClass=self.PyObClass)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ NAME

@@ -193,7 +193,7 @@ class ObDunderTestCase(PyObFixtureTestCase):
         # Assert that Singapore representation is correct
         self.assertEqual(repr(sgp), "<CityState: Singapore>")
 
-        # Assert that you can pass a custom _str argument
+        # Assert that you can pass a custom display argument
         self.assertEqual(sgp.__repr__(display="iso3"), "<CityState: SGP>")
 
         # ┌─────────────────────────────────────────────────────────────────────────────

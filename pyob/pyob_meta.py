@@ -113,7 +113,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize store
-        cls.PyObMeta.store = PyObStore(_Ob=cls)
+        cls.PyObMeta.store = PyObStore(PyObClass=cls)
 
         # Iterate over bases
         for base in cls.__bases__:
@@ -135,7 +135,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
             base_store._children.append(cls.PyObMeta.store)
 
             # Add parent to parents
-            parents.append(base_store._Ob)
+            parents.append(base_store.PyObClass)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS

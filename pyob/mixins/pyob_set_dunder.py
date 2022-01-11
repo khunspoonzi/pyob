@@ -38,11 +38,11 @@ class PyObSetDunderMixin:
         # Initialize new object set
         new = self.New()
 
-        # Get object class
-        _Ob = new._Ob
+        # Get PyOb class
+        PyObClass = new.PyObClass
 
         # Get object store
-        store = _Ob.PyObMeta.store
+        store = PyObClass.PyObMeta.store
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ ADD OTHER TO CURRENT
@@ -69,10 +69,10 @@ class PyObSetDunderMixin:
             # └─────────────────────────────────────────────────────────────────────────
 
             # Get object class
-            other_Ob = other.__class__
+            OtherPyObClass = other.__class__
 
             # Check if object class does not match object set
-            if other_Ob is not _Ob:
+            if OtherPyObClass is not PyObClass:
 
                 # ┌─────────────────────────────────────────────────────────────────────
                 # │ CACHE
@@ -94,9 +94,9 @@ class PyObSetDunderMixin:
                     # Try to use object as a key
                     filtered = filter_by_key(
                         store._obs,
-                        _Ob.PyObMeta.keys,
+                        PyObClass.PyObMeta.keys,
                         other,
-                        ob_label_plural=_Ob.label_plural,
+                        ob_label_plural=PyObClass.label_plural,
                     )
 
                     # Check if there are any filtered objects
@@ -106,7 +106,7 @@ class PyObSetDunderMixin:
                         other = key_cache[other] = filtered[0]
 
                 # Set object class
-                other_Ob = other.__class__
+                OtherPyObClass = other.__class__
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ ENFORCE PYOB OBJECT
@@ -126,18 +126,19 @@ class PyObSetDunderMixin:
             # └─────────────────────────────────────────────────────────────────────────
 
             # Check if object class is None
-            if _Ob is None:
+            if PyObClass is None:
 
                 # Set object set object class
-                _Ob = new._Ob = other_Ob
+                PyObClass = new.PyObClass = OtherPyObClass
 
             # Otherwise, check if other is not a subclass of current PyOb class
-            elif not issubclass(other_Ob, _Ob):
+            elif not issubclass(OtherPyObClass, PyObClass):
 
                 # Raise UnrelatedObjectsError
                 raise UnrelatedObjectsError(
-                    f"Cannot add {other_Ob.__name__} instance to {self.name} unless "
-                    f"{other_Ob.__name__} inherits from {_Ob.__name__}"
+                    f"Cannot add {OtherPyObClass.__name__} instance to {self.name} "
+                    f"unless {OtherPyObClass.__name__} inherits from "
+                    f"{PyObClass.__name__}"
                 )
 
             # ┌─────────────────────────────────────────────────────────────────────────
@@ -184,7 +185,7 @@ class PyObSetDunderMixin:
         # Resolve potential keys
         other_keys = filter_by_keys(
             self._obs,
-            self._Ob.PyObMeta.keys,
+            self.PyObClass.PyObMeta.keys,
             other_keys,
             ob_label_plural=self.ob_label_plural,
         )
@@ -216,7 +217,7 @@ class PyObSetDunderMixin:
         return (item in self._obs) or len(
             filter_by_key(
                 self._obs,
-                self._Ob.PyObMeta.keys,
+                self.PyObClass.PyObMeta.keys,
                 item,
                 ob_label_plural=self.ob_label_plural,
             )
@@ -350,7 +351,7 @@ class PyObSetDunderMixin:
         _obs = list(self)[:threshold]
 
         # Stringify objects according to object set class string field
-        _obs = [_ob.__repr__(_str=self._Ob._str) for _ob in _obs]
+        _obs = [_ob.__repr__(display=self.PyObClass.PyObMeta.display) for _ob in _obs]
 
         # Check if there are more than n objects total
         if _ob_count > threshold:

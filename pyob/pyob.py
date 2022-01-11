@@ -37,7 +37,7 @@ class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
         """Initializes a new PyOb object set for the current PyOb object class"""
 
         # Return the initialized object set
-        return PyObSet(_Ob=cls)
+        return PyObSet(PyObClass=cls)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ PYOB META
