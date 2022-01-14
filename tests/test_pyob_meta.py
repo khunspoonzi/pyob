@@ -13,12 +13,12 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB META TEST CASE
+# │ PYOB META TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObMetaTestCase(PyObFixtureTestCase):
-    """Ob Meta Test Case"""
+class PyObMetaTestCase(PyObFixtureTestCase):
+    """PyOb Meta Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CALL COMMIT INSTANCE

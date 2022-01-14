@@ -68,12 +68,12 @@ def get_country_kwargs(dummy=False):
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB INIT TEST CASE
+# │ PYOB INIT TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObInitTestCase(PyObTestCase):
-    """Ob Init Test Case"""
+class PyObInitTestCase(PyObTestCase):
+    """PyOb Init Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST CLASS ATTRIBUTES

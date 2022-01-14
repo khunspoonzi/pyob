@@ -8,84 +8,68 @@ import unittest
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob import PyOb
-
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB STORE METHOD TEST CASE
+# │ PYOB STORE DUNDER TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObStoreMethodTestCase(PyObFixtureTestCase):
-    """Ob Store Method Test Case"""
+class PyObStoreDunderTestCase(PyObFixtureTestCase):
+    """PyOb Store Dunder Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST COUNT
+    # │ TEST GETITEM
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def test_count(self):
-        """Ensures that the count method behaves as expected"""
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COUNTRY
-        # └─────────────────────────────────────────────────────────────────────────────
+    def test_getitem(self):
+        """Ensures that the getitem dunder method behaves as expected"""
 
         # Get Country
         Country = self.Country
 
-        # Get country count
-        country_count = Country.obs.count()
-
-        # Assert that count method invokes __len__ dunder
-        self.assertAllEqual(country_count, len(Country.obs), Country.obs.__len__(), 250)
-
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ A, B, C, D
+        # │ INDEX
         # └─────────────────────────────────────────────────────────────────────────────
 
-        class A(PyOb):
-            """A generic test class"""
+        # Iterate over index and ISO3 codes
+        for i, iso3 in ((0, "AFG"), (246, "ZWE"), (249, "VAT")):
 
-        class B(A):
-            """A generic test class"""
+            # Assert that index retrieves the correct country
+            self.assertEqual(Country.obs[i], Country.obs >> iso3)
 
-        class C(B):
-            """A generic test class"""
+        # Initialize assertRaises block
+        with self.assertRaises(IndexError):
 
-        class D(B):
-            """A generic test class"""
+            # Try to get a country whose index is out of range
+            Country.obs[250]
 
-        # Define instance counts
-        instance_counts = {A: 1, B: 3, C: 5, D: 7}
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ SLICE
+        # └─────────────────────────────────────────────────────────────────────────────
 
-        # Iterate over class instance counts
-        for Class, count in instance_counts.items():
+        # Define expected country slice
+        (istart, iend), iso3s = (1, 5), ["ALA", "ALB", "DZA", "ASM"]
 
-            # Assert that current count is 0
-            self.assertAllEqual(
-                Class.obs.count(), len(Class.obs), Class.obs.__len__(), 0
-            )
+        # Get countries slice
+        countries = Country.obs[istart:iend]
 
-            # Initialize instances
-            [Class() for _ in range(count)]
+        # Assert that the correct countries are sliced
+        self.assertEqual([c.iso3 for c in countries], iso3s)
 
-            # Assert that count reflects created instances
-            self.assertAllEqual(
-                Class.obs.count(), len(Class.obs), Class.obs.__len__(), count
-            )
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST LEN
+    # └─────────────────────────────────────────────────────────────────────────────────
 
-        # Iterate over classes
-        for Class, *rest in ((A, B, C, D), (B, C, D), (C,), (D,)):
+    def test_len(self):
+        """Ensures that the len dunder method behaves as expected"""
 
-            # Assert that the count of the parent class is cumulative
-            self.assertAllEqual(
-                Class.obs.count(),
-                len(Class.obs),
-                Class.obs.__len__(),
-                instance_counts[Class] + sum(instance_counts[r] for r in rest),
-            )
+        # Get Country
+        Country = self.Country
+
+        # Assert that there are 250 countries
+        self.assertAllEqual(len(Country.obs), Country.obs.__len__(), 250)
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

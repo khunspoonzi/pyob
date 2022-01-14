@@ -9,78 +9,83 @@ import unittest
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob import PyOb
+
 from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB SET INIT TEST CASE
+# │ PYOB STORE METHOD TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObSetInitTestCase(PyObFixtureTestCase):
-    """Ob Set Init Test Case"""
+class PyObStoreMethodTestCase(PyObFixtureTestCase):
+    """PyOb Store Method Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST CLASS ATTRIBUTES
+    # │ TEST COUNT
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def test_class_attributes(self):
-        """Ensures that class attributes are initialized as expected"""
+    def test_count(self):
+        """Ensures that the count method behaves as expected"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ OB
+        # │ COUNTRY
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get store
-        _store = PyOb.obs
+        # Get Country
+        Country = self.Country
 
-        # Assert that objects by key and objects by unique field are an empty dict
-        self.assertAllEqual(_store._obs_by_key, _store._obs_by_unique_field, {})
+        # Get country count
+        country_count = Country.obs.count()
 
-        # Assert that the pyob.Ob store is initialized with no parents
-        self.assertAllEqual(_store._parents, [])
+        # Assert that count method invokes __len__ dunder
+        self.assertAllEqual(country_count, len(Country.obs), Country.obs.__len__(), 250)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ A
+        # │ A, B, C, D
         # └─────────────────────────────────────────────────────────────────────────────
 
         class A(PyOb):
-            """A PyOb test class"""
-
-        # Get store
-        _store = A.obs
-
-        # Assert that parent store is pyob.Ob store
-        self.assertEqual(_store._parents, [PyOb.obs])
-
-        # Assert that the store has no children
-        self.assertEqual(_store._children, [])
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ B
-        # └─────────────────────────────────────────────────────────────────────────────
+            """A generic test class"""
 
         class B(A):
-            """A PyOb test class"""
+            """A generic test class"""
 
-        # Get store
-        _store = B.obs
+        class C(B):
+            """A generic test class"""
 
-        # Assert that parent store is A's store
-        self.assertEqual(_store._parents, [A.obs])
+        class D(B):
+            """A generic test class"""
 
-        # Assert that the store has no children
-        self.assertEqual(_store._children, [])
+        # Define instance counts
+        instance_counts = {A: 1, B: 3, C: 5, D: 7}
 
-        # Assert that A's child store is now B's store
-        self.assertEqual(A.obs._children, [B.obs])
+        # Iterate over class instance counts
+        for Class, count in instance_counts.items():
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ OB
-        # └─────────────────────────────────────────────────────────────────────────────
+            # Assert that current count is 0
+            self.assertAllEqual(
+                Class.obs.count(), len(Class.obs), Class.obs.__len__(), 0
+            )
 
-        # Assert that the pyob.Ob store continues to have no parents
-        self.assertAllEqual(PyOb.obs._parents, [])
+            # Initialize instances
+            [Class() for _ in range(count)]
+
+            # Assert that count reflects created instances
+            self.assertAllEqual(
+                Class.obs.count(), len(Class.obs), Class.obs.__len__(), count
+            )
+
+        # Iterate over classes
+        for Class, *rest in ((A, B, C, D), (B, C, D), (C,), (D,)):
+
+            # Assert that the count of the parent class is cumulative
+            self.assertAllEqual(
+                Class.obs.count(),
+                len(Class.obs),
+                Class.obs.__len__(),
+                instance_counts[Class] + sum(instance_counts[r] for r in rest),
+            )
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

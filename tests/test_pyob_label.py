@@ -13,12 +13,12 @@ from tests.test_cases.pyob import PyObTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB LABEL TEST CASE
+# │ PYOB LABEL TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObLabelTestCase(PyObTestCase):
-    """Ob Label Test Case"""
+class PyObLabelTestCase(PyObTestCase):
+    """PyOb Label Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT LABELS CORRECT

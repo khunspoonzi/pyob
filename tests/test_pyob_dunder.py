@@ -23,12 +23,12 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB DUNDER TEST CASE
+# │ PYOB DUNDER TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObDunderTestCase(PyObFixtureTestCase):
-    """Ob Dunder Test Case"""
+class PyObDunderTestCase(PyObFixtureTestCase):
+    """PyOb Dunder Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST ADD

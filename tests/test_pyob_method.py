@@ -14,12 +14,12 @@ from tests.test_cases.pyob import PyObFixtureTestCase
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ OB METHOD TEST CASE
+# │ PYOB METHOD TEST CASE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class ObMethodTestCase(PyObFixtureTestCase):
-    """Ob Method Test Case"""
+class PyObMethodTestCase(PyObFixtureTestCase):
+    """PyOb Method Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST LOCALIZED
