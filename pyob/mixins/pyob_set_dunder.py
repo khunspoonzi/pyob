@@ -39,7 +39,7 @@ class PyObSetDunderMixin:
         new = self.New()
 
         # Get PyOb class
-        PyObClass = new.PyObClass
+        PyObClass = new._PyObClass
 
         # Get object store
         store = PyObClass.PyObMeta.store
@@ -129,7 +129,7 @@ class PyObSetDunderMixin:
             if PyObClass is None:
 
                 # Set object set object class
-                PyObClass = new.PyObClass = OtherPyObClass
+                PyObClass = new._PyObClass = OtherPyObClass
 
             # Otherwise, check if other is not a subclass of current PyOb class
             elif not issubclass(OtherPyObClass, PyObClass):
@@ -185,7 +185,7 @@ class PyObSetDunderMixin:
         # Resolve potential keys
         other_keys = filter_by_keys(
             self._obs,
-            self.PyObClass.PyObMeta.keys,
+            self._PyObClass.PyObMeta.keys,
             other_keys,
             ob_label_plural=self.ob_label_plural,
         )
@@ -217,7 +217,7 @@ class PyObSetDunderMixin:
         return (item in self._obs) or len(
             filter_by_key(
                 self._obs,
-                self.PyObClass.PyObMeta.keys,
+                self._PyObClass.PyObMeta.keys,
                 item,
                 ob_label_plural=self.ob_label_plural,
             )
@@ -351,7 +351,7 @@ class PyObSetDunderMixin:
         _obs = list(self)[:threshold]
 
         # Stringify objects according to object set class string field
-        _obs = [_ob.__repr__(display=self.PyObClass.PyObMeta.display) for _ob in _obs]
+        _obs = [_ob.__repr__(display=self._PyObClass.PyObMeta.display) for _ob in _obs]
 
         # Check if there are more than n objects total
         if _ob_count > threshold:

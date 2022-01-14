@@ -172,7 +172,7 @@ class PyObMethodTestCase(PyObFixtureTestCase):
         self.assertIsObSet(countries, count=0)
 
         # Assert that the object class of the object set is Country
-        self.assertIs(countries.PyObClass, self.Country)
+        self.assertIs(countries._PyObClass, self.Country)
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

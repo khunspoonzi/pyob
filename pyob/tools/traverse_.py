@@ -38,7 +38,7 @@ def traverse_pyob_relations(
         for store in stores:
 
             # Get class
-            PyObClass = store.PyObClass
+            PyObClass = store._PyObClass
 
             # Get class ID
             class_id = id(PyObClass)
