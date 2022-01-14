@@ -12,7 +12,7 @@ from pyob.tools import convert_string_to_pascal_case
 
 
 class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
-    """A base class for PyOb object sets"""
+    """A base class for PyOb sets"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ CLASS ATTRIBUTES
@@ -42,7 +42,7 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def New(self):
-        """Returns a new empty object set with the same object class"""
+        """Returns a new empty PyOb set with the same PyOb class"""
 
         # Return new object set
         return PyObSet(PyObClass=self._PyObClass)
@@ -53,7 +53,7 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
 
     @property
     def name(self):
-        """Returns the name of the object set"""
+        """Returns the name of the PyOb set"""
 
         # Get the name based on the computed singular label
         name = self.label_singular

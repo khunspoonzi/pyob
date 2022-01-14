@@ -4,7 +4,7 @@
 
 
 class PyObSetLabelMixin:
-    """A mixin class for PyOb object set label methods"""
+    """A mixin class for PyOb set label methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LABEL SINGULAR
@@ -12,12 +12,12 @@ class PyObSetLabelMixin:
 
     @property
     def label_singular(self):
-        """Returns a singular label for the object set"""
+        """Returns a singular label for the PyOb set"""
 
-        # Determine if object set is mixed
+        # Determine if PyOb set is mixed
         is_mixed = self.count() > 1 and self._PyObClass is None
 
-        # Get object label
+        # Get PyOb label
         ob_label = "Mixed" if is_mixed else self.ob_label_singular
 
         # Return singular label
@@ -29,7 +29,7 @@ class PyObSetLabelMixin:
 
     @property
     def label_plural(self):
-        """Returns a plural label for the object set"""
+        """Returns a plural label for the PyOb set"""
 
         # Return plural label
         return self.label_singular + "s"
@@ -40,7 +40,7 @@ class PyObSetLabelMixin:
 
     @property
     def ob_label_singular(self):
-        """Returns a singular label based on related object if any"""
+        """Returns a singular label based on related PyOb if any"""
 
         # Return singular label
         return (self._PyObClass and self._PyObClass.label_singular) or "Ob"

@@ -25,16 +25,16 @@ from pyob.utils import Nothing
 
 
 class PyObSetMethodMixin:
-    """A mixin class for PyOb object set methods"""
+    """A mixin class for PyOb set methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ APPEND
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def append(self, ob, distinct=False):
-        """Appends a PyOb object to a PyOb object set"""
+        """Appends a PyOb to a PyOb set"""
 
-        # Return if distinct and object already in object set
+        # Return if distinct and PyOb already in PyOb set
         if distinct and ob in self:
             return
 
@@ -46,9 +46,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def copy(self):
-        """Copies a PyOB object set into a new PyOb object set"""
+        """Copies a PyOB set into a new PyOb set"""
 
-        # Return a copied object set
+        # Return a copied PyOb set
         return self.New() + self
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -56,9 +56,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def count(self):
-        """Returns a count of PyOb objects in a PyOb object set"""
+        """Returns a count of PyObs in a PyOb set"""
 
-        # Return the length of the object set
+        # Return the length of the PyOb set
         return len(self)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -66,9 +66,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def difference(self, obs):
-        """Returns the difference of two object sets using the - operator"""
+        """Returns the difference of two PyOb sets using the - operator"""
 
-        # Return the difference of the object sets
+        # Return the difference of the PyOb sets
         return self - obs
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -76,9 +76,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def distinct(self):
-        """Returns an object set of distinct items from the current object set"""
+        """Returns an object set of distinct items from the current PyOb set"""
 
-        # Return the union of an empty and the current object set
+        # Return the union of an empty and the current PyOb set
         return self.New() + set(self)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def extend(self, obs, distinct=False):
-        """Extends the current PyOb set by another PyOb object set"""
+        """Extends the current PyOb set by another PyOb set"""
 
         # Check if distinct
         if distinct:
@@ -112,9 +112,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_by_key(self, value):
-        """Filters a PyOb object set based on key"""
+        """Filters a PyOb set based on key"""
 
-        # Return filtered object set
+        # Return filtered PyOb set
         return self.New() + filter_by_key(
             pyob_dict=self._pyob_dict,
             keys=self._PyObClass.PyObMeta.keys,
@@ -127,9 +127,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_by_keys(self, *values):
-        """Filters a PyOb object set based on key"""
+        """Filters a PyOb set based on key"""
 
-        # Return filtered object set
+        # Return filtered PyOb set
         return self.New() + filter_by_keys(
             pyob_dict=self._pyob_dict,
             keys=self._PyObClass.PyObMeta.keys,
@@ -142,7 +142,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_first(self, **kwargs):
-        """Filters a PyOb object set and returns the first result"""
+        """Filters a PyOb set and returns the first result"""
 
         # Return first object of filtered object set
         return self.filter(**kwargs).first()
@@ -152,7 +152,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter_only(self, **kwargs):
-        """Filters a PyOb object set and returns the only result or error"""
+        """Filters a PyOb set and returns the only result or error"""
 
         # Return the only object of the filtered object set
         return self.filter(**kwargs).only()
@@ -215,9 +215,9 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def keys(self, *keys):
-        """Returns a PyOb object set of objects associated with a series of keys"""
+        """Returns a PyOb set of PyObs associated with a series of keys"""
 
-        # Initialize an empty object set
+        # Initialize an empty PyOb set
         obs = self.New()
 
         # Iterate over keys
@@ -234,7 +234,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def last(self, n=None):
-        """Returns the last PyOb object of a PyOb object set"""
+        """Returns the last PyOb of a PyOb set"""
 
         # Get PyObs as list
         pyobs = list(self)
@@ -279,7 +279,7 @@ class PyObSetMethodMixin:
 
     def sort(self, *fields):
         """
-        Sorts a PyOb object set based on a series of field arguments
+        Sorts a PyOb set based on a series of field arguments
 
         https://stackoverflow.com/questions/1143671/how-to-sort-objects-by-multiple-
             keys-in-python

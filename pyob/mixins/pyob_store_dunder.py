@@ -4,7 +4,7 @@
 
 
 class PyObStoreDunderMixin:
-    """A mixin class for PyOb object store dunder methods"""
+    """A mixin class for PyOb store dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __CONTAINS__
@@ -41,5 +41,5 @@ class PyObStoreDunderMixin:
     def __len__(self):
         """Len Method"""
 
-        # Return the count of the object store and its children
+        # Return the count of the PyOb store and its children
         return super().__len__() + sum([len(_child) for _child in self._children])

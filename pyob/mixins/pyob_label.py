@@ -4,7 +4,7 @@
 
 
 class PyObLabelMixin:
-    """A mixin class for PyOb object label methods"""
+    """A mixin class for PyOb label methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LABEL SINGULAR

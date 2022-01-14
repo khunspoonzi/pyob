@@ -53,7 +53,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Assert that adding None to a PyOB object returns an object set of one
         self.assertIsObSet(tha_, count=1)
 
-        # Assert that adding other non-PyOb objects to a PyOb object raises an error
+        # Assert that adding other non-PyObs to a PyOb raises an error
         [
             self.assertRaises(InvalidObjectError, tha.__add__, val)
             for val in (50, "Japan", True)
@@ -65,16 +65,16 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Add Japan to Thailand
         tha_jpn = tha + jpn
 
-        # Assert that adding one PyOb object to another returns a PyOb object set
+        # Assert that adding one PyOb to another returns a PyOb set
         self.assertIsObSet(tha_jpn, count=2)
 
         # Add Japan to Thailand
         tha_jpnkey = tha + "JPN"
 
-        # Assert that adding a key to a PyOb object returns a PyOb object set
+        # Assert that adding a key to a PyOb returns a PyOb set
         self.assertIsObSet(tha_jpnkey, count=2)
 
-        # Assert that you can add multiple of the same object to an object set
+        # Assert that you can add multiple of the same PyOb to a PyOb set
         self.assertIsObSet(tha + jpn + jpn, count=3)
         self.assertIsObSet(tha + "JPN" + "JPN", count=3)
 
@@ -84,7 +84,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Add USA to Japan
         jpn_usa = jpn + usa
 
-        # Assert that you can add an iterable to a PyOb object
+        # Assert that you can add an iterable to a PyOb
         self.assertIsObSet(tha + jpn_usa, count=3)
         self.assertIsObSet(tha + [jpn, usa], count=3)
         self.assertIsObSet(tha + ["JPN", "USA"], count=3)
@@ -244,7 +244,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         a = A(name="a")
         b = B(key=a)
 
-        # Assert that a PyOb object as a key can be included in __repr__
+        # Assert that a PyOb as a key can be included in __repr__
         self.assertEqual(repr(b), "<B: a>")
 
         # Nullify A.PyObMeta.display

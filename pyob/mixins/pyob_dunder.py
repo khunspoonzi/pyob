@@ -15,7 +15,7 @@ from pyob.tools import (
 
 
 class PyObDunderMixin:
-    """A mixin class for PyOb object dunder methods"""
+    """A mixin class for PyOb dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ADD__
@@ -120,7 +120,7 @@ class PyObDunderMixin:
         # Set string to value of string field
         string = display_field and getattr(self, display_field, None)
 
-        # Check if string is a PyOb object
+        # Check if string is a PyOb
         if is_pyob(string):
 
             # Check if related object is not root and has a string field

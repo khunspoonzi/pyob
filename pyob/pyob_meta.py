@@ -280,7 +280,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
     def __getattr__(cls, name):
         """Get Attr Method"""
 
-        # Attempt to return PyOb object by key
+        # Attempt to return PyOb by key
         return cls.PyObMeta.store.__getattr__(name)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -315,7 +315,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
     def __pow__(cls, other):
         """Pow Method"""
 
-        # Return rshift of object store
+        # Return rshift of PyOb store
         return cls.PyObMeta.store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -325,7 +325,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
     def __rshift__(cls, other):
         """Rshift Method"""
 
-        # Return rshift of object store
+        # Return rshift of PyOb store
         return cls.PyObMeta.store >> other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -334,7 +334,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
 
     @property
     def obs(cls):
-        """Returns the PyOb object class's object store"""
+        """Returns the PyOb class's PyOb store"""
 
-        # Return object store
+        # Return PyOb store
         return cls.PyObMeta.store

@@ -4,14 +4,14 @@
 
 
 class PyObStoreMethodMixin:
-    """A mixin class for PyOb object store methods"""
+    """A mixin class for PyOb store methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ KEY
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def key(self, *args, **kwargs):
-        """Returns the PyOb object associated with a key from the PyOb object store"""
+        """Returns the PyOb associated with a key from the PyOb store"""
 
         # Iterate over child stores
         for ob_store in self._children:
@@ -23,5 +23,5 @@ class PyObStoreMethodMixin:
             if ob is not None:
                 return ob
 
-        # Return parent key method assuming object store
+        # Return parent key method assuming PyOb store
         return super().key(*args, **kwargs)

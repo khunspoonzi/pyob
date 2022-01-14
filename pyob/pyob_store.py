@@ -12,7 +12,7 @@ from pyob.mixins import PyObStoreDunderMixin, PyObStoreMethodMixin
 
 
 class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
-    """A base class for PyOb object stores"""
+    """A base class for PyOb stores"""
 
     # Initialize objects by key to None
     _obs_by_key = None
@@ -47,7 +47,7 @@ class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def populate(self):
-        """Populates the object store based on a user-defined populate method"""
+        """Populates the PyOb store based on a user-defined populate method"""
 
         # Call user-defined populate store method
         return self._PyObClass and self._PyObClass.PyObMeta.populate_store(

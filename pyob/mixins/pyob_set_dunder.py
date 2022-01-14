@@ -22,7 +22,7 @@ from pyob.tools import (
 
 
 class PyObSetDunderMixin:
-    """A mixin class for PyOb object set dunder methods"""
+    """A mixin class for PyOb set dunder methods"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ADD__
@@ -35,7 +35,7 @@ class PyObSetDunderMixin:
         # │ OBJECT SET
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Initialize new object set
+        # Initialize new PyOb set
         new = self.New()
 
         # Get PyOb class
@@ -112,7 +112,7 @@ class PyObSetDunderMixin:
             # │ ENFORCE PYOB OBJECT
             # └─────────────────────────────────────────────────────────────────────────
 
-            # Check if not PyOb object
+            # Check if not PyOb
             if not is_pyob(other):
 
                 # Raise InvalidObjectError
@@ -249,7 +249,7 @@ class PyObSetDunderMixin:
         # Initialize try-except block
         try:
 
-            # Attempt to return PyOb object by key
+            # Attempt to return PyOb by key
             return self.key(name)
 
         # Handle NonExistentKeyError

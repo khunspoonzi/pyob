@@ -15,7 +15,7 @@ from pyob.tools import localize
 
 
 class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
-    """A base class for PyOb objects"""
+    """A base class for PyOb classes"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LOCALIZED
@@ -34,9 +34,9 @@ class PyOb(PyObLabelMixin, PyObDunderMixin, metaclass=PyObMeta):
 
     @classmethod
     def Set(cls):
-        """Initializes a new PyOb object set for the current PyOb object class"""
+        """Initializes a new PyOb set for the current PyOb class"""
 
-        # Return the initialized object set
+        # Return the initialized PyOb set
         return PyObSet(PyObClass=cls)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────

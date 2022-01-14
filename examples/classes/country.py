@@ -113,7 +113,7 @@ class Country(CountryBase, PyOb):
         # └─────────────────────────────────────────────────────────────────────────────
 
         def populate_store(Country):
-            """Populates the PyOb object store"""
+            """Populates the PyOb store"""
 
             # Open countries fixture
             with open("examples/fixtures/countries.json") as f:
