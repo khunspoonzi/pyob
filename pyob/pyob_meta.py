@@ -233,8 +233,8 @@ class PyObMeta(type, PyObMetaLabelMixin):
         # Get object store
         store = cls.PyObMeta.store
 
-        # Get store objects
-        store_obs = store._obs
+        # Get store PyOb dict
+        store_pyob_dict = store._pyob_dict
 
         # Initialize try-except block
         try:
@@ -246,7 +246,9 @@ class PyObMeta(type, PyObMetaLabelMixin):
 
             # Clean up key index as if instance never existed
             store._obs_by_key = {
-                key: ob for key, ob in store._obs_by_key.items() if ob in store_obs
+                key: ob
+                for key, ob in store._obs_by_key.items()
+                if ob in store_pyob_dict
             }
 
             # Iterate over objects by unique field
@@ -256,7 +258,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
                 store._obs_by_unique_field[field] = {
                     val: ob
                     for val, ob in store._obs_by_unique_field[field].items()
-                    if ob in store_obs
+                    if ob in store_pyob_dict
                 }
 
             # Re-raise exception
@@ -266,7 +268,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
             # The above except block ensures that object initialization is atomic
 
         # Add instance to store
-        cls.PyObMeta.store._obs[instance] = 1
+        cls.PyObMeta.store._pyob_dict[instance] = 1
 
         # Return instance
         return instance

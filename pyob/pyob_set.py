@@ -21,8 +21,8 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
     # Initialize PyOb class to None
     _PyObClass = None
 
-    # Initialize objects to None
-    _obs = None
+    # Initialize PyOb dict to None
+    _pyob_dict = None
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INIT METHOD
@@ -34,8 +34,8 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
         # Set PyOb class
         self._PyObClass = PyObClass
 
-        # Initialize objects dict
-        self._obs = {}
+        # Initialize PyOb dict
+        self._pyob_dict = {}
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ NEW

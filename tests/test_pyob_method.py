@@ -141,7 +141,10 @@ class PyObMethodTestCase(PyObFixtureTestCase):
 
             # Iterate over store indices
             for index, _index in (
-                (Class.PyObMeta.store._obs, ClassLocalized.PyObMeta.store._obs),
+                (
+                    Class.PyObMeta.store._pyob_dict,
+                    ClassLocalized.PyObMeta.store._pyob_dict,
+                ),
                 (
                     Class.PyObMeta.store._obs_by_key,
                     ClassLocalized.PyObMeta.store._obs_by_key,

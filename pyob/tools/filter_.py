@@ -10,14 +10,14 @@ from pyob.exceptions import MultipleObjectsError
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def filter_and(_obs, **kwargs):
-    """ Filters a series of objects based on a series of keyword arguments (AND) """
+def filter_and(pyobs, **kwargs):
+    """Filters a series of objects based on a series of keyword arguments (AND)"""
 
     # Return filtered objects
     return [
-        _ob
-        for _ob in _obs
-        if all([getattr(_ob, key) == val for key, val in kwargs.items()])
+        pyob
+        for pyob in pyobs
+        if all([getattr(pyob, key) == val for key, val in kwargs.items()])
     ]
 
 
@@ -26,35 +26,35 @@ def filter_and(_obs, **kwargs):
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def filter_by_key(_obs, _keys, value, ob_label_plural=None):
-    """ Filters a series of objects by a single key value """
+def filter_by_key(pyob_dict, keys, value, ob_label_plural=None):
+    """Filters a series of objects by a single key value"""
 
     # Initialize keys
-    _keys = _keys or []
+    keys = keys or []
 
     # Filter objects by key
-    _obs = filter_or(_obs, **{_key: value for _key in _keys})
+    pyob_dict = filter_or(pyob_dict, **{key: value for key in keys})
 
-    # Get distinct object count
-    _ob_count = len(set(_obs))
+    # Get distinct PyOb count
+    pyob_count = len(set(pyob_dict))
 
-    # Check if object count is greater than 1
-    if _ob_count > 1:
+    # Check if PyOb count is greater than 1
+    if pyob_count > 1:
 
         # Lowercase plural label
         ob_label_plural = (ob_label_plural or "Objects").lower()
 
         # Raise MultipleObjectsError
         raise MultipleObjectsError(
-            f"{_ob_count} {ob_label_plural} share a unique key: "
-            + ", ".join([str(_ob) for _ob in _obs])
+            f"{pyob_count} {ob_label_plural} share a unique key: "
+            + ", ".join([str(pyob) for pyob in pyob_dict])
         )
 
         # NOTE: This should be guarded from happening to begin with but we
         # throw an error here in the event that it does happen
 
     # Return filtered objects
-    return _obs
+    return pyob_dict
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -62,14 +62,17 @@ def filter_by_key(_obs, _keys, value, ob_label_plural=None):
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def filter_by_keys(_obs, _keys, values, ob_label_plural=None):
-    """ Filters a series of objects by multiple key values """
+def filter_by_keys(pyob_dict, keys, values, ob_label_plural=None):
+    """Filters a series of objects by multiple key values"""
 
     # Return filtered objects
     return sum(
         [
             filter_by_key(
-                _obs=_obs, _keys=_keys, value=value, ob_label_plural=ob_label_plural
+                pyob_dict=pyob_dict,
+                keys=keys,
+                value=value,
+                ob_label_plural=ob_label_plural,
             )
             for value in values
         ],
@@ -82,12 +85,12 @@ def filter_by_keys(_obs, _keys, values, ob_label_plural=None):
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def filter_or(_obs, **kwargs):
-    """ Filters a series of objects based on a series of keyword arguments (OR) """
+def filter_or(pyobs, **kwargs):
+    """Filters a series of objects based on a series of keyword arguments (OR)"""
 
     # Return filtered objects
     return [
-        _ob
-        for _ob in _obs
-        if any([getattr(_ob, key) == val for key, val in kwargs.items()])
+        pyob
+        for pyob in pyobs
+        if any([getattr(pyob, key) == val for key, val in kwargs.items()])
     ]

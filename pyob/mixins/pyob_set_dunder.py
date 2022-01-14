@@ -51,16 +51,16 @@ class PyObSetDunderMixin:
         # Initialize key cache
         key_cache = {}
 
-        # Copy current object set
-        new._obs = {k: v for k, v in self._obs.items()}
+        # Copy current PyOb set
+        new._pyob_dict = {k: v for k, v in self._pyob_dict.items()}
 
         # Ensure other object group is iterable
         others = others if is_iterable(others) else [others]
 
-        # Iterate over objects in other
+        # Iterate over PyObs in other
         for other in others:
 
-            # Continue if object is None
+            # Continue if PyOb is None
             if other is None:
                 continue
 
@@ -68,7 +68,7 @@ class PyObSetDunderMixin:
             # │ GET BY KEY
             # └─────────────────────────────────────────────────────────────────────────
 
-            # Get object class
+            # Get PyOb class
             OtherPyObClass = other.__class__
 
             # Check if object class does not match object set
@@ -93,9 +93,9 @@ class PyObSetDunderMixin:
 
                     # Try to use object as a key
                     filtered = filter_by_key(
-                        store._obs,
-                        PyObClass.PyObMeta.keys,
-                        other,
+                        pyob_dict=store._pyob_dict,
+                        keys=PyObClass.PyObMeta.keys,
+                        value=other,
                         ob_label_plural=PyObClass.label_plural,
                     )
 
@@ -149,15 +149,17 @@ class PyObSetDunderMixin:
             # │ UPDATE STORE
             # └─────────────────────────────────────────────────────────────────────────
 
-            if other not in store._obs:
-                store._obs[other] = 1
+            if other not in store._pyob_dict:
+                store._pyob_dict[other] = 1
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ APPEND OBJECT
             # └─────────────────────────────────────────────────────────────────────────
 
             # Append object to objects
-            new._obs[other] = new._obs[other] + 1 if other in new._obs else 1
+            new._pyob_dict[other] = (
+                new._pyob_dict[other] + 1 if other in new._pyob_dict else 1
+            )
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ RETURN NEW OBJECT SET
@@ -176,25 +178,25 @@ class PyObSetDunderMixin:
         # Ensure other is iterable
         other = other if is_iterable(other) else [other]
 
-        # Extract PyOb objects from others
-        other_obs = [o for o in other if is_pyob(o)]
+        # Extract PyObs from others
+        other_pyobs = [o for o in other if is_pyob(o)]
 
         # Extract potential keys from others
-        other_keys = [o for o in other if o not in other_obs]
+        other_keys = [o for o in other if o not in other_pyobs]
 
         # Resolve potential keys
         other_keys = filter_by_keys(
-            self._obs,
-            self._PyObClass.PyObMeta.keys,
-            other_keys,
+            pyob_dict=self._pyob_dict,
+            keys=self._PyObClass.PyObMeta.keys,
+            values=other_keys,
             ob_label_plural=self.ob_label_plural,
         )
 
         # Combine resolved objects
-        other_obs = other_obs + other_keys
+        other_pyobs = other_pyobs + other_keys
 
         # Return the new object set
-        return self.New() + (set(self._obs) & set(other_obs))
+        return self.New() + (set(self._pyob_dict) & set(other_pyobs))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __BOOL__
@@ -204,7 +206,7 @@ class PyObSetDunderMixin:
         """Bool Method"""
 
         # Return whether object count is greater than zero
-        return len(self._obs) > 0
+        return len(self._pyob_dict) > 0
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __CONTAINS__
@@ -214,11 +216,11 @@ class PyObSetDunderMixin:
         """Contains Method"""
 
         # Return whether item or key in objects
-        return (item in self._obs) or len(
+        return (item in self._pyob_dict) or len(
             filter_by_key(
-                self._obs,
-                self._PyObClass.PyObMeta.keys,
-                item,
+                pyob_dict=self._pyob_dict,
+                keys=self._PyObClass.PyObMeta.keys,
+                value=item,
                 ob_label_plural=self.ob_label_plural,
             )
         ) > 0
@@ -230,12 +232,12 @@ class PyObSetDunderMixin:
     def __eq__(self, other):
         """Eq Method"""
 
-        # Return False if other is not an object set
+        # Return False if other is not a PyOb set
         if not is_pyob_set(other):
             return False
 
-        # Return True if the objects of both object sets match
-        return self._obs == other._obs
+        # Return True if the PyObs of both PyOb sets match
+        return self._pyob_dict == other._pyob_dict
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __GETATTR__
@@ -265,17 +267,17 @@ class PyObSetDunderMixin:
     def __getitem__(self, key):
         """Get Item Method"""
 
-        # Get objects as list
-        _obs = list(self)
+        # Get PyObs as list
+        pyobs = list(self)
 
         # Check if key is a slice
         if isinstance(key, slice):
 
             # Return a new sliced object set
-            return self.New() + _obs[key]
+            return self.New() + pyobs[key]
 
         # Return indexed object
-        return _obs[key]
+        return pyobs[key]
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __ITER__
@@ -285,13 +287,13 @@ class PyObSetDunderMixin:
         """Iterate Method"""
 
         # Iterate over objects in object set
-        for _ob, count in self._obs.items():
+        for pyob, count in self._pyob_dict.items():
 
             # Iterate over object count
             for _ in range(count):
 
                 # Yield object
-                yield _ob
+                yield pyob
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __LEN__
@@ -300,8 +302,8 @@ class PyObSetDunderMixin:
     def __len__(self):
         """Length Method"""
 
-        # Return length of objects
-        return sum(self._obs.values())
+        # Return length of PyOb dict
+        return sum(self._pyob_dict.values())
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __OR__
@@ -311,10 +313,10 @@ class PyObSetDunderMixin:
         """Or Method"""
 
         # Ensure other is iterable
-        other_obs = other if is_iterable(other) else [other]
+        other_pyobs = other if is_iterable(other) else [other]
 
-        # Return the new object set
-        return self.New() + (set(self._obs) | set(other_obs))
+        # Return the new PyOb set
+        return self.New() + (set(self._pyob_dict) | set(other_pyobs))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __POW__
@@ -338,29 +340,31 @@ class PyObSetDunderMixin:
         # Define threshold
         threshold = 20
 
-        # Get object count
-        _ob_count = len(self)
+        # Get PyOb count
+        pyob_count = len(self)
 
         # Initialize representation as object set name
         representation = self.name
 
         # Add count to representation
-        representation += f": {_ob_count}"
+        representation += f": {pyob_count}"
 
         # Get the first 20 objects
-        _obs = list(self)[:threshold]
+        pyobs = list(self)[:threshold]
 
-        # Stringify objects according to object set class string field
-        _obs = [_ob.__repr__(display=self._PyObClass.PyObMeta.display) for _ob in _obs]
+        # Stringify PyObs according to PyOb set class string field
+        pyobs = [
+            pyob.__repr__(display=self._PyObClass.PyObMeta.display) for pyob in pyobs
+        ]
 
         # Check if there are more than n objects total
-        if _ob_count > threshold:
+        if pyob_count > threshold:
 
             # Add truncation message to objects list
-            _obs.append("...(remaining elements truncated)... ")
+            pyobs.append("...(remaining elements truncated)... ")
 
         # Add objects to representation
-        representation = f"{representation} {'[' + ', '.join(_obs) + ']'}"
+        representation = f"{representation} {'[' + ', '.join(pyobs) + ']'}"
 
         # Add angle brackets to the representation
         representation = f"<{representation}>"
@@ -388,5 +392,5 @@ class PyObSetDunderMixin:
         # Ensure other is iterable
         other = other if is_iterable(other) else [other]
 
-        # Return object set
-        return self.New() + (set(self._obs) - set(other))
+        # Return PyOb set
+        return self.New() + (set(self._pyob_dict) - set(other))

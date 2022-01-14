@@ -225,7 +225,7 @@ class PyObInitTestCase(PyObTestCase):
             # Assert that CountryTest store has one object
             # i.e. Initialized objects are added to the store
             self.assertIsObStore(_store, count=1)
-            self.assertTrue(country in _store._obs)
+            self.assertTrue(country in _store._pyob_dict)
 
             # Get objects by key
             _obs_by_key = _store._obs_by_key

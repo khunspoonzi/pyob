@@ -86,7 +86,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def extend(self, obs, distinct=False):
-        """Extends the current PyOb object set by another PyOb object set"""
+        """Extends the current PyOb set by another PyOb object set"""
 
         # Check if distinct
         if distinct:
@@ -102,10 +102,10 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def filter(self, **kwargs):
-        """Filters a PyOb object set based on a series of keyword arguments"""
+        """Filters a PyOb set based on a series of keyword arguments"""
 
         # Return filtered object set
-        return self.New() + filter_and(self._obs, **kwargs)
+        return self.New() + filter_and(self._pyob_dict, **kwargs)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ FILTER BY KEY
@@ -116,9 +116,9 @@ class PyObSetMethodMixin:
 
         # Return filtered object set
         return self.New() + filter_by_key(
-            self._obs,
-            self._PyObClass.PyObMeta.keys,
-            value,
+            pyob_dict=self._pyob_dict,
+            keys=self._PyObClass.PyObMeta.keys,
+            value=value,
             ob_label_plural=self.ob_label_plural,
         )
 
@@ -131,9 +131,9 @@ class PyObSetMethodMixin:
 
         # Return filtered object set
         return self.New() + filter_by_keys(
-            self._obs,
-            self._PyObClass.PyObMeta.keys,
-            values,
+            pyob_dict=self._pyob_dict,
+            keys=self._PyObClass.PyObMeta.keys,
+            values=values,
             ob_label_plural=self.ob_label_plural,
         )
 
@@ -162,39 +162,39 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def first(self, n=None):
-        """Returns the first PyOb object of a PyOb object set"""
+        """Returns the first PyOb of a PyOb set"""
 
-        # Get objects as list
-        _obs = list(self)
+        # Get PyObs as list
+        pyobs = list(self)
 
-        # Return the first (n) object(s) of the object set
-        return self[: n + 1] if n is not None else (_obs[0] if _obs else None)
+        # Return the first (n) object(s) of the PyOb set
+        return self[: n + 1] if n is not None else (pyobs[0] if pyobs else None)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INTERSECTION
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def intersection(self, obs):
-        """Returns the intersection of two object sets using the & operator"""
+    def intersection(self, pyobs):
+        """Returns the intersection of two PyOb sets using the & operator"""
 
-        # Return the intersection of both object sets
-        return self & obs
+        # Return the intersection of both PyOb sets
+        return self & pyobs
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ KEY
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def key(self, key, default=Nothing):
-        """Returns the PyOb object associated with a key from the PyOb object set"""
+        """Returns the PyOb associated with a key from the PyOb set"""
 
-        # Get objects by key
-        obs = self.filter_by_key(key)
+        # Get PyObs by key
+        pyobs = self.filter_by_key(key)
 
-        # Check if distinct object count is 1
-        if obs.distinct().count() == 1:
+        # Check if distinct PyOb count is 1
+        if pyobs.distinct().count() == 1:
 
             # Return the first and only object
-            return obs.first()
+            return pyobs.first()
 
         # Check if default is Nothing
         if default is Nothing:
@@ -236,11 +236,11 @@ class PyObSetMethodMixin:
     def last(self, n=None):
         """Returns the last PyOb object of a PyOb object set"""
 
-        # Get objects as list
-        _obs = list(self)
+        # Get PyObs as list
+        pyobs = list(self)
 
-        # Return the last (n) object(s) of the object set
-        return self[-n:] if n is not None else (_obs[-1] if _obs else None)
+        # Return the last (n) PyOb(s) of the PyOb set
+        return self[-n:] if n is not None else (pyobs[-1] if pyobs else None)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ONLY
@@ -368,7 +368,7 @@ class PyObSetMethodMixin:
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Return sorted object set
-        return self.New() + sorted(self._obs, key=cmp_to_key(cmp))
+        return self.New() + sorted(self._pyob_dict, key=cmp_to_key(cmp))
 
         # TODO: HANDLE DICT IN __ADD__
         # TODO: FieldError for non-existent fields?
