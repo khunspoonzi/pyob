@@ -25,7 +25,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_call_commit_instance(self):
-        """Ensures that instances are added to child and parent object stores"""
+        """Ensures that instances are added to child and parent PyOb stores"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
@@ -60,7 +60,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
         # │ INITIAL STORE VALUES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Assert that all object stores are empty
+        # Assert that all PyOb stores are empty
         self.assertAllEqual(
             0,
             *[
@@ -101,7 +101,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
         # │ POPULATE CHILD STORE
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Populate child objects
+        # Populate child PyObs
         children = Child.Set() + [Child() for i in range(0, 5)]
 
         # Assert that children has 5 items
@@ -113,10 +113,10 @@ class PyObMetaTestCase(PyObFixtureTestCase):
         # Iterate over parent classes
         for Parent in (Parent1, Parent2):
 
-            # Assert that parent object store now has 15 items
+            # Assert that parent PyOb store now has 15 items
             self.assertEqual(Parent.obs.count(), 15)
 
-            # Assert that all children are in parent object store
+            # Assert that all children are in parent PyOb store
             self.assertTrue(all([child in Parent.obs for child in children]))
 
         # Assert that the third parent still has 10 items
@@ -126,7 +126,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
         # │ GLOBAL CLASSES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Assert that the object stores of all global classes are still empty
+        # Assert that the PyOb stores of all global classes are still empty
         self.assertAllEqual(
             0,
             *[
@@ -140,7 +140,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_call_rollback_instance(self):
-        """Ensures that instances are added to child and parent object stores"""
+        """Ensures that instances are added to child and parent PyOb stores"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PARENT
@@ -251,7 +251,7 @@ class PyObMetaTestCase(PyObFixtureTestCase):
         # │ INITIAL STORE VALUES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Assert that all object stores are empty
+        # Assert that all PyOb stores are empty
         self.assertAllEqual(
             0,
             *[

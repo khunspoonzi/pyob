@@ -44,7 +44,7 @@ class PyObSet(PyObSetLabelMixin, PyObSetDunderMixin, PyObSetMethodMixin):
     def New(self):
         """Returns a new empty PyOb set with the same PyOb class"""
 
-        # Return new object set
+        # Return new PyOb set
         return PyObSet(PyObClass=self._PyObClass)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────

@@ -129,7 +129,7 @@ class PyObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_instance_attributes(self):
-        """Ensures that an object instance attributes are correctly initialized"""
+        """Ensures that a PyOb instance attributes are correctly initialized"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ COUNTRY LOCALIZED
@@ -195,7 +195,7 @@ class PyObInitTestCase(PyObTestCase):
 
     def test_store_constraints(self):
         """
-        Ensures that an object is added to the store upon initialization, and that the
+        Ensures that a PyOb is added to the store upon initialization, and that the
         related constraints behave as expected (key, unicity)
         """
 
@@ -222,12 +222,12 @@ class PyObInitTestCase(PyObTestCase):
             # Get store
             _store = _Country.PyObMeta.store
 
-            # Assert that CountryTest store has one object
-            # i.e. Initialized objects are added to the store
+            # Assert that CountryTest store has one PyOb
+            # i.e. Initialized PyObs are added to the store
             self.assertIsObStore(_store, count=1)
             self.assertTrue(country in _store._pyob_dict)
 
-            # Get objects by key
+            # Get PyObs by key
             _obs_by_key = _store._obs_by_key
 
             # Assert that CountryTest key index has two keys point to country
@@ -241,7 +241,7 @@ class PyObInitTestCase(PyObTestCase):
                 )
             )
 
-            # Get objects by unique field
+            # Get PyObs by unique field
             _obs_by_unique_field = _store._obs_by_unique_field
 
             # Assert that CountryTest unique fields index has two objecs
@@ -252,13 +252,13 @@ class PyObInitTestCase(PyObTestCase):
                 ("name", country.name),
                 (("latitude", "longitude"), (country.latitude, country.longitude)),
             ):
-                # Assert that field is in objects by unique field
+                # Assert that field is in PyObs by unique field
                 self.assertTrue(_field in _obs_by_unique_field)
 
-                # Get objects by unique value
+                # Get PyObs by unique value
                 _obs_by_unique_value = _obs_by_unique_field[_field]
 
-                # Assert that value is in objects by unique value
+                # Assert that value is in PyObs by unique value
                 self.assertTrue(_value in _obs_by_unique_value)
 
                 # Assert that the unique field value points to country
@@ -280,7 +280,7 @@ class PyObInitTestCase(PyObTestCase):
             # Initialize assertRaises block
             with self.assertRaises(DuplicateKeyError):
 
-                # Try to initialize object with duplicate key
+                # Try to initialize PyOb with duplicate key
                 _Country(**{**country_kwargs, iso_key: iso_val})
 
             # Assert base state
@@ -344,7 +344,7 @@ class PyObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_type_enforcement(self):
-        """Ensures that types are enforced / disabled upon object initialization"""
+        """Ensures that types are enforced / disabled upon PyOb initialization"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ TYPED
@@ -429,7 +429,7 @@ class PyObInitTestCase(PyObTestCase):
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def test_speed(self):
-        """Ensures that an object instance is initialized quick enough"""
+        """Ensures that a PyOb instance is initialized quick enough"""
 
         # Get country kwargs
         country_kwargs = get_country_kwargs()

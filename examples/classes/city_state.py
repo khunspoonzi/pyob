@@ -92,7 +92,7 @@ class CityState(City, Country):
         # └─────────────────────────────────────────────────────────────────────────────
 
         def populate_store(CityState):
-            """Populates the object store"""
+            """Populates the PyOb store"""
 
             # Open countries fixture
             with open("examples/fixtures/city-states.json") as f:

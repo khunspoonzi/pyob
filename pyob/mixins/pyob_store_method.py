@@ -16,10 +16,10 @@ class PyObStoreMethodMixin:
         # Iterate over child stores
         for ob_store in self._children:
 
-            # Get object by key or default to None
+            # Get PyOb by key or default to None
             ob = ob_store.key(*args, **{**kwargs, "default": None})
 
-            # Return object if found
+            # Return PyOb if found
             if ob is not None:
                 return ob
 

@@ -11,9 +11,9 @@ from pyob.exceptions import MultipleObjectsError
 
 
 def filter_and(pyobs, **kwargs):
-    """Filters a series of objects based on a series of keyword arguments (AND)"""
+    """Filters a series of PyObs based on a series of keyword arguments (AND)"""
 
-    # Return filtered objects
+    # Return filtered PyObs
     return [
         pyob
         for pyob in pyobs
@@ -27,12 +27,12 @@ def filter_and(pyobs, **kwargs):
 
 
 def filter_by_key(pyob_dict, keys, value, ob_label_plural=None):
-    """Filters a series of objects by a single key value"""
+    """Filters a series of PyObs by a single key value"""
 
     # Initialize keys
     keys = keys or []
 
-    # Filter objects by key
+    # Filter PyObs by key
     pyob_dict = filter_or(pyob_dict, **{key: value for key in keys})
 
     # Get distinct PyOb count
@@ -53,7 +53,7 @@ def filter_by_key(pyob_dict, keys, value, ob_label_plural=None):
         # NOTE: This should be guarded from happening to begin with but we
         # throw an error here in the event that it does happen
 
-    # Return filtered objects
+    # Return filtered PyObs
     return pyob_dict
 
 
@@ -63,9 +63,9 @@ def filter_by_key(pyob_dict, keys, value, ob_label_plural=None):
 
 
 def filter_by_keys(pyob_dict, keys, values, ob_label_plural=None):
-    """Filters a series of objects by multiple key values"""
+    """Filters a series of PyObs by multiple key values"""
 
-    # Return filtered objects
+    # Return filtered PyObs
     return sum(
         [
             filter_by_key(
@@ -86,9 +86,9 @@ def filter_by_keys(pyob_dict, keys, values, ob_label_plural=None):
 
 
 def filter_or(pyobs, **kwargs):
-    """Filters a series of objects based on a series of keyword arguments (OR)"""
+    """Filters a series of PyObs based on a series of keyword arguments (OR)"""
 
-    # Return filtered objects
+    # Return filtered PyObs
     return [
         pyob
         for pyob in pyobs

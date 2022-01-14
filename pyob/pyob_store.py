@@ -14,10 +14,10 @@ from pyob.mixins import PyObStoreDunderMixin, PyObStoreMethodMixin
 class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
     """A base class for PyOb stores"""
 
-    # Initialize objects by key to None
+    # Initialize PyObs by key to None
     _obs_by_key = None
 
-    # Initialize objects by unique field to None
+    # Initialize PyObs by unique field to None
     _obs_by_unique_field = None
 
     # Initialize parents and children to None
@@ -33,10 +33,10 @@ class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
         # Call parent init method
         super().__init__(*args, **kwargs)
 
-        # Initialize objects by key dict
+        # Initialize PyObs by key dict
         self._obs_by_key = {}
 
-        # Initialize objects by unique field dict
+        # Initialize PyObs by unique field dict
         self._obs_by_unique_field = {}
 
         # Initialize parents and children

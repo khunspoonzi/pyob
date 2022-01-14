@@ -34,7 +34,7 @@ class PyObSetInitTestCase(PyObFixtureTestCase):
         # Get store
         _store = PyOb.obs
 
-        # Assert that objects by key and objects by unique field are an empty dict
+        # Assert that PyObs by key and PyObs by unique field are an empty dict
         self.assertAllEqual(_store._obs_by_key, _store._obs_by_unique_field, {})
 
         # Assert that the pyob.Ob store is initialized with no parents

@@ -24,7 +24,7 @@ class PyObDunderMixin:
     def __add__(self, other):
         """Add Method"""
 
-        # Return an object set containing the two objects
+        # Return an PyOb set containing the two PyObs
         return self.Set() + self + other
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ class PyObDunderMixin:
         # │ ATTRIBUTES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Get object class
+        # Get PyOb class
         cls = self.__class__
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -123,10 +123,10 @@ class PyObDunderMixin:
         # Check if string is a PyOb
         if is_pyob(string):
 
-            # Check if related object is not root and has a string field
+            # Check if related PyOb is not root and has a string field
             if string != root and (string.PyObMeta.display or string.PyObMeta.keys):
 
-                # Evaluate the string of the related object
+                # Evaluate the string of the related PyOb
                 # Root is passed for comparison to avoid cases of infinite recursion
                 string = string.__str__(root=root)
 

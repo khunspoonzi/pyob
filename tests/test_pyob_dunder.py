@@ -130,7 +130,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
             # Try to add a B instance to an A instance
             a1 + b1
 
-        # Get b1 and a1 object set
+        # Get b1 and a1 PyOb set
         b1_a1 = b1 + a1
 
         # Assert that you can add a1 to b1 because a1 is synonymous with b2
@@ -177,7 +177,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Nullify all keys
         _Country.PyObMeta.keys = None
 
-        # Assert that the string defaults to the hex of the object
+        # Assert that the string defaults to the hex of the PyOb
         self.assertEqual(repr(tha), f"<Country: {hex(id(tha))}>")
 
         # ┌─────────────────────────────────────────────────────────────────────────────
@@ -405,7 +405,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Get Country store
         _store = Country.PyObMeta.store
 
-        # Get objects by key
+        # Get PyObs by key
         _obs_by_key = _store._obs_by_key
 
         # Define assert baseline helper
@@ -613,7 +613,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
 
             # As A and B are not children of C, we should be able to create instances
             # with a key of KEY_C and KEY_D without a DuplicateKeyError,
-            # e.g. the A object set CAN contain two objects where A.key = KEY_C / KEY_D
+            # e.g. the A PyOb set CAN contain two PyObs where A.key = KEY_C / KEY_D
 
         # Iterate over key classes
         for Class in (C, D):
@@ -812,7 +812,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         usa_latitude = usa.latitude
         usa_longitude = usa.longitude
 
-        # Get objects by unique field
+        # Get PyObs by unique field
         _obs_by_unique_field = _store._obs_by_unique_field
 
         # Define assert unicity baseline helper
@@ -840,7 +840,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
             field, instance, value_previous, value_current, other, value_other
         ):
 
-            # Get field objects
+            # Get field PyObs
             _field_obs = _obs_by_unique_field[field]
 
             # Check that previous field value was removed from index
@@ -1346,7 +1346,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Nullify all keys
         _Country.PyObMeta.keys = None
 
-        # Assert that the string defaults to the hex of the object
+        # Assert that the string defaults to the hex of the PyOb
         self.assertEqual(str(tha), hex(id(tha)))
 
         # ┌─────────────────────────────────────────────────────────────────────────────

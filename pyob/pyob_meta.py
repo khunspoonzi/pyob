@@ -57,7 +57,7 @@ class PyObMetaBase:
     # └─────────────────────────────────────────────────────────────────────────────
 
     def populate_store(Class):
-        """Populates the object store of a PyOb class"""
+        """Populates the PyOb store of a PyOb class"""
 
         # Return None
         return None
@@ -230,7 +230,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
     def __call__(cls, *args, **kwargs):
         """Call Method"""
 
-        # Get object store
+        # Get PyOb store
         store = cls.PyObMeta.store
 
         # Get store PyOb dict
@@ -251,7 +251,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
                 if ob in store_pyob_dict
             }
 
-            # Iterate over objects by unique field
+            # Iterate over PyObs by unique field
             for field in store._obs_by_unique_field:
 
                 # Clean up unique value index as if instance never created
@@ -265,7 +265,7 @@ class PyObMeta(type, PyObMetaLabelMixin):
             raise
 
             # NOTE: Exceptions can happen when setting individual attributes
-            # The above except block ensures that object initialization is atomic
+            # The above except block ensures that PyOb initialization is atomic
 
         # Add instance to store
         cls.PyObMeta.store._pyob_dict[instance] = 1

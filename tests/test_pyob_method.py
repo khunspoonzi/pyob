@@ -155,7 +155,7 @@ class PyObMethodTestCase(PyObFixtureTestCase):
                 ),
             ):
 
-                # Assert that localized index has not objects
+                # Assert that localized index has no PyObs
                 self.assertEqual(len(_index), 0)
 
                 # Assert that global and local indices are separate references
@@ -168,13 +168,13 @@ class PyObMethodTestCase(PyObFixtureTestCase):
     def test_set(self):
         """Ensures that the Set class method behaves as expected"""
 
-        # Initialize new Country object set
+        # Initialize new Country PyOb set
         countries = self.Country.Set()
 
-        # Assert that new object set was initialized
+        # Assert that new PyOb set was initialized
         self.assertIsObSet(countries, count=0)
 
-        # Assert that the object class of the object set is Country
+        # Assert that the PyOb class of the PyOb set is Country
         self.assertIs(countries._PyObClass, self.Country)
 
 

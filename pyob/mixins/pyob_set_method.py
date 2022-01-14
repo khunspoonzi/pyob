@@ -76,7 +76,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def distinct(self):
-        """Returns an object set of distinct items from the current PyOb set"""
+        """Returns a PyOb set of distinct items from the current PyOb set"""
 
         # Return the union of an empty and the current PyOb set
         return self.New() + set(self)
@@ -91,7 +91,7 @@ class PyObSetMethodMixin:
         # Check if distinct
         if distinct:
 
-            # Filter out objects that already exist in current object set
+            # Filter out PyObs that already exist in current PyOb set
             obs = obs - self if is_pyob_set(obs) else [o for o in obs if o not in self]
 
         # Update current instance
@@ -104,7 +104,7 @@ class PyObSetMethodMixin:
     def filter(self, **kwargs):
         """Filters a PyOb set based on a series of keyword arguments"""
 
-        # Return filtered object set
+        # Return filtered PyOb set
         return self.New() + filter_and(self._pyob_dict, **kwargs)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ class PyObSetMethodMixin:
     def filter_first(self, **kwargs):
         """Filters a PyOb set and returns the first result"""
 
-        # Return first object of filtered object set
+        # Return first PyOb of filtered PyOb set
         return self.filter(**kwargs).first()
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -154,7 +154,7 @@ class PyObSetMethodMixin:
     def filter_only(self, **kwargs):
         """Filters a PyOb set and returns the only result or error"""
 
-        # Return the only object of the filtered object set
+        # Return the only PyOb of the filtered PyOb set
         return self.filter(**kwargs).only()
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -167,7 +167,7 @@ class PyObSetMethodMixin:
         # Get PyObs as list
         pyobs = list(self)
 
-        # Return the first (n) object(s) of the PyOb set
+        # Return the first (n) PyOb(s) of the PyOb set
         return self[: n + 1] if n is not None else (pyobs[0] if pyobs else None)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -193,13 +193,13 @@ class PyObSetMethodMixin:
         # Check if distinct PyOb count is 1
         if pyobs.distinct().count() == 1:
 
-            # Return the first and only object
+            # Return the first and only PyOb
             return pyobs.first()
 
         # Check if default is Nothing
         if default is Nothing:
 
-            # Get object label singular
+            # Get PyOb label singular
             ob_label_singular = self.ob_label_singular
 
             # Raise NonExistentKeyError
@@ -223,10 +223,10 @@ class PyObSetMethodMixin:
         # Iterate over keys
         for key in keys:
 
-            # Filter by key and add distinct objects to object set
+            # Filter by key and add distinct PyObs to PyOb set
             obs |= self.filter_by_key(key)
 
-        # Return filtered object set
+        # Return filtered PyOb set
         return obs
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -247,22 +247,22 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def only(self):
-        """Returns the one and only object in an object set or raises an error"""
+        """Returns the one and only PyOb in a PyOb set or raises an error"""
 
-        # Get distinct object count
+        # Get distinct PyOb count
         ob_count = self.distinct().count()
 
-        # Return first and only object
+        # Return first and only PyOb
         if ob_count == 1:
             return self.first()
 
-        # Get object set name
+        # Get PyOb set name
         name = self.name
 
-        # Get object plural label
+        # Get PyOb plural label
         ob_label_plural = self.ob_label_plural.lower()
 
-        # Check if there are multiple objects
+        # Check if there are multiple PyObs
         if ob_count > 1:
 
             # Raise MultipleObjectsError
@@ -367,7 +367,7 @@ class PyObSetMethodMixin:
         # │ RETURN SORTED OBJECT SET
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Return sorted object set
+        # Return sorted PyOb set
         return self.New() + sorted(self._pyob_dict, key=cmp_to_key(cmp))
 
         # TODO: HANDLE DICT IN __ADD__
@@ -379,7 +379,7 @@ class PyObSetMethodMixin:
     # └─────────────────────────────────────────────────────────────────────────────────
 
     def union(self, obs):
-        """Returns the union of two object sets using the | operator"""
+        """Returns the union of two PyOb sets using the | operator"""
 
-        # Return the union of both object sets
+        # Return the union of both PyOb sets
         return self | obs

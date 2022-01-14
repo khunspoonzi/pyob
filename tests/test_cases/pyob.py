@@ -90,7 +90,7 @@ class PyObTestCase(TestCase):
         # Check if count is not None
         if count is not None:
 
-            # Assert that object store count is equal to count
+            # Assert that PyOb store count is equal to count
             self.assertEqual(item.count(), count)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -165,7 +165,7 @@ class PyObFixtureTestCase(PyObTestCase):
         # │ COUNTRIES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Populate localized Country object store
+        # Populate localized Country PyOb store
         Country.obs.populate()
 
         # Set Country class
@@ -175,7 +175,7 @@ class PyObFixtureTestCase(PyObTestCase):
         # │ CITIES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Populate localized CityState object store
+        # Populate localized CityState PyOb store
         City.obs.populate()
 
         # Set City class
@@ -185,7 +185,7 @@ class PyObFixtureTestCase(PyObTestCase):
         # │ CITY-STATES
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Populate localized CityState object store
+        # Populate localized CityState PyOb store
         CityState.obs.populate()
 
         # Set CityState class

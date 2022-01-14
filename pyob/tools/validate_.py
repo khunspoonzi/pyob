@@ -131,16 +131,16 @@ def validate_and_index_pyob_attribute_value(PyObClass, instance, name, value):
         # Check if is common key
         if is_key and name in PyObClass.PyObMeta.keys:
 
-            # Get objects by key map
+            # Get PyObs by key map
             _obs_by_key = PyObClass.PyObMeta.store._obs_by_key
 
-            # Check if value in objects by key map
+            # Check if value in PyObs by key map
             if value in _obs_by_key:
 
                 # Get other
                 other = _obs_by_key[value]
 
-                # Check if existing index is not the current object
+                # Check if existing index is not the current PyOb
                 if id(other) != id(instance):
 
                     # Get singular label
@@ -194,7 +194,7 @@ def validate_and_index_pyob_attribute_value(PyObClass, instance, name, value):
 
                     _value = value
 
-                # Get objects by unique value given field
+                # Get PyObs by unique value given field
                 _obs_by_unique_value = (
                     PyObClass.PyObMeta.store._obs_by_unique_field.setdefault(field, {})
                 )
@@ -241,7 +241,7 @@ def validate_and_index_pyob_attribute_value(PyObClass, instance, name, value):
     # Check if is key
     if is_key:
 
-        # Get objects by key map
+        # Get PyObs by key map
         _obs_by_key = PyObClass.PyObMeta.store._obs_by_key
 
         # Check previous value is defined
