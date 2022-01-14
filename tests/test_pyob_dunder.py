@@ -50,7 +50,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Add None to Thailand
         tha_ = tha + None
 
-        # Assert that adding None to a PyOB object returns an object set of one
+        # Assert that adding None to a PyOb returns a PyOb set of one
         self.assertIsObSet(tha_, count=1)
 
         # Assert that adding other non-PyObs to a PyOb raises an error
