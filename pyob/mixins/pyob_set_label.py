@@ -21,7 +21,7 @@ class PyObSetLabelMixin:
         ob_label = "Mixed" if is_mixed else self.ob_label_singular
 
         # Return singular label
-        return self.__class__.__name__.replace("Ob", ob_label + " ")
+        return self.__class__.__name__.replace("PyOb", ob_label + " ")
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LABEL PLURAL
@@ -43,7 +43,7 @@ class PyObSetLabelMixin:
         """Returns a singular label based on related PyOb if any"""
 
         # Return singular label
-        return (self._PyObClass and self._PyObClass.label_singular) or "Ob"
+        return (self._PyObClass and self._PyObClass.label_singular) or "PyOb"
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OB LABEL PLURAL
@@ -54,4 +54,4 @@ class PyObSetLabelMixin:
         """Returns a plural label based on related object if any"""
 
         # Return plural label
-        return (self._PyObClass and self._PyObClass.label_plural) or "Obs"
+        return (self._PyObClass and self._PyObClass.label_plural) or "PyObs"
