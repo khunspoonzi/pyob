@@ -81,7 +81,7 @@ class PyObTestCase(TestCase):
     # │ ASSERT IS OB SET
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def assertIsObSet(self, item, count=None, store=False):
+    def assertIsObSet(self, item, count=None, PyObClass=None, store=False):
         """Asserts that an item is an instance of ObSet"""
 
         # Assert that item is an instance of ObSet
@@ -93,15 +93,21 @@ class PyObTestCase(TestCase):
             # Assert that PyOb store count is equal to count
             self.assertEqual(item.count(), count)
 
+        # Check if PyObClass is not None
+        if PyObClass is not None:
+
+            # Assert that the item's PyObClass matches the specified PyObClass
+            self.assertIs(item._PyObClass, PyObClass)
+
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT IS OB STORE
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def assertIsObStore(self, item, count=None):
+    def assertIsObStore(self, item, count=None, PyObClass=None):
         """Asserts that an item is an instance of ObStore"""
 
         # Assert that item is an instance of ObStore
-        self.assertIsObSet(item, count=count, store=True)
+        self.assertIsObSet(item, count=count, store=True, PyObClass=PyObClass)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ ASSERT TIME LTE

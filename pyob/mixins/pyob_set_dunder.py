@@ -131,15 +131,24 @@ class PyObSetDunderMixin:
                 # Set PyOb set PyOb class
                 PyObClass = new._PyObClass = OtherPyObClass
 
-            # Otherwise, check if other is not a subclass of current PyOb class
+            # Otherwise, check if other is not a subclass of current PyObClass
             elif not issubclass(OtherPyObClass, PyObClass):
 
-                # Raise UnrelatedObjectsError
-                raise UnrelatedObjectsError(
-                    f"Cannot add {OtherPyObClass.__name__} instance to {self.name} "
-                    f"unless {OtherPyObClass.__name__} inherits from "
-                    f"{PyObClass.__name__}"
-                )
+                # Check if current PyObClass is a subclass of OtherPyObClass
+                if issubclass(PyObClass, OtherPyObClass):
+
+                    # Set the common PyObClass
+                    PyObClass = new._PyObClass = OtherPyObClass
+
+                # Otherwise handle case of unrelated objects
+                else:
+
+                    # Raise UnrelatedObjectsError
+                    raise UnrelatedObjectsError(
+                        f"Cannot add {OtherPyObClass.__name__} instance to {self.name} "
+                        f"unless {OtherPyObClass.__name__} inherits from "
+                        f"{PyObClass.__name__}"
+                    )
 
             # ┌─────────────────────────────────────────────────────────────────────────
             # │ ENFORCE KEY UNICITY

@@ -90,6 +90,21 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         self.assertIsObSet(tha + ["JPN", "USA"], count=3)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ CITY STATE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get Singapore -- a CityState which subclasses Country
+        sgp = self.CityState.SGP
+
+        # Assert that you can add Singapore to United States
+        # because CityState subclasses Country
+        self.assertIsObSet(usa + sgp, count=2, PyObClass=self.Country)
+
+        # Assert that you can add United States to Singapore
+        # because CityState subclasses Country, ObSet should resolve to Country
+        self.assertIsObSet(sgp + usa, count=2, PyObClass=self.Country)
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A
         # └─────────────────────────────────────────────────────────────────────────────
 
@@ -116,7 +131,7 @@ class PyObDunderTestCase(PyObFixtureTestCase):
                 keys = ("key",)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ MIXED TYPES
+        # │ UNRELATED TYPES
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize A and B instances
