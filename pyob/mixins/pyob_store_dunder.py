@@ -15,7 +15,10 @@ class PyObStoreDunderMixin:
 
         # Return the result of contains for current and child stores
         return super().__contains__(item) or any(
-            [_child.__contains__(item) for _child in self._children]
+            [
+                Child.PyObMeta.store.__contains__(item)
+                for Child in self._PyObClass.PyObMeta.Children
+            ]
         )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
@@ -28,11 +31,11 @@ class PyObStoreDunderMixin:
         # Yield from current store
         yield from super().__iter__()
 
-        # Iterate over child stores
-        for _child in self._children:
+        # Iterate over Children
+        for Child in self._PyObClass.PyObMeta.Children:
 
             # Yield from child store
-            yield from _child.__iter__()
+            yield from Child.PyObMeta.store.__iter__()
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __LEN__
@@ -42,4 +45,6 @@ class PyObStoreDunderMixin:
         """Len Method"""
 
         # Return the count of the PyOb store and its children
-        return super().__len__() + sum([len(_child) for _child in self._children])
+        return super().__len__() + sum(
+            [len(Child.PyObMeta.store) for Child in self._PyObClass.PyObMeta.Children]
+        )

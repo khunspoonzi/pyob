@@ -37,8 +37,8 @@ class PyObSetInitTestCase(PyObFixtureTestCase):
         # Assert that PyObs by key and PyObs by unique field are an empty dict
         self.assertAllEqual(_store._obs_by_key, _store._obs_by_unique_field, {})
 
-        # Assert that the pyob.Ob store is initialized with no parents
-        self.assertAllEqual(_store._parents, [])
+        # Assert that PyOb is initialized with no parents
+        self.assertAllEqual(PyOb.PyObMeta.Parents, [])
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ A
@@ -47,14 +47,11 @@ class PyObSetInitTestCase(PyObFixtureTestCase):
         class A(PyOb):
             """A PyOb test class"""
 
-        # Get store
-        _store = A.obs
+        # Assert that A has one parent: PyOb
+        self.assertEqual(A.PyObMeta.Parents, [PyOb])
 
-        # Assert that parent store is pyob.Ob store
-        self.assertEqual(_store._parents, [PyOb.obs])
-
-        # Assert that the store has no children
-        self.assertEqual(_store._children, [])
+        # Assert that A has no children
+        self.assertEqual(A.PyObMeta.Children, [])
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ B
@@ -63,24 +60,21 @@ class PyObSetInitTestCase(PyObFixtureTestCase):
         class B(A):
             """A PyOb test class"""
 
-        # Get store
-        _store = B.obs
+        # Assert that B has one parent: A
+        self.assertEqual(B.PyObMeta.Parents, [A])
 
-        # Assert that parent store is A's store
-        self.assertEqual(_store._parents, [A.obs])
+        # Assert that A has no children
+        self.assertEqual(B.PyObMeta.Children, [])
 
-        # Assert that the store has no children
-        self.assertEqual(_store._children, [])
-
-        # Assert that A's child store is now B's store
-        self.assertEqual(A.obs._children, [B.obs])
+        # Assert that A now has one child: B
+        self.assertEqual(A.PyObMeta.Children, [B])
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ OB
         # └─────────────────────────────────────────────────────────────────────────────
 
-        # Assert that the pyob.Ob store continues to have no parents
-        self.assertAllEqual(PyOb.obs._parents, [])
+        # Assert that PyOb continues to have no parents
+        self.assertAllEqual(PyOb.PyObMeta.Parents, [])
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

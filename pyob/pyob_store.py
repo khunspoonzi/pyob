@@ -20,9 +20,6 @@ class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
     # Initialize PyObs by unique field to None
     _obs_by_unique_field = None
 
-    # Initialize parents and children to None
-    _parents = _children = None
-
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __INIT__
     # └─────────────────────────────────────────────────────────────────────────────────
@@ -38,9 +35,6 @@ class PyObStore(PyObStoreDunderMixin, PyObStoreMethodMixin, PyObSet):
 
         # Initialize PyObs by unique field dict
         self._obs_by_unique_field = {}
-
-        # Initialize parents and children
-        self._parents, self._children = [], []
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ POPULATE

@@ -16,17 +16,27 @@ from pyob.mixins import PyObMetaLabelMixin
 from pyob.tools import is_iterable, remove_duplicates
 
 
-# ┌─────────────────────────────────────────────────────────────────────────────────
+# ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PYOB META BASE
-# └─────────────────────────────────────────────────────────────────────────────────
+# └─────────────────────────────────────────────────────────────────────────────────────
 
 
 class PyObMetaBase:
     """A Base PyOb Meta Class"""
 
-    # ┌─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ PARENTS AND CHILDREN
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    # Initialize list of parent classes to None
+    Parents = None
+
+    # Initialize list of child classes to None
+    Children = None
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ STORE SETTINGS
-    # └─────────────────────────────────────────────────────────────────────────────
+    # └─────────────────────────────────────────────────────────────────────────────────
 
     # Initialize keys to None
     keys = None
@@ -34,9 +44,9 @@ class PyObMetaBase:
     # Initialize unique fields to None
     unique = None
 
-    # ┌─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ APPEARANCE SETTINGS
-    # └─────────────────────────────────────────────────────────────────────────────
+    # └─────────────────────────────────────────────────────────────────────────────────
 
     # Initialize display field to None
     display = None
@@ -45,16 +55,16 @@ class PyObMetaBase:
     label_singular = None
     label_plural = None
 
-    # ┌─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ RUNTIME SETTINGS
-    # └─────────────────────────────────────────────────────────────────────────────
+    # └─────────────────────────────────────────────────────────────────────────────────
 
     # Initialize disable type checking to False
     disable_type_checking = False
 
-    # ┌─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ POPULATE STORE
-    # └─────────────────────────────────────────────────────────────────────────────
+    # └─────────────────────────────────────────────────────────────────────────────────
 
     def populate_store(Class):
         """Populates the PyOb store of a PyOb class"""
@@ -77,13 +87,6 @@ class PyObMeta(type, PyObMetaLabelMixin):
 
     def __init__(cls, *args, **kwargs):
         """Init Method"""
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ PARENTS
-        # └─────────────────────────────────────────────────────────────────────────────
-
-        # Initialize parents
-        parents = []
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ PYOB META
@@ -109,17 +112,27 @@ class PyObMeta(type, PyObMetaLabelMixin):
         cls.PyObMeta = type("PyObMeta", cls.PyObMeta.__bases__, pyob_meta_dict)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ PARENTS AND CHILDREN
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Initialize list of parent classes
+        cls.PyObMeta.Parents = []
+
+        # Initialize list of child classes
+        cls.PyObMeta.Children = []
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ STORE
         # └─────────────────────────────────────────────────────────────────────────────
 
         # Initialize store
         cls.PyObMeta.store = PyObStore(PyObClass=cls)
 
-        # Iterate over bases
-        for base in cls.__bases__:
+        # Iterate over Parents
+        for Parent in cls.__bases__:
 
             # Get PyObMeta of base
-            BasePyObMeta = getattr(base, "PyObMeta", None)
+            BasePyObMeta = getattr(Parent, "PyObMeta", None)
 
             # Get store of base
             base_store = BasePyObMeta and BasePyObMeta.store
@@ -128,14 +141,11 @@ class PyObMeta(type, PyObMetaLabelMixin):
             if not isinstance(base_store, PyObStore):
                 continue
 
-            # Add parent to child store
-            cls.PyObMeta.store._parents.append(base_store)
+            # Add Parent to Parents
+            cls.PyObMeta.Parents.append(Parent)
 
-            # Add child to parent store
-            base_store._children.append(cls.PyObMeta.store)
-
-            # Add parent to parents
-            parents.append(base_store._PyObClass)
+            # Add Child to Children
+            BasePyObMeta.Children.append(cls)
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ KEYS
@@ -148,7 +158,9 @@ class PyObMeta(type, PyObMetaLabelMixin):
         keys = keys and ((keys,) if type(keys) is str else tuple(keys))
 
         # Merge with parent keys
-        keys = sum([p.PyObMeta.keys for p in parents] + [keys], ())
+        keys = sum(
+            [Parent.PyObMeta.keys for Parent in cls.PyObMeta.Parents] + [keys], ()
+        )
 
         # Ensure that keys definition is a unique tuple
         cls.PyObMeta.keys = remove_duplicates(keys)
@@ -167,7 +179,9 @@ class PyObMeta(type, PyObMetaLabelMixin):
         unique = tuple(tuple(f) if is_iterable(f) else f for f in unique)
 
         # Merge with parent unique fields
-        unique = sum([p.PyObMeta.unique for p in parents] + [unique], ())
+        unique = sum(
+            [Parent.PyObMeta.unique for Parent in cls.PyObMeta.Parents] + [unique], ()
+        )
 
         # Ensure that unique definition is a unique tuple
         cls.PyObMeta.unique = remove_duplicates(unique, recursive=True)

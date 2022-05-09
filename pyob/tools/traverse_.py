@@ -8,8 +8,8 @@ def traverse_pyob_relations(
 ):
     """Traverses a PyOb class's relations and applies a callback to each"""
 
-    # Return if we hit ob.Ob
-    if not PyObClass.PyObMeta.store._parents:
+    # Return if we hit pyob.PyOb
+    if not PyObClass.PyObMeta.Parents:
         return
 
     # Initialize seen
@@ -21,27 +21,21 @@ def traverse_pyob_relations(
         # Apply callback to class
         callback(PyObClass)
 
-    # Get root store
-    root_store = PyObClass.PyObMeta.store
-
     # Iterate over relative types
-    for (stores, should_traverse) in (
-        (root_store._parents, ancestors),
-        (root_store._children, descendants),
+    for (Relatives, should_traverse) in (
+        (PyObClass.PyObMeta.Parents, ancestors),
+        (PyObClass.PyObMeta.Children, descendants),
     ):
 
         # Continue of not should traverse
         if not should_traverse:
             continue
 
-        # Iterate over stores
-        for store in stores:
-
-            # Get class
-            PyObClass = store._PyObClass
+        # Iterate over relatives
+        for Relative in Relatives:
 
             # Get class ID
-            class_id = id(PyObClass)
+            class_id = id(Relative)
 
             # Continue seen
             if class_id in seen:
@@ -52,7 +46,7 @@ def traverse_pyob_relations(
 
             # Traverse PyOb relations
             traverse_pyob_relations(
-                PyObClass=PyObClass,
+                PyObClass=Relative,
                 callback=callback,
                 inclusive=True,
                 ancestors=ancestors,

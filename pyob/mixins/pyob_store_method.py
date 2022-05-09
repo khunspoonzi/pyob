@@ -13,11 +13,11 @@ class PyObStoreMethodMixin:
     def key(self, *args, **kwargs):
         """Returns the PyOb associated with a key from the PyOb store"""
 
-        # Iterate over child stores
-        for ob_store in self._children:
+        # Iterate over Children
+        for Child in self._PyObClass.PyObMeta.Children:
 
             # Get PyOb by key or default to None
-            ob = ob_store.key(*args, **{**kwargs, "default": None})
+            ob = Child.PyObMeta.store.key(*args, **{**kwargs, "default": None})
 
             # Return PyOb if found
             if ob is not None:
