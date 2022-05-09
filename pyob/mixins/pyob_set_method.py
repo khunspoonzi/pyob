@@ -202,6 +202,12 @@ class PyObSetMethodMixin:
             # Get PyOb label singular
             ob_label_singular = self.ob_label_singular
 
+            # Check if key is a string
+            if type(key) is str:
+
+                # Add quotes to key for error message
+                key = f"'{key}'"
+
             # Raise NonExistentKeyError
             raise NonExistentKeyError(
                 f"A {ob_label_singular} instance with a key of {key} does not exist"
