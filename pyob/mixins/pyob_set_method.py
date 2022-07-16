@@ -187,14 +187,29 @@ class PyObSetMethodMixin:
     def key(self, key, default=Nothing):
         """Returns the PyOb associated with a key from the PyOb set"""
 
-        # Get PyObs by key
-        pyobs = self.filter_by_key(key)
+        # Initialize try-except block
+        try:
 
-        # Check if distinct PyOb count is 1
-        if pyobs.distinct().count() == 1:
+            # Get PyOb instance by key
+            pyob = self.PyObMeta.store.key(key)
 
-            # Return the first and only PyOb
-            return pyobs.first()
+        # Handle NonExistentKeyError
+        except NonExistentKeyError:
+
+            # Check if default is Nothing
+            if default is Nothing:
+
+                # Re-raise exception
+                raise
+
+            # Return the default
+            return default
+
+        # Check if PyOb instance in PyObSet
+        if pyob in self._pyob_dict:
+
+            # Return PyOb instance
+            return pyob
 
         # Check if default is Nothing
         if default is Nothing:

@@ -281,6 +281,23 @@ class PyObMeta(type, PyObMetaLabelMixin):
             # NOTE: Exceptions can happen when setting individual attributes
             # The above except block ensures that PyOb initialization is atomic
 
+        # Initialize fields
+        fields = (
+            list(cls.PyObMeta.keys)
+            + sum([[i] if type(i) is str else list(i) for i in cls.PyObMeta.unique], [])
+            + list(cls.PyObMeta.pre)
+            + list(cls.PyObMeta.post)
+        )
+
+        # Iterate over fields
+        for field in fields:
+
+            # Check if field is class attribute
+            if hasattr(cls, field):
+
+                # Call setattr method on field value
+                setattr(instance, field, getattr(cls, field))
+
         # Add instance to store
         cls.PyObMeta.store._pyob_dict[instance] = 1
 

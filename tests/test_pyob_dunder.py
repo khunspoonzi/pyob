@@ -31,15 +31,66 @@ class PyObDunderTestCase(PyObFixtureTestCase):
     """PyOb Dunder Test Case"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ TEST ADD
+    # │ TEST ADD ALLOWS DUPLICATE PYOBS
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    def test_add(self):
-        """Ensures that the add dunder method behaves as expected"""
+    def test_add_allows_duplicate_pyobs(self):
+        """Ensures that you can more than one instance to a given PyObSet"""
+
+        # Get countries
+        countries = self.Country.obs
+
+        # Get Thailand instance
+        tha = countries.THA
+
+        # Get Japan instance
+        jpn = countries.JPN
+
+        # Assert that you can add multiple of the same PyOb to a PyOb set
+        self.assertIsObSet(tha + jpn + jpn, count=3)
+        self.assertIsObSet(tha + "JPN" + "JPN", count=3)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD DISALLOWS UNRELATED PYOBS
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_add_disallows_unrelated_pyobs(self):
+        """Ensures that unrelated PyOb instances cannot be added together"""
 
         # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ COUNTRY
+        # │ A
         # └─────────────────────────────────────────────────────────────────────────────
+
+        class A(PyOb):
+            """A generic PyOb test class"""
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ B
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        class B(PyOb):
+            """A generic PyOb test class"""
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ UNRELATED TYPES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Initialize A and B instances
+        a1 = A()
+        b1 = B()
+
+        # Initialize assertRaises
+        with self.assertRaises(UnrelatedObjectsError):
+
+            # Try to add a B instance to an A instance
+            a1 + b1
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD CREATES PYOB SET
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_add_creates_pyob_set(self):
+        """Ensures that the addition of two PyObs produces a PyObSet"""
 
         # Get countries
         countries = self.Country.obs
@@ -53,12 +104,6 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Assert that adding None to a PyOb returns a PyOb set of one
         self.assertIsObSet(tha_, count=1)
 
-        # Assert that adding other non-PyObs to a PyOb raises an error
-        [
-            self.assertRaises(InvalidObjectError, tha.__add__, val)
-            for val in (50, "Japan", True)
-        ]
-
         # Get Japan instance
         jpn = countries.JPN
 
@@ -68,32 +113,36 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # Assert that adding one PyOb to another returns a PyOb set
         self.assertIsObSet(tha_jpn, count=2)
 
-        # Add Japan to Thailand
-        tha_jpnkey = tha + "JPN"
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD REQUIRES PYOB SUBCLASS
+    # └─────────────────────────────────────────────────────────────────────────────────
 
-        # Assert that adding a key to a PyOb returns a PyOb set
-        self.assertIsObSet(tha_jpnkey, count=2)
+    def test_add_requires_pyob_subclass(self):
+        """Ensures that you cannot add a non-PyOb to a PyOb"""
 
-        # Assert that you can add multiple of the same PyOb to a PyOb set
-        self.assertIsObSet(tha + jpn + jpn, count=3)
-        self.assertIsObSet(tha + "JPN" + "JPN", count=3)
+        # Get countries
+        countries = self.Country.obs
 
-        # Get USA instance
-        usa = countries.USA
+        # Get Thailand instance
+        tha = countries.THA
 
-        # Add USA to Japan
-        jpn_usa = jpn + usa
+        # Assert that adding other non-PyObs to a PyOb raises an error
+        [
+            self.assertRaises(InvalidObjectError, tha.__add__, val)
+            for val in (50, "Japan", True)
+        ]
 
-        # Assert that you can add an iterable to a PyOb
-        self.assertIsObSet(tha + jpn_usa, count=3)
-        self.assertIsObSet(tha + [jpn, usa], count=3)
-        self.assertIsObSet(tha + ["JPN", "USA"], count=3)
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD RESOLVES TO COMMON PARENT PYOB CLASS
+    # └─────────────────────────────────────────────────────────────────────────────────
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ CITY STATE
-        # └─────────────────────────────────────────────────────────────────────────────
+    def test_add_resolves_to_common_parent_pyob_class(self):
+        """Ensures that adding related PyOb classes produces a common parent PyObSet"""
 
-        # Get Singapore -- a CityState which subclasses Country
+        # Get United States instance -- with class of Country
+        usa = self.Country.USA
+
+        # Get Singapore instance -- a CityState which subclasses Country
         sgp = self.CityState.SGP
 
         # Assert that you can add Singapore to United States
@@ -104,16 +153,54 @@ class PyObDunderTestCase(PyObFixtureTestCase):
         # because CityState subclasses Country, ObSet should resolve to Country
         self.assertIsObSet(sgp + usa, count=2, PyObClass=self.Country)
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ A
-        # └─────────────────────────────────────────────────────────────────────────────
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD WORKS WITH ITERABLES
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_add_works_with_iterables(self):
+        """Ensures that adding works when iterables of PyObs are added to a PyOb"""
+
+        # Get countries
+        countries = self.Country.obs
+
+        # Get Japan instance
+        jpn = countries.JPN
+
+        # Get Thailand instance
+        tha = countries.THA
+
+        # Get United States instance
+        usa = countries.USA
+
+        # Add USA to Japan
+        jpn_usa = jpn + usa
+
+        # Assert that you can add an iterable to a PyOb
+        self.assertIsObSet(tha + jpn_usa, count=3)
+        self.assertIsObSet(tha + [jpn, usa], count=3)
+        self.assertIsObSet(tha + ["JPN", "USA"], count=3)
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TEST ADD WORKS WITH KEYS
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def test_add_works_with_keys(self):
+        """Ensures that adding works when keys are used in place of a PyOb"""
+
+        # Get countries
+        countries = self.Country.obs
+
+        # Get Thailand instance
+        tha = countries.THA
+
+        # Add Japan to Thailand
+        tha_jpnkey = tha + "JPN"
+
+        # Assert that adding a key to a PyOb returns a PyOb set
+        self.assertIsObSet(tha_jpnkey, count=2)
 
         class A(PyOb):
             """A generic PyOb test class"""
-
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ B
-        # └─────────────────────────────────────────────────────────────────────────────
 
         class B(PyOb):
             """A generic PyOb test class"""
@@ -130,28 +217,22 @@ class PyObDunderTestCase(PyObFixtureTestCase):
                 # Define keys
                 keys = ("key",)
 
-        # ┌─────────────────────────────────────────────────────────────────────────────
-        # │ UNRELATED TYPES
-        # └─────────────────────────────────────────────────────────────────────────────
-
         # Initialize A and B instances
         a1 = A()
         b1 = B(key="NoKey")
         b2 = B(key=a1)
 
-        # Initialize assertRaises
-        with self.assertRaises(UnrelatedObjectsError):
+        # Get a1 and b1 PyOb set
+        a1_b1 = a1 + b1
 
-            # Try to add a B instance to an A instance
-            a1 + b1
+        # Assert that you can add b1 to a1 because a1 is synonymous with b2
+        self.assertEqual(a1_b1, b2 + b1)
 
         # Get b1 and a1 PyOb set
         b1_a1 = b1 + a1
 
         # Assert that you can add a1 to b1 because a1 is synonymous with b2
         self.assertEqual(b1_a1, b1 + b2)
-
-        # TODO: Make keys backward compatible as synonyms (MAYBE...)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ TEST REPR
