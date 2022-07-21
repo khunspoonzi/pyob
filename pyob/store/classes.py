@@ -1,24 +1,34 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ METACLASS BASE
+# │ PROJECT IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+from pyob.set import PyObSet
+
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ PYOB STORE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class MetaclassBase:
-    """An attribute blueprint for the PyOb metaclass"""
+class PyObStore(PyObSet):
+    """A base class for the primary PyOb set of a PyOb class"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ RELATIVES
+    # │ CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize list of parent classes to None
-    Parents = None
-
-    # Initialize list of child classes to None
-    Children = None
+    # Initialize PyObs by key to None
+    _pyobs_by_key = None
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ STORE SETTINGS
+    # │ __INIT__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize keys to None
-    keys = None
+    def __init__(self, *args, **kwargs):
+        """Init Method"""
+
+        # Call parent init method
+        super().__init__(*args, **kwargs)
+
+        # Initialize PyObs by key
+        self._pyobs_by_key = {}

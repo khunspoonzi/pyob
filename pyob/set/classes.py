@@ -1,24 +1,31 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ METACLASS BASE
+# │ PYOB SET
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class MetaclassBase:
-    """An attribute blueprint for the PyOb metaclass"""
+class PyObSet:
+    """A base class for a collection of PyOb instances"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ RELATIVES
+    # │ CLASS ATTRIBUTES
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize list of parent classes to None
-    Parents = None
+    # Initialize PyOb class to None
+    _PyObClass = None
 
-    # Initialize list of child classes to None
-    Children = None
+    # Initialize counts by PyOb
+    # i.e. A record of all PyOb instance counts in the PyObSet
+    _counts_by_pyob = None
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ STORE SETTINGS
+    # │ __INIT__
     # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Initialize keys to None
-    keys = None
+    def __init__(self, PyObClass):
+        """Init Method"""
+
+        # Set PyOb class
+        self._PyObClass = PyObClass
+
+        # Initialize counts by PyOb
+        self._counts_by_pyob = {}
