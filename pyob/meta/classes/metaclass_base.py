@@ -22,3 +22,13 @@ class MetaclassBase:
 
     # Initialize keys to None
     keys = None
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ AESTHETIC SETTINGS
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    # Initialize string field
+    string = None
+
+    # Initialize labels to None
+    label_singular = label_plural = None

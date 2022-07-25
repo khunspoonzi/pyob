@@ -1,5 +1,10 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ PROJECT IMPORTS
+# │ HEXIFY
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.tools.main import is_pyob  # noqa
+
+def hexify(obj):
+    """Returns the hex of an object's ID"""
+
+    # Return hex of object's ID
+    return hex(id(obj))

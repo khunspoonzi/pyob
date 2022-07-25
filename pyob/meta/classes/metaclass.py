@@ -5,6 +5,7 @@
 from pyob.meta.classes.metaclass_base import MetaclassBase
 from pyob.store.classes import PyObStore
 from pyob.tools.iterable import deduplicate
+from pyob.tools.string import split_pascal
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -106,6 +107,46 @@ class Metaclass(type):
         PyObMeta.keys = keys
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ ATTRIBUTE INHERITANCE
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Define inheritable attributes
+        # i.e. Attributes that will inherit from the first parent if not set otherwise
+        inheritable_attributes = ("string",)
+
+        # Iterate over inheritable attributes
+        for inheritable_attribute in inheritable_attributes:
+
+            # Get the value of the inheritable attribute
+            inheritable_attribute_value = getattr(PyObMeta, inheritable_attribute, None)
+
+            # Continue if the value of the inheritable attribute is not None
+            # i.e. It has been set explicitly and therefore should not be touched
+            if inheritable_attribute_value is not None:
+                continue
+
+            # Iterate over parent classes
+            for Parent in PyObMeta.Parents:
+
+                # Get the PyObMeta of the parent class
+                ParentPyObMeta = Parent.PyObMeta
+
+                # Get inherited attribute value from parent PyObMeta
+                inherited_attribute_value = getattr(
+                    ParentPyObMeta, inheritable_attribute, None
+                )
+
+                # Continue if the inherited attribute value is None
+                # i.e. No meaningful attribute value to inherit
+                if inherited_attribute_value is None:
+                    continue
+
+                # Set the inherited value on the current PyOb class and break
+                # i.e. Inherit the first meaningful attribute from any of the parents
+                setattr(PyObMeta, inheritable_attribute, inherited_attribute_value)
+                break
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ SUPER INIT
         # └─────────────────────────────────────────────────────────────────────────────
 
@@ -122,3 +163,61 @@ class Metaclass(type):
 
         # Return PyOb store
         return cls.PyObMeta.store
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ LABEL SINGULAR
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @property
+    def label_singular(cls):
+        """Returns a singular label based on the PyObMeta definition or class name"""
+
+        # Get singular label from PyObMeta
+        label_singular = cls.PyObMeta.label_singular
+
+        # Default singular label to derivative of class name if not defined
+        label_singular = label_singular or " ".join(split_pascal(cls.__name__))
+
+        # Strip singular label
+        label_singular = label_singular.strip()
+
+        # Return singular label
+        return label_singular
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ LABEL PLURAL
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @property
+    def label_plural(cls):
+        """Returns a plural label based on the PyObMeta definition or singular label"""
+
+        # Get plural label from PyObMeta
+        label_plural = cls.PyObMeta.label_plural
+
+        # Check if plural label is null
+        if not label_plural:
+
+            # Get singular label
+            label_singular = cls.label_singular
+
+            # Check if label ends with a "y"
+            if label_singular.endswith("y"):
+
+                # Pluralize label
+                label_plural = label_singular[:-1] + "ies"
+
+            # Otherwise check if label requires "-es"
+            elif label_singular.endswith(("x", "ch")):
+
+                # Pluralize label
+                label_plural = label_singular + "es"
+
+            # Otherwise handle general case
+            else:
+
+                # Pluralize label
+                label_plural = label_singular + "s"
+
+        # Return plural label
+        return label_plural
