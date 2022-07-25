@@ -154,6 +154,49 @@ class Metaclass(type):
         return super().__init__(*args, **kwargs)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __CALL__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __call__(cls, *args, **kwargs):
+        """Call Method"""
+
+        # Get PyOb store
+        store = cls.PyObMeta.store
+
+        # Get counts by PyOb instance
+        counts_by_pyob = store._counts_by_pyob
+
+        # Get PyOb instances by key
+        pyobs_by_key = store._pyobs_by_key
+
+        # Initialize try-except block
+        try:
+
+            # Get PyOb instance
+            pyob = super().__call__(*args, **kwargs)
+
+        # Handle any exception encountered during initialization
+        except Exception:
+
+            # Clean up key index as if PyOb instance never existed
+            # Ensures no keys for problematic instances are kept in the index
+            store._obs_by_key = {
+                k: v for k, v in pyobs_by_key.items() if v in counts_by_pyob
+            }
+
+            # Re-raise exception
+            raise
+
+            # NOTE: Exceptions can happen when setting individual attributes
+            # The above except block ensures that PyOb initialization is atomic
+
+        # Add PyOb instance to store
+        store._counts_by_pyob[pyob] = 1
+
+        # Return PyOb instance
+        return pyob
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OBS
     # └─────────────────────────────────────────────────────────────────────────────────
 
