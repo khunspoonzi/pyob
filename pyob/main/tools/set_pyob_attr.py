@@ -2,7 +2,8 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import InvalidKeyError
+from pyob.exceptions import DuplicateKeyError, InvalidKeyError
+from pyob.main.tools.traverse import traverse_pyob_relatives
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -46,6 +47,52 @@ def set_pyob_attr(pyob, name, value):
         raise InvalidKeyError(
             f"{class_name}.{name} is a key and therefore cannot have a value of None"
         )
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ TRAVERSE PYOB RELATIVES
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    # Define traversal callback
+    def callback(PyObClass):
+        """Validates a PyOb instance attribute against its PyOb class relatives"""
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ VARIABLES
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get PyObMeta
+        PyObMeta = PyObClass.PyObMeta
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ VALIDATE KEY UNICITY
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Check if is a key in the PyOb class
+        if is_key and name in PyObMeta.keys:
+
+            # Get PyObs by key map
+            pyobs_by_key = PyObMeta.store._pyobs_by_key
+
+            # Check if value in PyObs by key map
+            if value in pyobs_by_key:
+
+                # Get other
+                other = pyobs_by_key[value]
+
+                # Check if existing index is not the current PyOb instance
+                if id(other) != id(pyob):
+
+                    # Get singular label
+                    label_singular = PyObClass.label_singular
+
+                    # Raise DuplicateKeyError
+                    raise DuplicateKeyError(
+                        f"A {label_singular} with a key of {value} already exists: "
+                        f"{other}"
+                    )
+
+    # Apply callback to current PyOb class and its relatives
+    traverse_pyob_relatives(PyObClass=PyObClass, callback=callback, inclusive=True)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INDEX KEY
