@@ -2,7 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main.tools import get_pyob_string_field
+from pyob.main.tools import get_pyob_string_field, set_pyob_attr
 from pyob.meta import Metaclass
 from pyob.tools import is_pyob
 from pyob.tools.object import hexify
@@ -57,6 +57,19 @@ class PyOb(metaclass=Metaclass):
 
         # Return representation
         return representation
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __SETATTR__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __setattr__(self, name, value):
+        """Set Attr Method"""
+
+        # Set PyOb instance attribute
+        set_pyob_attr(pyob=self, name=name, value=value)
+
+        # Call parent __setattr__ method
+        super().__setattr__(name, value)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __STR__
