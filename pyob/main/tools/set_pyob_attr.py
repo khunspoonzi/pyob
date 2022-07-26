@@ -3,7 +3,7 @@
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob.exceptions import DuplicateKeyError, InvalidKeyError
-from pyob.main.tools.traverse import traverse_pyob_relatives
+from pyob.main.tools.traverse import traverse_pyob_direct_relatives
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
@@ -91,8 +91,10 @@ def set_pyob_attr(pyob, name, value):
                         f"{other}"
                     )
 
-    # Apply callback to current PyOb class and its relatives
-    traverse_pyob_relatives(PyObClass=PyObClass, callback=callback, inclusive=True)
+    # Traverse PyOb direct relatives
+    traverse_pyob_direct_relatives(
+        PyObClass=PyObClass, callback=callback, inclusive=True
+    )
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ INDEX KEY

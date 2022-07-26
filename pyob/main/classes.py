@@ -4,7 +4,7 @@
 
 from pyob.main.tools import get_pyob_string_field, set_pyob_attr
 from pyob.meta import Metaclass
-from pyob.tools import is_pyob
+from pyob.tools import is_pyob_instance
 from pyob.tools.object import hexify
 from pyob.tools.string import pascalize
 
@@ -90,7 +90,7 @@ class PyOb(metaclass=Metaclass):
 
         # Check if the string value is another PyOb instance
         # Analagous to the field of of a PyOb instance being a "foreign key" to another
-        if is_pyob(string_value):
+        if is_pyob_instance(string_value):
 
             # Check if the associated PyOb instance isn't root and has a string field
             # If is the root then we are likely going around in circles and must break

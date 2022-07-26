@@ -14,3 +14,12 @@ class DuplicateKeyError(Exception):
 
 class InvalidKeyError(Exception):
     """Invalid Key Error"""
+
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ NON-EXISTENT KEY ERROR
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+
+class NonExistentKeyError(Exception):
+    """Non-existent Key Error"""
