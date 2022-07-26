@@ -147,6 +147,13 @@ class Metaclass(type):
                 break
 
         # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ LOCALIZATION
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Set localized from attribute
+        PyObMeta.localized_from = None
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
         # │ SUPER INIT
         # └─────────────────────────────────────────────────────────────────────────────
 
@@ -205,6 +212,31 @@ class Metaclass(type):
 
         # Apply get item to PyOb store
         return cls.PyObMeta.store[key]
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __INSTANCECHECK__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __instancecheck__(cls, instance):
+        """Instance Check Method"""
+
+        # Get PyOb Meta
+        pyob_meta = getattr(instance.__class__, "PyObMeta", None)
+
+        # Check if PyOb Meta is not None
+        if pyob_meta is not None:
+
+            # Get localized from
+            localized_from = getattr(pyob_meta, "localized_from", None)
+
+            # Check if localized from current class
+            if localized_from and issubclass(localized_from, cls):
+
+                # Return True
+                return True
+
+        # Return default instance check
+        return super().__instancecheck__(instance)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ OBS

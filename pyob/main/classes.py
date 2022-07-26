@@ -2,7 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main.tools import get_pyob_string_field, set_pyob_attr
+from pyob.main.tools import get_pyob_string_field, localize_pyob_class, set_pyob_attr
 from pyob.meta import Metaclass
 from pyob.tools import is_pyob_instance
 from pyob.tools.object import hexify
@@ -16,6 +16,17 @@ from pyob.tools.string import pascalize
 
 class PyOb(metaclass=Metaclass):
     """A base class for PyOb classes"""
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ LOCALIZED
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    @classmethod
+    def Localized(cls, include=None):
+        """Returns a localized version of the PyOb class with an empty object store"""
+
+        # Return localized PyOb classes
+        return localize_pyob_class(cls, *(include or []))
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ LABEL SINGULAR
