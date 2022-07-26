@@ -29,3 +29,13 @@ class PyObSet:
 
         # Initialize counts by PyOb
         self._counts_by_pyob = {}
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __GETITEM__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __getitem__(self, key):
+        """Get Item Method"""
+
+        # Get by key
+        return self.key(key)
