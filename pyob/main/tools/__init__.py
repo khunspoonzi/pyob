@@ -2,8 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main.tools.localize_pyob_class import localize_pyob_class  # noqa
-from pyob.main.tools.set_pyob_attr import set_pyob_attr  # noqa
+from pyob.main.tools.localize import localize_pyob_class  # noqa
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────

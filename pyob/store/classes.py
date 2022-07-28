@@ -37,6 +37,34 @@ class PyObStore(PyObSet):
         self._pyobs_by_key = {}
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __ITER__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __iter__(self):
+        """Iterate Method"""
+
+        # Yield from current store
+        yield from super().__iter__()
+
+        # Iterate over Children
+        for Child in self._PyObClass.PyObMeta.Children:
+
+            # Yield from child store
+            yield from Child.PyObMeta.store.__iter__()
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
+    # │ __LEN__
+    # └─────────────────────────────────────────────────────────────────────────────────
+
+    def __len__(self):
+        """Len Method"""
+
+        # Return the count of the PyOb store and its children
+        return super().__len__() + sum(
+            [len(Child.PyObMeta.store) for Child in self._PyObClass.PyObMeta.Children]
+        )
+
+    # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ KEY
     # └─────────────────────────────────────────────────────────────────────────────────
 

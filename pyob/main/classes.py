@@ -2,7 +2,8 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main.tools import get_pyob_string_field, localize_pyob_class, set_pyob_attr
+from pyob.main.tools import get_pyob_string_field, localize_pyob_class
+from pyob.main.tools.validate import validate_and_index_pyob_attr
 from pyob.meta import Metaclass
 from pyob.tools import is_pyob_instance
 from pyob.tools.object import hexify
@@ -76,8 +77,8 @@ class PyOb(metaclass=Metaclass):
     def __setattr__(self, name, value):
         """Set Attr Method"""
 
-        # Set PyOb instance attribute
-        set_pyob_attr(pyob=self, name=name, value=value)
+        # Validate and index PyOb instance attribute
+        validate_and_index_pyob_attr(pyob=self, name=name, value=value)
 
         # Call parent __setattr__ method
         super().__setattr__(name, value)

@@ -3,16 +3,17 @@
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 from pyob.exceptions import DuplicateKeyError, InvalidKeyError
+from pyob.main.tools.index import index_pyob_attr
 from pyob.main.tools.traverse import traverse_pyob_direct_relatives
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ SET PYOB ATTR
+# │ VALIDATE PYOB ATTR
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def set_pyob_attr(pyob, name, value):
-    """Validates, indexes, and sets a PyOb instance attribute"""
+def validate_pyob_attr(pyob, name, value):
+    """Validates a PyOb instance attribute"""
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ VARIABLES
@@ -24,15 +25,12 @@ def set_pyob_attr(pyob, name, value):
     # Get PyObMeta
     PyObMeta = PyObClass.PyObMeta
 
-    # Get store
-    store = PyObMeta.store
-
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ VALIDATE KEY TYPE
     # └─────────────────────────────────────────────────────────────────────────────────
 
     # Get keys
-    keys = PyObClass.PyObMeta.keys or ()
+    keys = PyObMeta.keys or ()
 
     # Determine if key
     is_key = keys and name in keys
@@ -96,28 +94,17 @@ def set_pyob_attr(pyob, name, value):
         PyObClass=PyObClass, callback=callback, inclusive=True
     )
 
-    # ┌─────────────────────────────────────────────────────────────────────────────────
-    # │ INDEX KEY
-    # └─────────────────────────────────────────────────────────────────────────────────
 
-    # Check if is key
-    if is_key:
+# ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ VALIDATE AND INDEX PYOB ATTR
+# └─────────────────────────────────────────────────────────────────────────────────────
 
-        # Get PyObs instances by key
-        pyobs_by_key = store._pyobs_by_key
 
-        # Check previous value is defined
-        # So that we can remove the existing key
-        if name in pyob.__dict__:
+def validate_and_index_pyob_attr(pyob, name, value):
+    """Validates and indexes a PyOb instance attribute"""
 
-            # Get previous value
-            value_previous = pyob.__dict__[name]
+    # Validate PyOb instance attribute
+    validate_pyob_attr(pyob=pyob, name=name, value=value)
 
-            # Check if previous value is indexed
-            if value_previous in pyobs_by_key:
-
-                # Pop previous value from index
-                pyobs_by_key.pop(value_previous)
-
-        # Index new value as a key
-        pyobs_by_key[value] = pyob
+    # Index PyOb instance attribute
+    index_pyob_attr(pyob=pyob, name=name, value=value)

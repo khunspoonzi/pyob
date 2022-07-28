@@ -2,6 +2,7 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
+from pyob.main.tools.validate import validate_and_index_pyob_attr
 from pyob.meta.classes.metaclass_base import MetaclassBase
 from pyob.store.classes import PyObStore
 from pyob.tools.iterable import deduplicate
@@ -176,11 +177,33 @@ class Metaclass(type):
         # Get PyOb instances by key
         pyobs_by_key = store._pyobs_by_key
 
+        # Define list of attributes to validate
+        attrs_to_validate = list(cls.PyObMeta.keys)
+
+        # Ensure list off attributes to validate is unique
+        attrs_to_validate = deduplicate(attrs_to_validate)
+
         # Initialize try-except block
         try:
 
             # Get PyOb instance
             pyob = super().__call__(*args, **kwargs)
+
+            # Iterate over attributes to validate
+            for attr in attrs_to_validate:
+
+                # Check if PyOb class has the attribute
+                if hasattr(cls, attr):
+
+                    # Get PyOb instance attribute
+                    pyob_attr = getattr(pyob, attr)
+
+                    # Validate and index PyOb instance attribute
+                    validate_and_index_pyob_attr(pyob=pyob, name=attr, value=pyob_attr)
+
+                    # NOTE: This is in case a PyOb instance inherits a class attribute
+                    # If not explicitly set in the init method, the inherited attribute
+                    # will not be validated or indexed, which can cause store issues
 
         # Handle any exception encountered during initialization
         except Exception:
