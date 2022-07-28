@@ -41,8 +41,6 @@ class Metaclass(type):
         # Otherwise we will end up reassigning mutable attributes such as the store
         cls.PyObMeta = type("PyObMeta", cls.PyObMeta.__bases__, metaclass_dict)
 
-        print("CREATING")
-
         # Get the freshly initialized PyObMeta
         PyObMeta = cls.PyObMeta
 
