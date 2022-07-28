@@ -1,4 +1,10 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ GENERAL IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+from typing import get_type_hints
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
@@ -146,6 +152,25 @@ class Metaclass(type):
                 # i.e. Inherit the first meaningful attribute from any of the parents
                 setattr(PyObMeta, inheritable_attribute, inherited_attribute_value)
                 break
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ TYPE HINTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Initialize type hints
+        type_hints = {}
+
+        # Update type hints by init type hints
+        type_hints.update(get_type_hints(cls.__init__) or {})
+
+        # Update type hints by class-level type hints
+        type_hints.update(get_type_hints(cls) or {})
+
+        # NOTE: class-level type hints get priority because a different type may get
+        # passed into the init method but then casted to the class-level during init
+
+        # Set type hints
+        cls.PyObMeta.type_hints = type_hints
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ LOCALIZATION

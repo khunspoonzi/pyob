@@ -1,8 +1,14 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
+# │ GENERAL IMPORTS
+# └─────────────────────────────────────────────────────────────────────────────────────
+
+from beartype.abby import is_bearable
+
+# ┌─────────────────────────────────────────────────────────────────────────────────────
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.exceptions import DuplicateKeyError, InvalidKeyError
+from pyob.exceptions import DuplicateKeyError, InvalidKeyError, InvalidTypeError
 from pyob.main.tools.index import index_pyob_attr
 from pyob.main.tools.traverse import traverse_pyob_direct_relatives
 
@@ -60,6 +66,41 @@ def validate_pyob_attr(pyob, name, value):
 
         # Get PyObMeta
         PyObMeta = PyObClass.PyObMeta
+
+        # ┌─────────────────────────────────────────────────────────────────────────────
+        # │ VALIDATE TYPE HINTS
+        # └─────────────────────────────────────────────────────────────────────────────
+
+        # Get cached type hints
+        type_hints = PyObClass.PyObMeta.type_hints
+
+        # Check if name in type hints
+        if name in type_hints:
+
+            # Get expected type
+            expected_type = type_hints[name]
+
+            # Check if boolean edge case
+            if type(value) is bool and expected_type is not bool:
+
+                # Set type is valid to False
+                # Booleans pass for ints / floats under MyPy
+                type_is_valid = False
+
+            # Otherwise handle general case
+            else:
+
+                # Determine if type is valid
+                type_is_valid = is_bearable(value, expected_type)
+
+            # Check if type is invalid
+            if not type_is_valid:
+
+                # Raise InvalidTypeError
+                raise InvalidTypeError(
+                    f"{PyObClass.__name__}.{name} expects a value of type "
+                    f"{expected_type} but got: {value} ({type(value)})"
+                )
 
         # ┌─────────────────────────────────────────────────────────────────────────────
         # │ VALIDATE KEY UNICITY
