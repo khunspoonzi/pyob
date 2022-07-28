@@ -2,4 +2,4 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main import PyOb  # noqa
+from pyob.meta.classes.metaclass import Metaclass  # noqa

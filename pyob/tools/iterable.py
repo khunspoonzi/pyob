@@ -2,40 +2,44 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-import pyob.main.classes as pyob  # Protects against circular imports
+from pyob.set import PyObSet
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB BASE
+# │ DEDUPLICATE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_pyob_base(Class):
-    """Returns a boolean of whether a class is PyOb"""
+def deduplicate(iterable, recursive=False):
+    """Removes duplcates from an iterable while preserving its order"""
 
-    # Return boolean of whether class is PyOb
-    return Class is pyob.PyOb
+    # Determine iterable cast function
+    # i.e. The callable type of the passed in iterable
+    to_type = type(iterable)
+
+    # Initialize seen set
+    # i.e. The set we use to identify diplicate items
+    seen = set()
+    see = seen.add
+
+    # Remove duplicates items from iterable
+    iterable = [
+        deduplicate(i, recursive=recursive) if recursive and is_iterable(i) else i
+        for i in iterable
+        if not (i in seen or see(i))
+    ]
+
+    # Return iterable of unique items
+    return to_type(iterable)
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB INSTANCE
+# │ IS ITERABLE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_pyob_instance(item):
-    """Returns a boolean of whether an item is a PyOb instance"""
+def is_iterable(item):
+    """Returns a boolean of whether or not an item is iterable"""
 
-    # Return boolean of whether item is a PyOb instance
-    return isinstance(item, pyob.PyOb)
-
-
-# ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB SUBCLASS
-# └─────────────────────────────────────────────────────────────────────────────────────
-
-
-def is_pyob_subclass(Class):
-    """Returns a boolean of whether a class is a subclass of PyOb"""
-
-    # Return boolean of whether class is a subclass of PyOb
-    return issubclass(Class, pyob.PyOb)
+    # Return boolean of whether or not item is an iterable
+    return type(item) in [list, set, tuple, PyObSet]

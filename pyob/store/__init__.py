@@ -2,4 +2,4 @@
 # │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-from pyob.main import PyOb  # noqa
+from pyob.store.classes import PyObStore  # noqa

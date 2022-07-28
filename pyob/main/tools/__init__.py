@@ -1,25 +1,28 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ DUPLICATE KEY ERROR
+# │ PROJECT IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-
-class DuplicateKeyError(Exception):
-    """Duplicate Key Error"""
+from pyob.main.tools.localize_pyob_class import localize_pyob_class  # noqa
+from pyob.main.tools.set_pyob_attr import set_pyob_attr  # noqa
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ INVALID KEY ERROR
+# │ GET PYOB STRING FIELD
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-class InvalidKeyError(Exception):
-    """Invalid Key Error"""
+def get_pyob_string_field(pyob):
+    """Resolves and returns the best applicable string field for a PyOb instance"""
 
+    # Initialize string field as PyObMeta.string
+    # i.e. The field explicitly defined by the user
+    string_field = pyob.PyObMeta.string
 
-# ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ NON-EXISTENT KEY ERROR
-# └─────────────────────────────────────────────────────────────────────────────────────
+    # Default string field to the first available key if null
+    # Provides a meaningful and unique string value for each PyOb
+    string_field = string_field or (
+        pyob.PyObMeta.keys[0] if pyob.PyObMeta.keys else None
+    )
 
-
-class NonExistentKeyError(Exception):
-    """Non-existent Key Error"""
+    # Return the string field
+    return string_field

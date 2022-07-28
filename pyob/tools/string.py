@@ -1,41 +1,43 @@
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ PROJECT IMPORTS
+# │ GENERAL IMPORTS
 # └─────────────────────────────────────────────────────────────────────────────────────
 
-import pyob.main.classes as pyob  # Protects against circular imports
+import re
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB BASE
+# │ PASCALIZE
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_pyob_base(Class):
-    """Returns a boolean of whether a class is PyOb"""
+def pascalize(string, delimiter=" "):
+    """Converts a string to Pascal case"""
 
-    # Return boolean of whether class is PyOb
-    return Class is pyob.PyOb
+    # Split string
+    string = [s.strip() for s in string.split(delimiter)]
+
+    # Capitalize each word
+    string = [s[0].upper() + s[1:] for s in string if s]
+
+    # Join string
+    string = "".join(string)
+
+    # Return string
+    return string
 
 
 # ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB INSTANCE
+# │ SPLIT PASCAL
 # └─────────────────────────────────────────────────────────────────────────────────────
 
 
-def is_pyob_instance(item):
-    """Returns a boolean of whether an item is a PyOb instance"""
+def split_pascal(string):
+    """Splits a string by Pascal case"""
 
-    # Return boolean of whether item is a PyOb instance
-    return isinstance(item, pyob.PyOb)
+    # Match string against Pascal case
+    matches = re.finditer(
+        ".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)", string
+    )
 
-
-# ┌─────────────────────────────────────────────────────────────────────────────────────
-# │ IS PYOB SUBCLASS
-# └─────────────────────────────────────────────────────────────────────────────────────
-
-
-def is_pyob_subclass(Class):
-    """Returns a boolean of whether a class is a subclass of PyOb"""
-
-    # Return boolean of whether class is a subclass of PyOb
-    return issubclass(Class, pyob.PyOb)
+    # Return string split by matches
+    return [m.group(0) for m in matches]
