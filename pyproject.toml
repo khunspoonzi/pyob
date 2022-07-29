@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyob"
-version = "1.0.2"
+version = "1.0.3"
 description = "A high-level runtime object manager for Python 3 and above."
 authors = ["khunspoonzi <khunspoonzi@gmail.com>"]
 license = "MIT"
