@@ -70,8 +70,11 @@ class PyObSet:
     def __len__(self):
         """Length Method"""
 
-        # Return sum of counts by PyOb
-        return sum(self._counts_by_pyob.values())
+        # Get PyOb counts
+        pyob_counts = self._counts_by_pyob.values()
+
+        # Return sum of all PyOb counts
+        return sum(pyob_counts)
 
     # ┌─────────────────────────────────────────────────────────────────────────────────
     # │ __REPR__
